@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>SEWER PRO V1.0.8</title>
+<title>SEWER PRO V1.0.9</title>
 <style>
 :root{--navy:#082b55;--blue:#0c5799;--blue2:#1478bc;--green:#16834f;--amber:#d58a18;--red:#c94e5b;--ink:#17283b;--muted:#64748b;--line:#d6e0eb;--bg:#eef3f8;--card:#fff;--soft:#f6f9fc;--shadow:0 7px 24px rgba(8,43,85,.09)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink)}
@@ -20,7 +20,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 9px;
 html,body{min-height:100%;overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent}
 @media(max-width:600px){body{padding-bottom:env(safe-area-inset-bottom)}.container{padding-left:10px;padding-right:10px}.nav button{padding:10px 12px;min-height:42px}.topbar{padding-top:calc(10px + env(safe-area-inset-top))}.field input,.field select{min-height:44px}.card-body{padding:13px}.page-head h2{font-size:19px}}
 
-/* SEWER PRO V1.0.8 — dark engineering style and horizontal form layout */
+/* SEWER PRO V1.0.9 — dark engineering style and horizontal form layout */
 :root{--navy:#08264b;--blue:#123f70;--blue2:#1b5e91;--green:#5b9f20;--amber:#d7a33d;--ink:#edf1f7;--muted:#b4bdc9;--line:#50545d;--bg:#0b2038;--card:#1b1d22;--soft:#24272e;--shadow:0 8px 22px rgba(0,0,0,.22)}
 body{background:linear-gradient(145deg,#071d38,#102b45 60%,#0a2038);color:#edf1f7}
 .topbar{background:linear-gradient(115deg,#071b36,#103d68)}
@@ -64,9 +64,35 @@ td,th{border-color:#454a54}
  .page-head{align-items:flex-start}
 }
 
+
+/* V1.0.9: single continuous sewer form, vertically stacked tool sections */
+#sewerNav{display:none!important}
+.sewer-all-sections{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.sewer-all-sections .page-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin:14px 0 8px;padding:10px 13px;border-right:5px solid #5b9f20;background:linear-gradient(90deg,#1c2a38,#263646);border-radius:10px}
+.sewer-all-sections .page-head:before{font-size:25px;line-height:1;flex:0 0 34px;text-align:center}
+.sewer-all-sections .page-head[data-icon="survey"]:before{content:"📐"}
+.sewer-all-sections .page-head[data-icon="pipe"]:before{content:"🟦"}
+.sewer-all-sections .page-head[data-icon="base"]:before{content:"🕳️"}
+.sewer-all-sections .page-head[data-icon="layers"]:before{content:"🧱"}
+.sewer-all-sections .page-head[data-icon="excavation"]:before{content:"🚜"}
+.sewer-all-sections .page-head[data-icon="report"]:before{content:"📊"}
+.sewer-all-sections .page-head h2{font-size:17px;margin:0}
+.sewer-all-sections .page-head p{margin:3px 0 0;font-size:11px}
+.sewer-all-sections .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+.sewer-all-sections .card,.sewer-all-sections .card.third{grid-column:span 1}
+.sewer-all-sections .card.full{grid-column:1/-1}
+.sewer-all-sections .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sewer-all-sections .card-head h3{font-size:14px}
+@media(max-width:600px){
+ .sewer-all-sections .grid{grid-template-columns:1fr}
+ .sewer-all-sections .card,.sewer-all-sections .card.third{grid-column:1/-1}
+ .sewer-all-sections .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .sewer-all-sections .page-head{margin:11px 0 6px}
+}
+
 </style>
 </head><body>
-<header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.8</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
+<header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.9</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
  <button class="active" data-page="home">الرئيسية</button>
  <button data-page="infrastructure">أعمال البنية التحتية</button>
@@ -85,7 +111,7 @@ td,th{border-color:#454a54}
 </nav>
 <main class="container">
 <section class="page active" id="home">
- <div class="page-head"><div><h2>مركز الأعمال الهندسية</h2><p>اختر مجال العمل لفتح أدواته وحساباته. يبدأ البرنامج بأعمال البنية التحتية وشبكات الصرف الصحي.</p></div><span class="tag">SEWER PRO · V1.0.8</span></div>
+ <div class="page-head"><div><h2>مركز الأعمال الهندسية</h2><p>اختر مجال العمل لفتح أدواته وحساباته. يبدأ البرنامج بأعمال البنية التحتية وشبكات الصرف الصحي.</p></div><span class="tag">SEWER PRO · V1.0.9</span></div>
  <div class="grid">
   <article class="card third"><div class="card-head"><h3>أعمال البنية التحتية</h3><span class="tag">القسم الحالي</span></div><div class="card-body"><p class="help">يضم شبكات الصرف الصحي، ويمكن إضافة شبكات وخدمات بنية تحتية أخرى ضمن هذا القسم.</p><button class="btn btn-primary" data-open-page="infrastructure">فتح أعمال البنية التحتية</button></div></article>
   <article class="card third"><div class="card-head"><h3>أعمال الطرق</h3><span class="tag">مرحلة لاحقة</span></div><div class="card-body"><p class="help">سيُخصص هذا القسم لمناسيب الطرق وطبقاتها وأعمال القطع والردم والتبليط بعد تحديد أدواته.</p><button class="btn btn-ghost" data-open-page="roads">عرض القسم</button></div></article>
@@ -125,6 +151,7 @@ td,th{border-color:#454a54}
   <article class="card"><div class="card-head"><h3>عمق الحفر الكلي</h3><span class="tag">نتيجة نهائية</span></div><div class="card-body"><div class="result amber"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="mDepth">—</strong></div><p class="help">يعتمد العمق على منسوب الأرض الطبيعية GL المدخل يدوياً، وعلى منسوب أسفل الجلمود المحسوب من مرجع الأنبوب.</p></div></article>
   <article class="card"><div class="card-head"><h3>مرجع الحساب الوحيد</h3><span class="tag">ظهر الأنبوب</span></div><div class="card-body"><div class="result blue"><span>منسوب الجهاز HI</span><strong id="hiSummary">—</strong></div><div class="status" id="mainStatus">أدخل BM وBS، ثم قراءة واحدة فوق ظهر الأنبوب أو منسوبه.</div></div></article>
  </div>
+ <div id="sewerAllSections" class="sewer-all-sections"></div>
  <div class="note-box">مهم: البرنامج لا يطلب قراءة منفصلة للمنهول أو السبيس أو الجلمود أو قاع الحفر. مرجعها جميعاً هو نقطة ظهر الأنبوب، وتُستخدم السماكات المدخلة لحساب المناسيب بالتتابع.</div>
 </section>
 
@@ -191,7 +218,7 @@ td,th{border-color:#454a54}
  <div class="page-head"><div><h2>النتائج والتقرير</h2><p>يعرض التقرير المدخلات اليدوية والنتائج الأربعة المطلوبة فقط.</p></div><div class="inline no-print"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
  <article class="card full"><div class="card-body"><div class="table-wrap"><table><thead><tr><th>القسم</th><th>البيان</th><th>القيمة</th><th>الوحدة</th></tr></thead><tbody id="reportTable"></tbody></table></div><div class="status">لا توجد قراءات منفصلة للمنهول أو السبيس أو الجلمود أو الحفر. جميع المناسيب ناتجة عن مرجع ظهر الأنبوب والسماكات المدخلة.</div></div></article>
 </section>
-<div class="footer">SEWER PRO V1.0.8 · أعمال البنية التحتية والطرق وحساب الكميات.</div>
+<div class="footer">SEWER PRO V1.0.9 · أعمال البنية التحتية والطرق وحساب الكميات.</div>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -201,6 +228,23 @@ const fmtN=v=>Number.isFinite(v)?v.toFixed(3):'—';
 const set=(id,v)=>{$(id).textContent=fmt(v);};
 const hi=()=>{const bm=val('bm'),bs=val('bs');return bm!==null&&bs!==null?bm+bs:null;};
 const selectedMode=()=>document.querySelector('input[name="pipeMode"]:checked')?.value||'reading';
+
+function buildUnifiedSewerScreen(){
+ const host=$('sewerAllSections');
+ if(!host || host.dataset.built==='1')return;
+ const order=[
+  ['survey','📐'],['pipe','🟦'],['base','🕳️'],['layers','🧱'],['excavation','🚜'],['report','📊']
+ ];
+ order.forEach(([id])=>{
+  const page=$(id);if(!page)return;
+  const head=page.querySelector('.page-head');
+  const grid=page.querySelector('.grid');
+  if(head){head.dataset.icon=id;host.appendChild(head);}
+  if(grid)host.appendChild(grid);
+ });
+ host.dataset.built='1';
+}
+
 function update(){
  const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
  const mode=selectedMode(),v=val('pipeValue');
@@ -242,7 +286,7 @@ function renderReport(d){
 function saveData(){
  const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput'];
  const values={};ids.forEach(id=>values[id]=$(id).value);
- return {app:'SEWER PRO',version:'1.0.7',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
+ return {app:'SEWER PRO',version:'1.0.9',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
 }
 function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
@@ -260,6 +304,7 @@ function csv(){
 document.querySelectorAll('input[name="pipeMode"]').forEach(el=>el.addEventListener('change',update));
 const sewerPages=['dashboard','survey','pipe','base','layers','excavation','report'];
 function showPage(page){
+ if(sewerPages.includes(page))page='dashboard';
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));
  document.querySelectorAll('#mainNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page || (b.dataset.page==='infrastructure' && sewerPages.includes(page))));
  document.querySelectorAll('#sewerNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
@@ -283,7 +328,7 @@ $('saveBtn').addEventListener('click',()=>saveTextFile('SEWER_PRO_Project.json',
 $('loadBtn').addEventListener('click',()=>$('fileInput').click());
 $('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{loadData(JSON.parse(await f.text()));alert('تم فتح المشروع بنجاح.');}catch(err){alert('تعذر فتح الملف: '+err.message);}e.target.value='';});
 $('csvBtn').addEventListener('click',csv);$('csvBtn2').addEventListener('click',csv);
-setInterval(()=>{try{localStorage.setItem('sewerProDraftV108',JSON.stringify(saveData()));}catch(e){}},4000);
-try{const d=localStorage.getItem('sewerProDraftV108');if(d)loadData(JSON.parse(d));}catch(e){}
+setInterval(()=>{try{localStorage.setItem('sewerProDraftV109',JSON.stringify(saveData()));}catch(e){}},4000);
+try{const d=localStorage.getItem('sewerProDraftV109');if(d)loadData(JSON.parse(d));}catch(e){}
 update();
 </script></body></html>
