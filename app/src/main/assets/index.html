@@ -749,6 +749,7 @@ apply();
   if(!roadStations.length)return;
   const d=roadValues[roadStations[roadIndex].key]||{};
   let v=d._inputValue;
+  if(v!==undefined&&v!==null&&d._inputMode&&d._inputMode!==roadMode&&roadHI()!==null)v=roadHI()-v;
   if(v===undefined||v===null){
    if(roadMode==='level')v=d.Asphalt;
    else if(d.Asphalt!==undefined&&d.Asphalt!==null&&roadHI()!==null)v=roadHI()-d.Asphalt;
