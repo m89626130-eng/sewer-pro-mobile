@@ -209,6 +209,7 @@ td,th{border-color:#454a54}
  <div class="page-head"><div><h2>الحفر النهائي</h2><p>أدخل منسوب الأرض الطبيعية GL فقط؛ قاع الحفر يُستنتج من تسلسل السماكات.</p></div></div>
  <div class="grid"><article class="card"><div class="card-head"><h3>عمق الحفر الكلي</h3><span class="tag">حساب تلقائي</span></div><div class="card-body">
   <div class="field"><label>منسوب الأرض الطبيعية GL (م)</label><input id="glInput" type="number" step="0.001" value="100.500"></div>
+  <div class="field"><label>منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت"></div>
   <div class="result amber"><span>عمق الحفر الكلي من GL إلى أسفل الجلمود</span><strong id="excDepthOut">—</strong></div>
   <p class="help">عمق الحفر الكلي = منسوب الأرض الطبيعية GL − منسوب أسفل الجلمود. لا نطلب قراءة قامة مستقلة لقاع الحفر.</p>
   <div class="status" id="excStatus">أدخل GL، وسيُحسب عمق الحفر تلقائياً عند اكتمال البيانات.</div>
@@ -216,13 +217,13 @@ td,th{border-color:#454a54}
 </section>
 
 <section class="page" id="report">
- <div class="page-head no-print"><div><h2>النتائج والتقرير</h2><p>تقرير الأقطار والمناسيب والأطوال والأسفلت.</p></div><div class="inline"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
+ <div class="page-head no-print"><div><h2>النتائج والتقرير</h2><p>تقرير الأقطار والمناسيب، ومنسوب الأسفلت فقط.</p></div><div class="inline"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
  <article class="card full report-sheet"><div class="card-body">
   <div class="report-brand"><div class="arkan-mark">ARKAN</div><div><h2>تقرير أعمال البنية التحتية</h2><p>SEWER PRO</p></div></div>
   <div class="report-meta no-print"><div class="field"><label>اسم المشروع</label><input id="rProject" placeholder="أدخل اسم المشروع"></div><div class="field"><label>موقع المشروع</label><input id="rLocation" placeholder="أدخل موقع المشروع"></div><div class="field"><label>تاريخ إعداد التقرير</label><input id="rDate" type="date"></div><div class="field"><label>المهندس المشرف</label><input id="rEngineer" placeholder="اسم المهندس المشرف"></div><div class="field"><label>المقاول</label><input id="rContractor" placeholder="اسم المقاول"></div></div>
   <div class="report-meta-print"><div><b>اسم المشروع:</b> <span id="pProject">—</span></div><div><b>موقع المشروع:</b> <span id="pLocation">—</span></div><div><b>التاريخ:</b> <span id="pDate">—</span></div><div><b>المهندس المشرف:</b> <span id="pEngineer">—</span></div><div><b>المقاول:</b> <span id="pContractor">—</span></div></div>
   <div class="table-wrap"><table class="report-table"><thead><tr><th>القسم</th><th>البيان</th><th>القيمة</th><th>الوحدة</th></tr></thead><tbody id="reportTable"></tbody></table></div>
-  <div class="report-note">تُعرض القراءات والنتائج المسجلة في البرنامج. تُستكمل بيانات الأطوال والأسفلت عند تفعيل حقولها في مرحلة التحديث التالية.</div>
+  <div class="report-note">يتضمن التقرير أقطار الأنابيب والمناسيب المسجلة، ومنسوب الأسفلت المدخل يدوياً فقط.</div>
   <div class="report-sign"><div>توقيع المهندس المشرف<br><br>............................</div><div>ختم المقاول<br><br>............................</div></div>
  </div></article>
 </section>
@@ -273,7 +274,7 @@ function update(){
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
  $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
  $('excStatus').textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';
- renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,spaceT,spaceBottom,gilmoodT,gilmoodBottom,GL,depth});
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,spaceT,spaceBottom,gilmoodT,gilmoodBottom,GL,asphaltLevel:val('asphaltLevel'),depth});
 }
 function renderReport(d){
  const rows=[
@@ -289,13 +290,14 @@ function renderReport(d){
  ['السبيس','منسوب أسفل السبيس',d.spaceBottom,'m'],
  ['الجلمود','سمك الجلمود',d.gilmoodT,'cm'],
  ['الجلمود','منسوب أسفل الجلمود',d.gilmoodBottom,'m'],
+ ['المناسيب','منسوب الأسفلت',d.asphaltLevel,'m'],
  ['الحفر','منسوب الأرض الطبيعية GL',d.GL,'m'],
  ['الحفر','عمق الحفر الكلي',d.depth,'m']
  ];
  $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
 }
 function saveData(){
- const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput','rProject','rLocation','rDate','rEngineer','rContractor'];
+ const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput','asphaltLevel','rProject','rLocation','rDate','rEngineer','rContractor'];
  const values={};ids.forEach(id=>values[id]=$(id).value);
  return {app:'SEWER PRO',version:'1.0.11',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
 }
@@ -311,7 +313,7 @@ function csv(){
  const content='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x??'').replaceAll('"','""')+'"').join(',')).join('\r\n');
  saveTextFile('SEWER_PRO_Report.csv','text/csv',content);
 }
-['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput'].forEach(id=>{$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
+['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput','asphaltLevel'].forEach(id=>{$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
 document.querySelectorAll('input[name="pipeMode"]').forEach(el=>el.addEventListener('change',update));
 const sewerPages=['dashboard','survey','pipe','base','layers','excavation','report'];
 function showPage(page){
