@@ -61,7 +61,9 @@ public class MainActivity extends Activity {
                 filePathCallback = callback;
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/json");
+                intent.setType("*/*");
+                String[] accepted = params.getAcceptTypes();
+                if (accepted != null && accepted.length > 0) intent.putExtra(Intent.EXTRA_MIME_TYPES, accepted);
                 try { startActivityForResult(intent, REQUEST_OPEN_JSON); }
                 catch (ActivityNotFoundException e) { filePathCallback = null; callback.onReceiveValue(null); Toast.makeText(MainActivity.this, "تعذر فتح مستعرض الملفات", Toast.LENGTH_LONG).show(); }
                 return true;
