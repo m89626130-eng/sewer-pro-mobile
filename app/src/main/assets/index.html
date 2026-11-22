@@ -90,7 +90,26 @@ td,th{border-color:#454a54}
  .sewer-all-sections .page-head{margin:11px 0 6px}
 }
 
-\n/* V1.0.11 report-only print layout */\n.report-brand{display:flex;align-items:center;justify-content:center;gap:18px;text-align:center;margin:4px 0 18px}.arkan-mark{font-size:28px;font-weight:900;letter-spacing:2px;color:#7b1838;border:3px solid #7b1838;padding:8px 14px;border-radius:5px}.report-brand h2{margin:0;color:#111;font-size:22px}.report-brand p{margin:4px 0;color:#555}.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.report-meta-print{display:none}.report-sheet{background:#fff!important;color:#111!important}.report-sheet .card-body{background:#fff!important}.report-table th{background:#e7e7e7!important;color:#111!important}.report-table td{color:#111!important}.report-note{font-size:11px;color:#333;margin-top:10px}.report-sign{display:flex;justify-content:space-between;margin:38px 8px 12px;text-align:center;color:#111}.report-sign>div{width:38%;line-height:1.8}\n@media print{@page{size:A4 landscape;margin:12mm}body{background:#fff!important;color:#111!important}.topbar,.nav,.secondary-nav,.top-actions,.no-print,button,.footer{display:none!important}.page{display:none!important}#report.page{display:block!important}.report-sheet,.report-sheet .card-body{background:#fff!important;color:#111!important;box-shadow:none!important;border:0!important;padding:0!important}.report-brand{margin:0 0 10mm}.report-meta-print{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8mm;font-size:11px;color:#111}.report-table{width:100%;border-collapse:collapse}.report-table th,.report-table td{border:1px solid #777!important;padding:6px 8px!important;color:#111!important}.report-table th{background:#e7e7e7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-note{color:#333}.report-sign{margin-top:18mm;break-inside:avoid}}\n</style>
+\n/* V1.0.11 report-only print layout */\n.report-brand{display:flex;align-items:center;justify-content:center;gap:18px;text-align:center;margin:4px 0 18px}.arkan-mark{font-size:28px;font-weight:900;letter-spacing:2px;color:#7b1838;border:3px solid #7b1838;padding:8px 14px;border-radius:5px}.report-brand h2{margin:0;color:#111;font-size:22px}.report-brand p{margin:4px 0;color:#555}.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.report-meta-print{display:none}.report-sheet{background:#fff!important;color:#111!important}.report-sheet .card-body{background:#fff!important}.report-table th{background:#e7e7e7!important;color:#111!important}.report-table td{color:#111!important}.report-note{font-size:11px;color:#333;margin-top:10px}.report-sign{display:flex;justify-content:space-between;margin:38px 8px 12px;text-align:center;color:#111}.report-sign>div{width:38%;line-height:1.8}\n@media print{@page{size:A4 landscape;margin:12mm}body{background:#fff!important;color:#111!important}.topbar,.nav,.secondary-nav,.top-actions,.no-print,button,.footer{display:none!important}.page{display:none!important}#report.page{display:block!important}.report-sheet,.report-sheet .card-body{background:#fff!important;color:#111!important;box-shadow:none!important;border:0!important;padding:0!important}.report-brand{margin:0 0 10mm}.report-meta-print{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8mm;font-size:11px;color:#111}.report-table{width:100%;border-collapse:collapse}.report-table th,.report-table td{border:1px solid #777!important;padding:6px 8px!important;color:#111!important}.report-table th{background:#e7e7e7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-note{color:#333}.report-sign{margin-top:18mm;break-inside:avoid}}\n
+/* ROAD WORKS: single global input mode and fully vertical mobile cards */
+.roads-stack{display:flex;flex-direction:column;gap:13px}
+.roads-stack .card{grid-column:1/-1!important}
+.roads-stack .card-body{display:flex;flex-direction:column;gap:10px}
+.roads-field{display:flex;flex-direction:column;gap:5px;width:100%}
+.roads-field label{font-size:13px;font-weight:700;color:#d0d7e1}
+.roads-field input{width:100%;min-height:44px;padding:10px;border:1px solid #5a606b;border-radius:9px;background:#252930;color:#f1f4f8;font:inherit}
+.roads-output{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid #386c4c;border-radius:10px;background:#183c2b;color:#c9f0d6;font-weight:800}
+.roads-output strong{direction:ltr;font-size:18px}
+.roads-mode{display:flex;flex-direction:column;gap:12px}
+.road-layer{display:flex;flex-direction:column;gap:9px;padding:13px;border:1px solid #454a54;border-radius:12px;background:#20252d}
+.road-layer h4{display:flex;align-items:center;gap:9px;margin:0;color:#f0f4fa}
+.road-swatch{display:inline-block;width:19px;height:19px;border-radius:4px;border:1px solid #8994a2}
+.road-swatch.asphalt{background:#111}.road-swatch.concrete{background:#888}.road-swatch.subbase{background:#80552e}.road-swatch.boulder{background:radial-gradient(circle,#c9b18b 2px,#6e6254 3px,#a18d70 5px)}
+.roads-stationbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;background:#252d37;border-radius:10px}
+.roads-stationbar strong{font-size:20px;color:#fff;direction:ltr}
+#roadStationsBody td{white-space:nowrap}
+
+</style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.10</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
@@ -130,8 +149,46 @@ td,th{border-color:#454a54}
 </section>
 
 <section class="page" id="roads">
- <div class="page-head"><div><h2>أعمال الطرق</h2><p>هذا القسم مخصص لأعمال الطرق، وسيُبنى بأدوات مستقلة عن حسابات شبكات الصرف الصحي.</p></div><span class="tag">قيد التطوير</span></div>
- <article class="card full"><div class="card-body"><h3>أدوات أعمال الطرق</h3><p class="help">سيتم تنظيم طبقات الطريق والمناسيب والسماكات والميول وأعمال القطع والردم والتبليط هنا. لم تُفعّل هذه الحسابات بعد، حتى تُبنى على تفاصيل التنفيذ التي تحددها.</p></div></article>
+ <div class="page-head"><div><h2>أعمال الطرق</h2><p>إدخال مساحي موحد لجميع طبقات الطريق، مع محطات متتابعة وحساب تلقائي للمناسيب والقراءات.</p></div><span class="tag">ROAD WORKS</span></div>
+ <div class="roads-stack">
+  <article class="card full"><div class="card-head"><h3>المرجع المساحي</h3><span class="tag">BM + BS = HI</span></div><div class="card-body">
+   <div class="roads-field"><label>BM — منسوب نقطة الربط (م)</label><input id="roadBM" type="number" step="0.001" placeholder="أدخل BM"></div>
+   <div class="roads-field"><label>BS — قراءة الباك سايد (م)</label><input id="roadBS" type="number" step="0.001" placeholder="أدخل BS"></div>
+   <div class="roads-output"><span>HI — منسوب الجهاز</span><strong id="roadHI">—</strong></div>
+  </div></article>
+  <article class="card full"><div class="card-head"><h3>طريقة إدخال واحدة لجميع الطبقات</h3><span class="tag">خيار موحد</span></div><div class="card-body">
+   <div class="radio-row roads-mode"><label><input type="radio" name="roadMode" value="level" checked> إدخال المنسوب</label><label><input type="radio" name="roadMode" value="reading"> إدخال قراءة المسطرة</label></div>
+   <p class="help">اختر الطريقة مرة واحدة فقط. ستُطبق على الإسفلت والكونكريت والسب بيس والجلمود، ويحسب البرنامج القيمة المقابلة تلقائياً.</p>
+  </div></article>
+  <article class="card full"><div class="card-head"><h3>بيانات الطريق والمحطات</h3><span class="tag">توليد تلقائي</span></div><div class="card-body">
+   <div class="roads-field"><label>طول الطريق (م)</label><input id="roadLength" type="number" min="0" step="0.01" value="100"></div>
+   <div class="roads-field"><label>المسافة بين المحطات (م)</label><input id="roadInterval" type="number" min="0.01" step="0.01" value="25"></div>
+   <div class="roads-field"><label>عرض الطريق (م)</label><input id="roadWidth" type="number" min="0" step="0.01" value="7"></div>
+   <button class="btn btn-primary" id="roadGenerate">إنشاء المحطات</button>
+   <div class="roads-stationbar"><button class="btn btn-ghost" id="roadPrev">السابق</button><strong id="roadStation">0+000</strong><button class="btn btn-ghost" id="roadNext">التالي</button></div>
+   <div class="help" id="roadStationCount">لم يتم إنشاء المحطات بعد.</div>
+  </div></article>
+  <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
+   <div class="road-layer"><h4><span class="road-swatch asphalt"></span> الإسفلت ASPHALT</h4><div class="roads-field"><label id="roadAsphaltInputLabel">منسوب الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadAsphaltOtherLabel">قراءة المسطرة</span><strong id="roadAsphaltOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch concrete"></span> الكونكريت CONCRETE</h4><div class="roads-field"><label id="roadConcreteInputLabel">منسوب الكونكريت (م)</label><input id="roadConcreteInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadConcreteOtherLabel">قراءة المسطرة</span><strong id="roadConcreteOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch subbase"></span> السب بيس SUBBASE</h4><div class="roads-field"><label id="roadSubbaseInputLabel">منسوب السب بيس (م)</label><input id="roadSubbaseInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadSubbaseOtherLabel">قراءة المسطرة</span><strong id="roadSubbaseOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch boulder"></span> الجلمود BOULDER</h4><div class="roads-field"><label id="roadBoulderInputLabel">منسوب الجلمود (م)</label><input id="roadBoulderInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadBoulderOtherLabel">قراءة المسطرة</span><strong id="roadBoulderOther">—</strong></div></div>
+   <p class="help">المعادلات: HI = BM + BS، والقراءة = HI − المنسوب، والمنسوب = HI − القراءة.</p>
+  </div></article>
+  <article class="card full"><div class="card-head"><h3>سماكات الطبقات والكميات</h3><span class="tag">قيم قابلة للتعديل</span></div><div class="card-body">
+   <div class="roads-field"><label>سماكة الإسفلت (سم)</label><input id="roadAsphaltThk" type="number" min="0" step="0.1" value="5"></div>
+   <div class="roads-field"><label>سماكة الكونكريت (سم)</label><input id="roadConcreteThk" type="number" min="0" step="0.1" value="20"></div>
+   <div class="roads-field"><label>سماكة السب بيس (سم)</label><input id="roadSubbaseThk" type="number" min="0" step="0.1" value="20"></div>
+   <div class="roads-field"><label>سماكة الجلمود (سم)</label><input id="roadBoulderThk" type="number" min="0" step="0.1" value="30"></div>
+   <div class="roads-field"><label>كثافة الإسفلت (طن/م³) — اختياري</label><input id="roadAsphaltDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
+   <div class="roads-field"><label>كثافة الكونكريت (طن/م³) — اختياري</label><input id="roadConcreteDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
+   <div class="roads-field"><label>كثافة السب بيس (طن/م³) — اختياري</label><input id="roadSubbaseDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
+   <div class="roads-field"><label>كثافة الجلمود (طن/م³) — اختياري</label><input id="roadBoulderDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
+   <div class="table-wrap"><table><thead><tr><th>الطبقة</th><th>المساحة م²</th><th>الحجم م³</th><th>الوزن طن</th></tr></thead><tbody id="roadQtyBody"></tbody></table></div>
+   <button class="btn btn-green" id="roadCsv">تصدير كميات الطرق CSV</button>
+  </div></article>
+  <article class="card full"><div class="card-head"><h3>سجل المحطات</h3><span class="tag">القراءات المحفوظة</span></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody id="roadStationsBody"></tbody></table></div><p class="help">يُحفظ إدخال كل محطة أثناء التنقل بينها، وتُستعاد بياناتها عند الرجوع إليها.</p></div></article>
+ </div>
 </section>
 
 <section class="page" id="quantities">
@@ -357,4 +414,42 @@ setInterval(()=>{try{localStorage.setItem('sewerProDraftV109',JSON.stringify(sav
 try{const d=localStorage.getItem('sewerProDraftV109');if(d)loadData(JSON.parse(d));}catch(e){}
 buildUnifiedSewerScreen();
 update();
+
+/* ROAD WORKS calculator */
+const roadIds=['Asphalt','Concrete','Subbase','Boulder'];
+const roadLabels=['الإسفلت','الكونكريت','السب بيس','الجلمود'];
+let roadStations=[],roadIndex=0,roadMode='level',roadValues={};
+const roadVal=id=>{const e=$(id);if(!e||e.value.trim()==='')return null;const n=Number(e.value);return Number.isFinite(n)?n:null;};
+const roadFmt=n=>Number.isFinite(n)?n.toFixed(3):'—';
+const roadHI=()=>{const b=roadVal('roadBM'),s=roadVal('roadBS');return b===null||s===null?null:b+s;};
+function roadSaveCurrent(){if(!roadStations.length)return;const key=roadStations[roadIndex];roadValues[key]={};roadIds.forEach(n=>roadValues[key][n]=roadVal('road'+n+'Input'));}
+function roadLoadCurrent(){if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex]]||{};roadIds.forEach(n=>{$('road'+n+'Input').value=d[n]===null||d[n]===undefined?'':d[n];});$('roadStation').textContent=roadStations[roadIndex].label;roadRender();}
+function roadRender(){
+ const H=roadHI();$('roadHI').textContent=roadFmt(H);
+ roadIds.forEach(n=>{const levelMode=roadMode==='level';$('road'+n+'InputLabel').textContent=(levelMode?'منسوب ':'قراءة المسطرة — ')+({Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السب بيس',Boulder:'الجلمود'}[n])+(levelMode?' (م)':' (م)');$('road'+n+'OtherLabel').textContent=levelMode?'قراءة المسطرة (محسوبة)':'المنسوب (محسوب)';const v=roadVal('road'+n+'Input');$('road'+n+'Other').textContent=H===null||v===null?'—':roadFmt(levelMode?H-v:H-v)+' م';});
+ roadRenderStations();roadRenderQty();
+}
+function roadRenderStations(){
+ $('roadStationCount').textContent=roadStations.length?'عدد المحطات: '+roadStations.length:'لم يتم إنشاء المحطات بعد.';
+ $('roadStationsBody').innerHTML=roadStations.map((st,i)=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(n=>'<td class="num">'+(d[n]===null||d[n]===undefined?'—':roadFmt(d[n]))+'</td>').join('')+'</tr>';}).join('');
+}
+function roadRenderQty(){
+ const len=roadVal('roadLength')||0,w=roadVal('roadWidth')||0,area=len*w;
+ $('roadQtyBody').innerHTML=roadIds.map((n,i)=>{const t=roadVal('road'+n+'Thk')||0,d=roadVal('road'+n+'Density'),vol=area*t/100,weight=d===null?'—':roadFmt(vol*d);return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(vol)+'</td><td class="num">'+weight+'</td></tr>';}).join('');
+}
+function roadGenerate(){
+ roadSaveCurrent();const len=roadVal('roadLength'),step=roadVal('roadInterval');if(len===null||step===null||len<0||step<=0){alert('أدخل طولاً صحيحاً ومسافة محطة أكبر من صفر.');return;}
+ roadStations=[];for(let d=0;d<len;d+=step){const mm=Math.round(d*1000);roadStations.push({key:String(mm),label:Math.floor(mm/1000)+'+'+String(mm%1000).padStart(3,'0')});}
+ if(!roadStations.length||Number(roadStations[roadStations.length-1].key)!==Math.round(len*1000)){const mm=Math.round(len*1000);roadStations.push({key:String(mm),label:Math.floor(mm/1000)+'+'+String(mm%1000).padStart(3,'0')});}
+ roadIndex=0;roadValues={};roadLoadCurrent();
+}
+function roadMove(delta){if(!roadStations.length)return;roadSaveCurrent();roadIndex=Math.max(0,Math.min(roadStations.length-1,roadIndex+delta));roadLoadCurrent();}
+$('roadGenerate').addEventListener('click',roadGenerate);
+$('roadPrev').addEventListener('click',()=>roadMove(-1));$('roadNext').addEventListener('click',()=>roadMove(1));
+document.querySelectorAll('input[name="roadMode"]').forEach(e=>e.addEventListener('change',()=>{roadSaveCurrent();roadMode=e.value;roadRender();}));
+['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk','roadAsphaltDensity','roadConcreteDensity','roadSubbaseDensity','roadBoulderDensity'].forEach(id=>$(id).addEventListener('input',roadRender));
+roadIds.forEach(n=>$('road'+n+'Input').addEventListener('input',()=>{roadSaveCurrent();roadRender();}));
+$('roadCsv').addEventListener('click',()=>{roadSaveCurrent();const rows=[['المحطة',...roadLabels],...roadStations.map(st=>[st.label,...roadIds.map(n=>{const v=(roadValues[st.key]||{})[n];return v===undefined||v===null?'':roadFmt(v);})])];const csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');saveTextFile('ROAD_WORKS_Stations.csv','text/csv',csv);});
+roadRender();
+
 </script></body></html>
