@@ -1,0 +1,14 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.sewerpro.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.sewerpro.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 7
+        versionName '1.0.7'
+    }
+}

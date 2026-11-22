@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SEWER PRO V1.0.7</title>
+<style>
+:root{--navy:#082b55;--blue:#0c5799;--blue2:#1478bc;--green:#16834f;--amber:#d58a18;--red:#c94e5b;--ink:#17283b;--muted:#64748b;--line:#d6e0eb;--bg:#eef3f8;--card:#fff;--soft:#f6f9fc;--shadow:0 7px 24px rgba(8,43,85,.09)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink)}
+.topbar{background:linear-gradient(115deg,#06264d,#0b5797);color:white;padding:15px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 3px 12px #082b5533;position:sticky;top:0;z-index:10}.brand{display:flex;align-items:center;gap:12px}.logo{width:43px;height:43px;border-radius:12px;background:#f4a62a;color:#092d54;display:grid;place-items:center;font-size:23px;font-weight:900}.brand h1{font-size:20px;margin:0}.brand p{margin:3px 0 0;color:#d8e8f8;font-size:12px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+button,.btn{border:0;border-radius:9px;padding:10px 14px;font:inherit;font-weight:700;cursor:pointer;transition:.15s}.btn-light{background:#e7f1fb;color:#0b477e}.btn-primary{background:var(--blue);color:white}.btn-green{background:var(--green);color:white}.btn-ghost{background:#f0f4f8;color:#38536d;border:1px solid var(--line)}button:hover{filter:brightness(.97);transform:translateY(-1px)}
+.nav{background:white;border-bottom:1px solid var(--line);padding:9px 16px;display:flex;gap:7px;overflow:auto;position:sticky;top:73px;z-index:9}.nav button{white-space:nowrap;background:#f2f6fa;color:#31506e;border:1px solid transparent;padding:9px 13px}.nav button.active{background:#dcecfb;border-color:#9cc5e8;color:#084b83}.main-nav{top:73px}.secondary-nav{display:none;position:static;background:#f8fbfe;border-bottom:1px solid var(--line);padding:7px 16px}.secondary-nav.visible{display:flex}.nav-caption{align-self:center;color:#6a7f94;font-size:12px;font-weight:800;white-space:nowrap;padding:0 7px}
+.container{max-width:1500px;margin:18px auto;padding:0 16px 30px}.page{display:none}.page.active{display:block}.page-head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin:7px 2px 15px}.page-head h2{margin:0;color:#123c66;font-size:22px}.page-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}.card{grid-column:span 6;background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.card.full{grid-column:1/-1}.card.third{grid-column:span 4}.card-head{padding:12px 16px;background:linear-gradient(90deg,#f7fbff,#edf5fc);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.card-head h3{margin:0;font-size:16px;color:#164c7e}.tag{font-size:11px;background:#e4f2ff;color:#15558b;padding:5px 9px;border-radius:20px;font-weight:800}.card-body{padding:15px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#486079}.field input,.field select{width:100%;padding:10px 11px;border:1px solid #c9d6e3;border-radius:9px;background:white;color:#162b40;font:inherit;font-size:14px;outline:none}.field input:focus,.field select:focus{border-color:#4d9bd7;box-shadow:0 0 0 3px #4d9bd722}.field input[readonly]{background:#f4f7fa;color:#34516c}
+.result{background:#eaf8ef;border:1px solid #b8e2c7;color:#12643d;padding:11px 13px;border-radius:10px;margin-top:12px;font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center}.result strong{font-size:19px;direction:ltr}.result.blue{background:#edf6ff;border-color:#c2def7;color:#114f80}.result.amber{background:#fff7e9;border-color:#f1d9a9;color:#8a580d}.help{font-size:12px;line-height:1.8;color:#66788b;margin:9px 0 0}.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.radio-row{display:flex;gap:15px;flex-wrap:wrap;margin:0 0 12px}.radio-row label{font-size:13px;color:#40586f;display:flex;gap:6px;align-items:center}.radio-row input{accent-color:#1266a5}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px}.metric{background:white;border:1px solid var(--line);border-radius:13px;padding:14px;box-shadow:var(--shadow)}.metric span{font-size:12px;color:var(--muted);display:block}.metric strong{display:block;font-size:22px;color:#0b4e83;margin-top:5px;direction:ltr;text-align:right}.metric small{color:#75879a;font-size:11px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:right}th{background:#f2f6fa;color:#36546f}td.num{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}.status{margin-top:14px;border-radius:10px;padding:10px 12px;background:#eaf7ee;color:#17643e;font-size:13px;font-weight:700}.status.warn{background:#fff6e5;color:#87570e}.status.error{background:#fff0f1;color:#9b3947}.footer{color:#74869a;font-size:11px;text-align:center;margin:22px 0 6px}.note-box{background:#fff8e9;border:1px solid #efd7a7;border-radius:10px;padding:11px 13px;color:#795415;font-size:12px;line-height:1.8;margin-top:12px}.reading-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.reading-item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfdff}.reading-item h4{margin:0 0 9px;color:#164c7e;font-size:14px}.reading-item .fields{grid-template-columns:1fr 1fr}.reading-output{margin-top:8px;font-size:12px;color:#52677b;line-height:1.6}.reading-output b{color:#17643e}.mini-tag{font-size:10px;color:#657b91;background:#edf3f8;padding:3px 7px;border-radius:99px}
+@media(max-width:950px){.card,.card.third{grid-column:span 12}.summary{grid-template-columns:repeat(2,1fr)}.nav{top:71px}.topbar{position:static}.nav{position:static}.reading-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.fields{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.brand h1{font-size:16px}.brand p{font-size:10px}.topbar{padding:11px}.top-actions .btn{padding:8px;font-size:12px}.reading-item .fields{grid-template-columns:1fr 1fr}}
+@media print{.topbar,.nav,.top-actions,.no-print,button{display:none!important}.container{max-width:none;margin:0;padding:0}.page{display:block!important;break-inside:avoid}.card,.metric{box-shadow:none;break-inside:avoid}.card{border:1px solid #aaa}.footer{display:block}}
+
+html,body{min-height:100%;overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent}
+@media(max-width:600px){body{padding-bottom:env(safe-area-inset-bottom)}.container{padding-left:10px;padding-right:10px}.nav button{padding:10px 12px;min-height:42px}.topbar{padding-top:calc(10px + env(safe-area-inset-top))}.field input,.field select{min-height:44px}.card-body{padding:13px}.page-head h2{font-size:19px}}
+</style>
+</head><body>
+<header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.7</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
+<nav class="nav no-print main-nav" id="mainNav">
+ <button class="active" data-page="home">الرئيسية</button>
+ <button data-page="infrastructure">أعمال البنية التحتية</button>
+ <button data-page="roads">أعمال الطرق</button>
+ <button data-page="quantities">حساب الكميات</button>
+</nav>
+<nav class="nav no-print secondary-nav" id="sewerNav">
+ <span class="nav-caption">شبكات الصرف الصحي:</span>
+ <button class="active" data-page="dashboard">لوحة الشبكة</button>
+ <button data-page="survey">الإدخال المساحي</button>
+ <button data-page="pipe">قطر الأنبوب</button>
+ <button data-page="base">قاعدة المنهول</button>
+ <button data-page="layers">السبيس والجلمود</button>
+ <button data-page="excavation">الحفر</button>
+ <button data-page="report">النتائج والتقرير</button>
+</nav>
+<main class="container">
+<section class="page active" id="home">
+ <div class="page-head"><div><h2>مركز الأعمال الهندسية</h2><p>اختر مجال العمل لفتح أدواته وحساباته. يبدأ البرنامج بأعمال البنية التحتية وشبكات الصرف الصحي.</p></div><span class="tag">SEWER PRO · V1.0.7</span></div>
+ <div class="grid">
+  <article class="card third"><div class="card-head"><h3>أعمال البنية التحتية</h3><span class="tag">القسم الحالي</span></div><div class="card-body"><p class="help">يضم شبكات الصرف الصحي، ويمكن إضافة شبكات وخدمات بنية تحتية أخرى ضمن هذا القسم.</p><button class="btn btn-primary" data-open-page="infrastructure">فتح أعمال البنية التحتية</button></div></article>
+  <article class="card third"><div class="card-head"><h3>أعمال الطرق</h3><span class="tag">مرحلة لاحقة</span></div><div class="card-body"><p class="help">سيُخصص هذا القسم لمناسيب الطرق وطبقاتها وأعمال القطع والردم والتبليط بعد تحديد أدواته.</p><button class="btn btn-ghost" data-open-page="roads">عرض القسم</button></div></article>
+  <article class="card third"><div class="card-head"><h3>حساب الكميات</h3><span class="tag">مرحلة لاحقة</span></div><div class="card-body"><p class="help">سيُخصص لحساب الحفر والردم والأنابيب والخرسانة والمواد والكميات الإجمالية للمشاريع.</p><button class="btn btn-ghost" data-open-page="quantities">عرض القسم</button></div></article>
+ </div>
+ <div class="note-box">تُحفظ أدوات كل مجال في قسم مستقل. حالياً أدوات الحساب المساحي وتسلسل مناسيب الأنبوب وقاعدة المنهول والطبقات والحفر موجودة داخل شبكات الصرف الصحي.</div>
+</section>
+
+<section class="page" id="infrastructure">
+ <div class="page-head"><div><h2>أعمال البنية التحتية</h2><p>اختر نوع الشبكة. القسم الجاري تطويره حالياً هو شبكات الصرف الصحي.</p></div><span class="tag">INFRASTRUCTURE WORKS</span></div>
+ <div class="grid">
+  <article class="card"><div class="card-head"><h3>شبكات الصرف الصحي</h3><span class="tag">متاح للتجربة</span></div><div class="card-body"><p class="help">إدخال BM وBS وHI، مرجع واحد لظهر الأنبوب، قطر الأنبوب، منسوب أسفل قاعدة المنهول، مناسيب السبيس والجلمود، وعمق الحفر.</p><button class="btn btn-primary" id="openSewerBtn">فتح شبكات الصرف الصحي</button></div></article>
+  <article class="card"><div class="card-head"><h3>شبكات مياه الأمطار والماء</h3><span class="tag">قابل للإضافة</span></div><div class="card-body"><p class="help">قسم مستقل يُضاف عند تحديد متطلبات الحساب والرسم الخاصة بهذه الشبكات.</p></div></article>
+  <article class="card"><div class="card-head"><h3>خدمات البنية التحتية الأخرى</h3><span class="tag">قابل للإضافة</span></div><div class="card-body"><p class="help">مساحة لإضافة خدمات أخرى حسب طبيعة المشاريع ومتطلبات التنفيذ.</p></div></article>
+ </div>
+</section>
+
+<section class="page" id="roads">
+ <div class="page-head"><div><h2>أعمال الطرق</h2><p>هذا القسم مخصص لأعمال الطرق، وسيُبنى بأدوات مستقلة عن حسابات شبكات الصرف الصحي.</p></div><span class="tag">قيد التطوير</span></div>
+ <article class="card full"><div class="card-body"><h3>أدوات أعمال الطرق</h3><p class="help">سيتم تنظيم طبقات الطريق والمناسيب والسماكات والميول وأعمال القطع والردم والتبليط هنا. لم تُفعّل هذه الحسابات بعد، حتى تُبنى على تفاصيل التنفيذ التي تحددها.</p></div></article>
+</section>
+
+<section class="page" id="quantities">
+ <div class="page-head"><div><h2>حساب الكميات</h2><p>قسم مستقل لحساب كميات الأعمال وربطها بالمشروع.</p></div><span class="tag">قيد التطوير</span></div>
+ <article class="card full"><div class="card-body"><h3>أدوات حصر الكميات</h3><p class="help">سيشمل هذا القسم كميات الحفر والردم والأنابيب والمناهيل والخرسانة ومواد الطرق، مع جداول وتقارير قابلة للتصدير. لم تُفعّل هذه الحسابات بعد.</p></div></article>
+</section>
+
+<section class="page" id="dashboard">
+ <div class="page-head"><div><h2>لوحة شبكة الصرف الصحي</h2><p>داخل أعمال البنية التحتية: قراءة واحدة فقط على ظهر الأنبوب أو إدخال منسوبه مباشرة؛ بقية المناسيب تُحسب آلياً.</p></div><span class="tag">حساب مترابط تلقائي</span></div>
+ <div class="summary">
+  <div class="metric"><span>HI · منسوب الجهاز</span><strong id="mHI">—</strong><small>BM + BS</small></div>
+  <div class="metric"><span>منسوب أسفل قاعدة المنهول</span><strong id="mBase">—</strong><small>النتيجة المطلوبة</small></div>
+  <div class="metric"><span>منسوب أسفل السبيس</span><strong id="mSpace">—</strong><small>بعد سماكة السبيس</small></div>
+  <div class="metric"><span>منسوب أسفل الجلمود</span><strong id="mGilmood">—</strong><small>بعد سماكة الجلمود</small></div>
+ </div>
+ <div class="grid">
+  <article class="card"><div class="card-head"><h3>عمق الحفر الكلي</h3><span class="tag">نتيجة نهائية</span></div><div class="card-body"><div class="result amber"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="mDepth">—</strong></div><p class="help">يعتمد العمق على منسوب الأرض الطبيعية GL المدخل يدوياً، وعلى منسوب أسفل الجلمود المحسوب من مرجع الأنبوب.</p></div></article>
+  <article class="card"><div class="card-head"><h3>مرجع الحساب الوحيد</h3><span class="tag">ظهر الأنبوب</span></div><div class="card-body"><div class="result blue"><span>منسوب الجهاز HI</span><strong id="hiSummary">—</strong></div><div class="status" id="mainStatus">أدخل BM وBS، ثم قراءة واحدة فوق ظهر الأنبوب أو منسوبه.</div></div></article>
+ </div>
+ <div class="note-box">مهم: البرنامج لا يطلب قراءة منفصلة للمنهول أو السبيس أو الجلمود أو قاع الحفر. مرجعها جميعاً هو نقطة ظهر الأنبوب، وتُستخدم السماكات المدخلة لحساب المناسيب بالتتابع.</div>
+</section>
+
+<section class="page" id="survey">
+ <div class="page-head"><div><h2>شبكات الصرف الصحي · الإدخال المساحي</h2><p>أدخل BM وBS، ثم اختر طريقة واحدة لتحديد منسوب ظهر الأنبوب.</p></div></div>
+ <div class="grid">
+  <article class="card"><div class="card-head"><h3>محطة الجهاز BM / BS / HI</h3><span class="tag">إدخال يدوي</span></div><div class="card-body"><div class="fields">
+   <div class="field"><label>BM · منسوب البيج مارك (م)</label><input id="bm" type="number" step="0.001" value="100.000"></div>
+   <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
+  </div><div class="result"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div></div></article>
+  <article class="card"><div class="card-head"><h3>مرجع ظهر الأنبوب — إدخال واحد فقط</h3><span class="tag">قراءة أو منسوب</span></div><div class="card-body">
+   <div class="radio-row"><label><input type="radio" name="pipeMode" value="reading" checked> أدخل قراءة المسطرة فوق ظهر الأنبوب</label><label><input type="radio" name="pipeMode" value="rl"> أدخل منسوب ظهر الأنبوب مباشرة</label></div>
+   <div class="field"><label id="pipeValueLabel">قراءة المسطرة فوق ظهر الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
+   <p class="help">عند اختيار قراءة المسطرة: منسوب ظهر الأنبوب = HI − القراءة. وعند اختيار إدخال المنسوب، يستخدم البرنامج المنسوب الذي أدخلته كما هو. لا تدخل أي قراءة أخرى للقاعدة أو الطبقات أو الحفر.</p>
+  </div></article>
+ </div>
+</section>
+
+<section class="page" id="pipe">
+ <div class="page-head"><div><h2>قطر الأنبوب</h2><p>تحدد القطر فقط؛ قراءة ظهر الأنبوب مأخوذة تلقائياً من الإدخال المساحي.</p></div></div>
+ <div class="grid"><article class="card"><div class="card-head"><h3>بيانات الأنبوب PIPE</h3><span class="tag">إدخال يدوي</span></div><div class="card-body">
+  <div class="field"><label>قطر الأنبوب (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
+  <div class="status" id="pipeStatus">يستخدم البرنامج القطر داخلياً لاستخراج أسفل الأنبوب، ثم يكمل حساب مناسيب الطبقات.</div>
+  <p class="help">منسوب أسفل الأنبوب يُحسب داخلياً = منسوب ظهر الأنبوب − قطر الأنبوب بالمتر. لا نكرر إدخال القراءة هنا، ولا نعرض منسوب أعلى الأنبوب أو نطلب قراءة إضافية.</p>
+ </div></article></div>
+</section>
+
+<section class="page" id="base">
+ <div class="page-head"><div><h2>قاعدة المنهول</h2><p>أدخل سماكة القاعدة فقط؛ المرجع هو منسوب أسفل الأنبوب المحسوب من القراءة الوحيدة.</p></div></div>
+ <div class="grid"><article class="card"><div class="card-head"><h3>سماكة قاعدة المنهول</h3><span class="tag">إدخال السماكة فقط</span></div><div class="card-body">
+  <div class="field"><label>سماكة قاعدة المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30"></div>
+  <div class="result"><span>منسوب أسفل قاعدة المنهول فقط</span><strong id="baseBottomOut">—</strong></div>
+  <p class="help">الحساب المتسلسل المعتمد: منسوب أسفل قاعدة المنهول = منسوب أسفل الأنبوب − سماكة القاعدة. لا يظهر منسوب أعلى القاعدة.</p>
+ </div></article></div>
+</section>
+
+<section class="page" id="layers">
+ <div class="page-head"><div><h2>طبقتا السبيس والجلمود</h2><p>أدخل السماكات يدوياً فقط؛ لا تحتاج إلى قراءة مسطرة منفصلة لكل طبقة.</p></div></div>
+ <div class="grid">
+  <article class="card"><div class="card-head"><h3>طبقة السبيس</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
+   <div class="field"><label>سمك السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20"></div>
+   <div class="result blue"><span>منسوب أسفل السبيس</span><strong id="spaceBottomOut">—</strong></div>
+   <p class="help">يُحسب من منسوب أسفل قاعدة المنهول بعد طرح سمك السبيس.</p>
+  </div></article>
+  <article class="card"><div class="card-head"><h3>طبقة الجلمود</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
+   <div class="field"><label>سمك الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30"></div>
+   <div class="result blue"><span>منسوب أسفل الجلمود</span><strong id="gilmoodBottomOut">—</strong></div>
+   <p class="help">يُحسب من منسوب أسفل السبيس بعد طرح سمك الجلمود.</p>
+  </div></article>
+ </div>
+</section>
+
+<section class="page" id="excavation">
+ <div class="page-head"><div><h2>الحفر النهائي</h2><p>أدخل منسوب الأرض الطبيعية GL فقط؛ قاع الحفر يُستنتج من تسلسل السماكات.</p></div></div>
+ <div class="grid"><article class="card"><div class="card-head"><h3>عمق الحفر الكلي</h3><span class="tag">حساب تلقائي</span></div><div class="card-body">
+  <div class="field"><label>منسوب الأرض الطبيعية GL (م)</label><input id="glInput" type="number" step="0.001" value="100.500"></div>
+  <div class="result amber"><span>عمق الحفر الكلي من GL إلى أسفل الجلمود</span><strong id="excDepthOut">—</strong></div>
+  <p class="help">عمق الحفر الكلي = منسوب الأرض الطبيعية GL − منسوب أسفل الجلمود. لا نطلب قراءة قامة مستقلة لقاع الحفر.</p>
+  <div class="status" id="excStatus">أدخل GL، وسيُحسب عمق الحفر تلقائياً عند اكتمال البيانات.</div>
+ </div></article></div>
+</section>
+
+<section class="page" id="report">
+ <div class="page-head"><div><h2>النتائج والتقرير</h2><p>يعرض التقرير المدخلات اليدوية والنتائج الأربعة المطلوبة فقط.</p></div><div class="inline no-print"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
+ <article class="card full"><div class="card-body"><div class="table-wrap"><table><thead><tr><th>القسم</th><th>البيان</th><th>القيمة</th><th>الوحدة</th></tr></thead><tbody id="reportTable"></tbody></table></div><div class="status">لا توجد قراءات منفصلة للمنهول أو السبيس أو الجلمود أو الحفر. جميع المناسيب ناتجة عن مرجع ظهر الأنبوب والسماكات المدخلة.</div></div></article>
+</section>
+<div class="footer">SEWER PRO V1.0.7 · أعمال البنية التحتية والطرق وحساب الكميات.</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const val=id=>{const raw=$(id).value;if(raw===null||String(raw).trim()==='')return null;const n=Number(raw);return Number.isFinite(n)?n:null;};
+const fmt=v=>Number.isFinite(v)?v.toFixed(3)+' m':'—';
+const fmtN=v=>Number.isFinite(v)?v.toFixed(3):'—';
+const set=(id,v)=>{$(id).textContent=fmt(v);};
+const hi=()=>{const bm=val('bm'),bs=val('bs');return bm!==null&&bs!==null?bm+bs:null;};
+const selectedMode=()=>document.querySelector('input[name="pipeMode"]:checked')?.value||'reading';
+function update(){
+ const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
+ const mode=selectedMode(),v=val('pipeValue');
+ $('pipeValueLabel').textContent=mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب (م)':'منسوب ظهر الأنبوب RL (م)';
+ const pipeCrown=(v===null?null:(mode==='reading'?(H!==null?H-v:null):v));
+ const dia=val('pipeDia');
+ // Internal-only pipe invert: no separate input or visible result.
+ const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
+ const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
+ const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
+ const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
+ const GL=val('glInput'),depth=(GL!==null&&gilmoodBottom!==null)?GL-gilmoodBottom:null;
+ set('baseBottomOut',baseBottom);set('spaceBottomOut',spaceBottom);set('gilmoodBottomOut',gilmoodBottom);set('excDepthOut',depth);
+ set('mBase',baseBottom);set('mSpace',spaceBottom);set('mGilmood',gilmoodBottom);set('mDepth',depth);
+ $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
+ $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
+ $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
+ $('excStatus').textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,baseT,baseBottom,spaceT,spaceBottom,gilmoodT,gilmoodBottom,GL,depth});
+}
+function renderReport(d){
+ const rows=[
+ ['المساحة','BM · منسوب البيج مارك',val('bm'),'m'],
+ ['المساحة','BS · قراءة الباك سايد',val('bs'),'m'],
+ ['المساحة','HI · منسوب الجهاز',d.H,'m'],
+ ['مرجع الأنبوب',d.mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب':'منسوب ظهر الأنبوب',d.pipeValue,d.mode==='reading'?'m reading':'m RL'],
+ ['الأنبوب','قطر الأنبوب',d.dia,'mm'],
+ ['قاعدة المنهول','سماكة القاعدة',d.baseT,'cm'],
+ ['قاعدة المنهول','منسوب أسفل قاعدة المنهول',d.baseBottom,'m'],
+ ['السبيس','سمك السبيس',d.spaceT,'cm'],
+ ['السبيس','منسوب أسفل السبيس',d.spaceBottom,'m'],
+ ['الجلمود','سمك الجلمود',d.gilmoodT,'cm'],
+ ['الجلمود','منسوب أسفل الجلمود',d.gilmoodBottom,'m'],
+ ['الحفر','منسوب الأرض الطبيعية GL',d.GL,'m'],
+ ['الحفر','عمق الحفر الكلي',d.depth,'m']
+ ];
+ $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
+}
+function saveData(){
+ const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput'];
+ const values={};ids.forEach(id=>values[id]=$(id).value);
+ return {app:'SEWER PRO',version:'1.0.7',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
+}
+function loadData(d){
+ if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
+ Object.entries(d.values).forEach(([id,v])=>{if($(id))$(id).value=v;});
+ if(d.modes?.pipe){const el=document.querySelector(`input[name="pipeMode"][value="${d.modes.pipe}"]`);if(el)el.checked=true;}
+ update();
+}
+function csv(){
+ const rows=[['القسم','البيان','القيمة','الوحدة']];
+ document.querySelectorAll('#reportTable tr').forEach(tr=>rows.push([...tr.children].map(td=>td.textContent.trim())));
+ const content='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x??'').replaceAll('"','""')+'"').join(',')).join('\r\n');
+ saveTextFile('SEWER_PRO_Report.csv','text/csv',content);
+}
+['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput'].forEach(id=>{$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
+document.querySelectorAll('input[name="pipeMode"]').forEach(el=>el.addEventListener('change',update));
+const sewerPages=['dashboard','survey','pipe','base','layers','excavation','report'];
+function showPage(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));
+ document.querySelectorAll('#mainNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page || (b.dataset.page==='infrastructure' && sewerPages.includes(page))));
+ document.querySelectorAll('#sewerNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ $('sewerNav').classList.toggle('visible',sewerPages.includes(page));
+}
+$('mainNav').addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page);});
+$('sewerNav').addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page);});
+document.querySelectorAll('[data-open-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.openPage)));
+$('openSewerBtn').addEventListener('click',()=>showPage('dashboard'));
+function saveTextFile(filename,mime,content){
+ if(window.SewerNative && typeof window.SewerNative.saveFile==='function'){
+  const bytes=new TextEncoder().encode(content);let binary='';bytes.forEach(b=>binary+=String.fromCharCode(b));
+  window.SewerNative.saveFile(filename,mime,btoa(binary));return;
+ }
+ const blob=new Blob([content],{type:mime+';charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);
+}
+function printDocument(){if(window.SewerNative && typeof window.SewerNative.printPage==='function'){window.SewerNative.printPage();}else{window.print();}}
+window.printDocument=printDocument;
+window.SewerAppBack=function(){const active=document.querySelector('.page.active');if(!active||active.id==='home')return false;if(sewerPages.includes(active.id)){showPage('infrastructure');return true;}showPage('home');return true;};
+$('saveBtn').addEventListener('click',()=>saveTextFile('SEWER_PRO_Project.json','application/json',JSON.stringify(saveData(),null,2)));
+$('loadBtn').addEventListener('click',()=>$('fileInput').click());
+$('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{loadData(JSON.parse(await f.text()));alert('تم فتح المشروع بنجاح.');}catch(err){alert('تعذر فتح الملف: '+err.message);}e.target.value='';});
+$('csvBtn').addEventListener('click',csv);$('csvBtn2').addEventListener('click',csv);
+setInterval(()=>{try{localStorage.setItem('sewerProDraftV107',JSON.stringify(saveData()));}catch(e){}},4000);
+try{const d=localStorage.getItem('sewerProDraftV107');if(d)loadData(JSON.parse(d));}catch(e){}
+update();
+</script></body></html>
