@@ -294,6 +294,7 @@ td,th{border-color:#454a54}
 </section>
 <div class="footer">SEWER PRO V1.0.9 · أعمال البنية التحتية والطرق وحساب الكميات.</div>
 </main>
+<script src="xlsx.full.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 const val=id=>{const raw=$(id).value;if(raw===null||String(raw).trim()==='')return null;const n=Number(raw);return Number.isFinite(n)?n:null;};
@@ -423,7 +424,6 @@ try{const d=localStorage.getItem('sewerProDraftV109');if(d)loadData(JSON.parse(d
 buildUnifiedSewerScreen();
 update();
 
-<script src="xlsx.full.min.js"></script>
 /* ROAD WORKS calculator */
 const roadIds=['Asphalt','Concrete','Subbase','Boulder'];
 const roadLabels=['الإسفلت','الكونكريت','السب بيس','الجلمود'];
