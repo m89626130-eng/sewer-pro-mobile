@@ -186,6 +186,14 @@ td,th{border-color:#454a54}
    <div class="roads-field"><label>كثافة الجلمود (طن/م³) — اختياري</label><input id="roadBoulderDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
    <div class="table-wrap"><table><thead><tr><th>الطبقة</th><th>المساحة م²</th><th>الحجم م³</th><th>الوزن طن</th></tr></thead><tbody id="roadQtyBody"></tbody></table></div>
    <button class="btn btn-green" id="roadCsv">تصدير كميات الطرق CSV</button>
+   <div class="road-profile-tools">
+    <h4>استيراد وتصدير بروفايل الطريق</h4>
+    <div class="roads-field"><label>استيراد بروفايل PDF</label><input id="roadPdfInput" type="file" accept=".pdf,application/pdf"></div>
+    <div class="roads-field"><label>استيراد بروفايل Excel</label><input id="roadExcelInput" type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></div>
+    <div class="inline"><button class="btn btn-primary" id="roadExportPdf">تصدير البروفايل PDF</button><button class="btn btn-green" id="roadExportExcel">تصدير البروفايل Excel</button></div>
+    <div class="status" id="roadProfileStatus">يمكن استيراد جداول Excel مباشرة. استيراد PDF النصي يعتمد على بنية الملف، والملفات المصورة قد تحتاج OCR.</div>
+    <div class="table-wrap" id="roadImportReviewWrap" hidden><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody id="roadImportReview"></tbody></table><button class="btn btn-primary" id="roadApplyImport">اعتماد البيانات المستوردة</button></div>
+   </div>
   </div></article>
   <article class="card full"><div class="card-head"><h3>سجل المحطات</h3><span class="tag">القراءات المحفوظة</span></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody id="roadStationsBody"></tbody></table></div><p class="help">يُحفظ إدخال كل محطة أثناء التنقل بينها، وتُستعاد بياناتها عند الرجوع إليها.</p></div></article>
  </div>
@@ -415,6 +423,7 @@ try{const d=localStorage.getItem('sewerProDraftV109');if(d)loadData(JSON.parse(d
 buildUnifiedSewerScreen();
 update();
 
+<script src="xlsx.full.min.js"></script>
 /* ROAD WORKS calculator */
 const roadIds=['Asphalt','Concrete','Subbase','Boulder'];
 const roadLabels=['الإسفلت','الكونكريت','السب بيس','الجلمود'];
@@ -467,5 +476,92 @@ function roadRestore(){
 }
 roadRestore();
 roadRender();
+
+let roadPendingImport=null;
+const roadStatus=(msg,kind='')=>{const e=$('roadProfileStatus');e.textContent=msg;e.className='status'+(kind?' '+kind:'');};
+function roadStationLabel(v){
+ if(typeof v==='number' && Number.isFinite(v)){const m=Math.round(v*1000);return Math.floor(m/1000)+'+'+String(m%1000).padStart(3,'0');}
+ let s=String(v??'').trim();if(!s)return '';
+ const mt=s.match(/(\\d+)\\s*\\+\\s*(\\d+(?:\\.\\d+)?)/);if(mt)return String(Number(mt[1]))+'+'+String(Math.round(Number(mt[2]))).padStart(3,'0');
+ const n=Number(s.replace(',','.'));if(Number.isFinite(n))return roadStationLabel(n);
+ return s;
+}
+function roadHeaderIndex(headers,patterns){
+ return headers.findIndex(h=>patterns.some(p=>p.test(String(h??'').trim().toLowerCase())));
+}
+function roadPrepareRows(rows){
+ if(!rows.length)throw new Error('لا توجد بيانات في الملف.');
+ const headers=rows[0].map(v=>String(v??'').trim());
+ const stationCol=roadHeaderIndex(headers,[/station/,/chainage/,/chain/,/محطة/,/المحطة/,/chainage/]);
+ if(stationCol<0)throw new Error('لم أجد عمود المحطة. يجب أن يحتوي عنوان العمود على Station أو Chainage أو المحطة.');
+ const cols=[
+  roadHeaderIndex(headers,[/asphalt/,/bitumen/,/اسفلت/,/الإسفلت/]),
+  roadHeaderIndex(headers,[/concrete/,/كونكريت/,/خرسانة/]),
+  roadHeaderIndex(headers,[/sub.?base/,/subbase/,/سب.?بيس/]),
+  roadHeaderIndex(headers,[/boulder/,/جلمود/])
+ ];
+ if(cols.every(c=>c<0))throw new Error('لم أجد أعمدة مناسيب الطبقات الأربعة. سمِّ الأعمدة Asphalt وConcrete وSubbase وBoulder أو بالعربية.');
+ const parsed=[];
+ rows.slice(1).forEach(row=>{
+  const label=roadStationLabel(row[stationCol]);if(!label)return;
+  const vals={};roadIds.forEach((id,i)=>{const c=cols[i];const v=c<0?null:Number(String(row[c]??'').replace(',','.'));vals[id]=c<0||row[c]===''||!Number.isFinite(v)?null:v;});
+  if(roadIds.some(id=>vals[id]!==null))parsed.push({label,vals});
+ });
+ if(!parsed.length)throw new Error('لم أستطع استخراج صفوف تحتوي محطات ومناسيب رقمية.');
+ return parsed;
+}
+function roadShowImport(parsed){
+ roadPendingImport=parsed;
+ $('roadImportReviewWrap').hidden=false;
+ $('roadImportReview').innerHTML=parsed.map(x=>'<tr><td>'+x.label+'</td>'+roadIds.map(id=>'<td class="num">'+(x.vals[id]===null?'—':roadFmt(x.vals[id]))+'</td>').join('')+'</tr>').join('');
+ roadStatus('تم استخراج '+parsed.length+' محطة. راجع الجدول ثم اضغط اعتماد البيانات المستوردة.','ok');
+}
+$('roadExcelInput').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{
+  if(!window.XLSX)throw new Error('مكتبة Excel غير متاحة داخل التطبيق.');
+  const wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false});
+  let result=null,lastError=null;
+  for(const name of wb.SheetNames){try{const rows=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:''});result=roadPrepareRows(rows);break;}catch(err){lastError=err;}}
+  if(!result)throw(lastError||new Error('لم يتم العثور على جدول بروفايل.'));
+  roadShowImport(result);
+ }catch(err){roadStatus('تعذر استيراد Excel: '+err.message,'error');}
+ e.target.value='';
+});
+$('roadPdfInput').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ roadStatus('تم اختيار PDF. لا تتوفر حالياً مكتبة PDF محلية مضمّنة لاستخراج الجداول من هذا الملف؛ لم نعتمد أي بيانات حتى لا ندخل مناسيب خاطئة. استخدم ملف Excel أو انتظر استكمال قارئ PDF.','warn');
+ e.target.value='';
+});
+$('roadApplyImport').addEventListener('click',()=>{
+ if(!roadPendingImport)return;
+ roadStations=roadPendingImport.map((x,i)=>({key:'import_'+i+'_'+x.label,label:x.label}));
+ roadValues={};roadPendingImport.forEach((x,i)=>{roadValues[roadStations[i].key]={};roadIds.forEach(id=>roadValues[roadStations[i].key][id]=x.vals[id]);});
+ roadIndex=0;roadLoadCurrent();roadPendingImport=null;$('roadImportReviewWrap').hidden=true;
+ roadStatus('تم اعتماد المحطات والمناسيب وحفظها في سجل أعمال الطرق.','ok');
+});
+$('roadExportExcel').addEventListener('click',()=>{
+ try{
+  if(!window.XLSX)throw new Error('مكتبة Excel غير متاحة.');
+  roadSaveCurrent();
+  const headers=['Station','Asphalt','Concrete','Subbase','Boulder'];
+  const rows=[headers,...roadStations.map(st=>{const d=roadValues[st.key]||{};return [st.label,...roadIds.map(id=>d[id]??'')];})];
+  const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Road Profile');
+  const qty=[['Layer','Area_m2','Volume_m3','Weight_ton'],...roadIds.map((id,i)=>{const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0),thk=roadVal('road'+id+'Thk')||0,d=roadVal('road'+id+'Density');const volume=area*thk/100;return [roadLabels[i],area,volume,d===null?'':volume*d];})];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(qty),'Quantities');
+  const out=XLSX.write(wb,{bookType:'xlsx',type:'array'});const bytes=new Uint8Array(out);let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);
+  window.SewerNative?.saveFile('ROAD_PROFILE.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',btoa(bin));
+  if(!window.SewerNative){const blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ROAD_PROFILE.xlsx';a.click();URL.revokeObjectURL(a.href);}
+  roadStatus('تم تجهيز ملف Excel حقيقي بصيغة XLSX.','ok');
+ }catch(err){roadStatus('تعذر تصدير Excel: '+err.message,'error');}
+});
+$('roadExportPdf').addEventListener('click',()=>{
+ roadSaveCurrent();
+ const rows=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(id=>'<td>'+(d[id]===null||d[id]===undefined?'—':roadFmt(d[id]))+'</td>').join('')+'</tr>';}).join('');
+ const title='بروفايل أعمال الطرق';
+ const body='<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2{text-align:center}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #555;padding:7px;text-align:center}th{background:#eee}@page{size:A4 landscape;margin:12mm}</style></head><body><h2>'+title+'</h2><p>BM: '+(roadVal('roadBM')??'—')+' | BS: '+(roadVal('roadBS')??'—')+' | HI: '+(roadHI()??'—')+'</p><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=()=>setTimeout(()=>window.print(),250)<\\/script></body></html>';
+ const w=window.open('','_blank');if(!w){roadStatus('تعذر فتح صفحة الطباعة. اسمح بفتح نافذة الطباعة ثم أعد المحاولة.','warn');return;}w.document.open();w.document.write(body);w.document.close();roadStatus('تم تجهيز بروفايل للطباعة؛ اختر حفظ بصيغة PDF من نافذة الطباعة.','ok');
+});
 
 </script></body></html>
