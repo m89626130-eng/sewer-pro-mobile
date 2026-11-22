@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>SEWER PRO V1.0.9</title>
+<title>SEWER PRO V1.0.10</title>
 <style>
 :root{--navy:#082b55;--blue:#0c5799;--blue2:#1478bc;--green:#16834f;--amber:#d58a18;--red:#c94e5b;--ink:#17283b;--muted:#64748b;--line:#d6e0eb;--bg:#eef3f8;--card:#fff;--soft:#f6f9fc;--shadow:0 7px 24px rgba(8,43,85,.09)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink)}
@@ -20,7 +20,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 9px;
 html,body{min-height:100%;overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent}
 @media(max-width:600px){body{padding-bottom:env(safe-area-inset-bottom)}.container{padding-left:10px;padding-right:10px}.nav button{padding:10px 12px;min-height:42px}.topbar{padding-top:calc(10px + env(safe-area-inset-top))}.field input,.field select{min-height:44px}.card-body{padding:13px}.page-head h2{font-size:19px}}
 
-/* SEWER PRO V1.0.9 — dark engineering style and horizontal form layout */
+/* SEWER PRO V1.0.10 — visible pipe invert level result */
 :root{--navy:#08264b;--blue:#123f70;--blue2:#1b5e91;--green:#5b9f20;--amber:#d7a33d;--ink:#edf1f7;--muted:#b4bdc9;--line:#50545d;--bg:#0b2038;--card:#1b1d22;--soft:#24272e;--shadow:0 8px 22px rgba(0,0,0,.22)}
 body{background:linear-gradient(145deg,#071d38,#102b45 60%,#0a2038);color:#edf1f7}
 .topbar{background:linear-gradient(115deg,#071b36,#103d68)}
@@ -65,7 +65,7 @@ td,th{border-color:#454a54}
 }
 
 
-/* V1.0.9: single continuous sewer form, vertically stacked tool sections */
+/* V1.0.10: single continuous sewer form, vertically stacked tool sections */
 #sewerNav{display:none!important}
 .sewer-all-sections{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 .sewer-all-sections .page-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin:14px 0 8px;padding:10px 13px;border-right:5px solid #5b9f20;background:linear-gradient(90deg,#1c2a38,#263646);border-radius:10px}
@@ -92,7 +92,7 @@ td,th{border-color:#454a54}
 
 </style>
 </head><body>
-<header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.9</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
+<header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.10</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
  <button class="active" data-page="home">الرئيسية</button>
  <button data-page="infrastructure">أعمال البنية التحتية</button>
@@ -174,8 +174,9 @@ td,th{border-color:#454a54}
  <div class="page-head"><div><h2>قطر الأنبوب</h2><p>تحدد القطر فقط؛ قراءة ظهر الأنبوب مأخوذة تلقائياً من الإدخال المساحي.</p></div></div>
  <div class="grid"><article class="card"><div class="card-head"><h3>بيانات الأنبوب PIPE</h3><span class="tag">إدخال يدوي</span></div><div class="card-body">
   <div class="field"><label>قطر الأنبوب (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
-  <div class="status" id="pipeStatus">يستخدم البرنامج القطر داخلياً لاستخراج أسفل الأنبوب، ثم يكمل حساب مناسيب الطبقات.</div>
-  <p class="help">منسوب أسفل الأنبوب يُحسب داخلياً = منسوب ظهر الأنبوب − قطر الأنبوب بالمتر. لا نكرر إدخال القراءة هنا، ولا نعرض منسوب أعلى الأنبوب أو نطلب قراءة إضافية.</p>
+  <div class="result"><span>منسوب أسفل الأنبوب (IL)</span><strong id="pipeInvertOut">—</strong></div>
+  <div class="status" id="pipeStatus">أدخل قراءة المسطرة في الإدخال المساحي وحدد قطر الأنبوب لعرض منسوب أسفل الأنبوب.</div>
+  <p class="help">يُحسب IL تلقائياً = HI − قراءة المسطرة فوق ظهر الأنبوب − قطر الأنبوب بالمتر. لا تحتاج إلى إدخال قراءة إضافية هنا.</p>
  </div></article></div>
 </section>
 
@@ -251,8 +252,10 @@ function update(){
  $('pipeValueLabel').textContent=mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب (م)':'منسوب ظهر الأنبوب RL (م)';
  const pipeCrown=(v===null?null:(mode==='reading'?(H!==null?H-v:null):v));
  const dia=val('pipeDia');
- // Internal-only pipe invert: no separate input or visible result.
+ // Pipe invert level (IL) is calculated from the single crown reading and selected diameter.
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
+ set('pipeInvertOut',pipeInvert);
+ $('pipeStatus').textContent=pipeInvert===null?'أدخل بيانات المساحة وقطر الأنبوب لاحتساب IL.':`تم حساب منسوب أسفل الأنبوب IL = ${fmtN(pipeInvert)} م`;
  const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
  const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
@@ -263,7 +266,7 @@ function update(){
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
  $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
  $('excStatus').textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';
- renderReport({H,mode,pipeValue:v,pipeCrown,dia,baseT,baseBottom,spaceT,spaceBottom,gilmoodT,gilmoodBottom,GL,depth});
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,spaceT,spaceBottom,gilmoodT,gilmoodBottom,GL,depth});
 }
 function renderReport(d){
  const rows=[
@@ -272,6 +275,7 @@ function renderReport(d){
  ['المساحة','HI · منسوب الجهاز',d.H,'m'],
  ['مرجع الأنبوب',d.mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب':'منسوب ظهر الأنبوب',d.pipeValue,d.mode==='reading'?'m reading':'m RL'],
  ['الأنبوب','قطر الأنبوب',d.dia,'mm'],
+ ['الأنبوب','منسوب أسفل الأنبوب IL',d.pipeInvert,'m'], 
  ['قاعدة المنهول','سماكة القاعدة',d.baseT,'cm'],
  ['قاعدة المنهول','منسوب أسفل قاعدة المنهول',d.baseBottom,'m'],
  ['السبيس','سمك السبيس',d.spaceT,'cm'],
@@ -286,7 +290,7 @@ function renderReport(d){
 function saveData(){
  const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput'];
  const values={};ids.forEach(id=>values[id]=$(id).value);
- return {app:'SEWER PRO',version:'1.0.9',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
+ return {app:'SEWER PRO',version:'1.0.10',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
 }
 function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
