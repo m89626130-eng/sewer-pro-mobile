@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>SEWER PRO V1.0.10</title>
+<title>SEWER PRO V1.0.11</title>
 <style>
 :root{--navy:#082b55;--blue:#0c5799;--blue2:#1478bc;--green:#16834f;--amber:#d58a18;--red:#c94e5b;--ink:#17283b;--muted:#64748b;--line:#d6e0eb;--bg:#eef3f8;--card:#fff;--soft:#f6f9fc;--shadow:0 7px 24px rgba(8,43,85,.09)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink)}
@@ -20,7 +20,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 9px;
 html,body{min-height:100%;overscroll-behavior-y:contain;-webkit-tap-highlight-color:transparent}
 @media(max-width:600px){body{padding-bottom:env(safe-area-inset-bottom)}.container{padding-left:10px;padding-right:10px}.nav button{padding:10px 12px;min-height:42px}.topbar{padding-top:calc(10px + env(safe-area-inset-top))}.field input,.field select{min-height:44px}.card-body{padding:13px}.page-head h2{font-size:19px}}
 
-/* SEWER PRO V1.0.10 — visible pipe invert level result */
+/* SEWER PRO V1.0.11 — report layout update */
 :root{--navy:#08264b;--blue:#123f70;--blue2:#1b5e91;--green:#5b9f20;--amber:#d7a33d;--ink:#edf1f7;--muted:#b4bdc9;--line:#50545d;--bg:#0b2038;--card:#1b1d22;--soft:#24272e;--shadow:0 8px 22px rgba(0,0,0,.22)}
 body{background:linear-gradient(145deg,#071d38,#102b45 60%,#0a2038);color:#edf1f7}
 .topbar{background:linear-gradient(115deg,#071b36,#103d68)}
@@ -90,7 +90,7 @@ td,th{border-color:#454a54}
  .sewer-all-sections .page-head{margin:11px 0 6px}
 }
 
-</style>
+\n/* V1.0.11 report-only print layout */\n.report-brand{display:flex;align-items:center;justify-content:center;gap:18px;text-align:center;margin:4px 0 18px}.arkan-mark{font-size:28px;font-weight:900;letter-spacing:2px;color:#7b1838;border:3px solid #7b1838;padding:8px 14px;border-radius:5px}.report-brand h2{margin:0;color:#111;font-size:22px}.report-brand p{margin:4px 0;color:#555}.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.report-meta-print{display:none}.report-sheet{background:#fff!important;color:#111!important}.report-sheet .card-body{background:#fff!important}.report-table th{background:#e7e7e7!important;color:#111!important}.report-table td{color:#111!important}.report-note{font-size:11px;color:#333;margin-top:10px}.report-sign{display:flex;justify-content:space-between;margin:38px 8px 12px;text-align:center;color:#111}.report-sign>div{width:38%;line-height:1.8}\n@media print{@page{size:A4 landscape;margin:12mm}body{background:#fff!important;color:#111!important}.topbar,.nav,.secondary-nav,.top-actions,.no-print,button,.footer{display:none!important}.page{display:none!important}#report.page{display:block!important}.report-sheet,.report-sheet .card-body{background:#fff!important;color:#111!important;box-shadow:none!important;border:0!important;padding:0!important}.report-brand{margin:0 0 10mm}.report-meta-print{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8mm;font-size:11px;color:#111}.report-table{width:100%;border-collapse:collapse}.report-table th,.report-table td{border:1px solid #777!important;padding:6px 8px!important;color:#111!important}.report-table th{background:#e7e7e7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.report-note{color:#333}.report-sign{margin-top:18mm;break-inside:avoid}}\n</style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">SP</div><div><h1>SEWER PRO</h1><p>برنامج الأعمال الهندسية · الإصدار V1.0.10</p></div></div><div class="top-actions no-print"><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
@@ -216,8 +216,15 @@ td,th{border-color:#454a54}
 </section>
 
 <section class="page" id="report">
- <div class="page-head"><div><h2>النتائج والتقرير</h2><p>يعرض التقرير المدخلات اليدوية والنتائج الأربعة المطلوبة فقط.</p></div><div class="inline no-print"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
- <article class="card full"><div class="card-body"><div class="table-wrap"><table><thead><tr><th>القسم</th><th>البيان</th><th>القيمة</th><th>الوحدة</th></tr></thead><tbody id="reportTable"></tbody></table></div><div class="status">لا توجد قراءات منفصلة للمنهول أو السبيس أو الجلمود أو الحفر. جميع المناسيب ناتجة عن مرجع ظهر الأنبوب والسماكات المدخلة.</div></div></article>
+ <div class="page-head no-print"><div><h2>النتائج والتقرير</h2><p>تقرير الأقطار والمناسيب والأطوال والأسفلت.</p></div><div class="inline"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
+ <article class="card full report-sheet"><div class="card-body">
+  <div class="report-brand"><div class="arkan-mark">ARKAN</div><div><h2>تقرير أعمال البنية التحتية</h2><p>SEWER PRO</p></div></div>
+  <div class="report-meta no-print"><div class="field"><label>اسم المشروع</label><input id="rProject" placeholder="أدخل اسم المشروع"></div><div class="field"><label>موقع المشروع</label><input id="rLocation" placeholder="أدخل موقع المشروع"></div><div class="field"><label>تاريخ إعداد التقرير</label><input id="rDate" type="date"></div><div class="field"><label>المهندس المشرف</label><input id="rEngineer" placeholder="اسم المهندس المشرف"></div><div class="field"><label>المقاول</label><input id="rContractor" placeholder="اسم المقاول"></div></div>
+  <div class="report-meta-print"><div><b>اسم المشروع:</b> <span id="pProject">—</span></div><div><b>موقع المشروع:</b> <span id="pLocation">—</span></div><div><b>التاريخ:</b> <span id="pDate">—</span></div><div><b>المهندس المشرف:</b> <span id="pEngineer">—</span></div><div><b>المقاول:</b> <span id="pContractor">—</span></div></div>
+  <div class="table-wrap"><table class="report-table"><thead><tr><th>القسم</th><th>البيان</th><th>القيمة</th><th>الوحدة</th></tr></thead><tbody id="reportTable"></tbody></table></div>
+  <div class="report-note">تُعرض القراءات والنتائج المسجلة في البرنامج. تُستكمل بيانات الأطوال والأسفلت عند تفعيل حقولها في مرحلة التحديث التالية.</div>
+  <div class="report-sign"><div>توقيع المهندس المشرف<br><br>............................</div><div>ختم المقاول<br><br>............................</div></div>
+ </div></article>
 </section>
 <div class="footer">SEWER PRO V1.0.9 · أعمال البنية التحتية والطرق وحساب الكميات.</div>
 </main>
@@ -288,9 +295,9 @@ function renderReport(d){
  $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
 }
 function saveData(){
- const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput'];
+ const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','glInput','rProject','rLocation','rDate','rEngineer','rContractor'];
  const values={};ids.forEach(id=>values[id]=$(id).value);
- return {app:'SEWER PRO',version:'1.0.10',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
+ return {app:'SEWER PRO',version:'1.0.11',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
 }
 function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
