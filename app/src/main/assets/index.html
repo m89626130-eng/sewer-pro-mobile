@@ -113,6 +113,8 @@ td,th{border-color:#454a54}
 
 /* ARKAN SURVEY V1.0.14 */
 .road-section .card-head{position:relative;padding-inline-end:54px}.road-section-toggle{position:absolute;inset-inline-end:12px;top:50%;transform:translateY(-50%);width:32px;height:32px;padding:0;border-radius:8px;background:#7b1838;color:#fff;font-size:17px;display:grid;place-items:center}.road-section.collapsed>.card-body{display:none}.road-section .card-head h3{display:flex;align-items:center;gap:9px}.road-icon{width:22px;height:22px;fill:none;stroke:#c16b86;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.road-layer h4{display:block}.road-layer-toggle{width:100%;display:flex;align-items:center;gap:10px;padding:0;background:transparent;color:inherit;text-align:inherit}.road-layer-toggle .layer-arrow{margin-inline-start:auto;color:#d58a18}.road-layer.collapsed>:not(h4){display:none!important}.road-layer [hidden]{display:none!important}
+
+.road-report-fields{border-top:1px solid #50545d;margin-top:16px;padding-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.road-report-fields h4,.road-report-fields .road-signatures,.road-report-fields .status,.road-cross-section{grid-column:1/-1}.road-report-fields h4{color:#f0f4fa;margin:8px 0}.road-report-fields input{width:100%;min-height:42px;background:#252930;border:1px solid #5a606b;border-radius:8px;color:#fff;padding:9px}.road-signatures{display:flex;justify-content:space-between;gap:12px;padding:18px 4px;color:#dce6f0}.road-cross-section{background:#fff;border-radius:8px;padding:8px}.road-cross-section svg{width:100%;height:auto;max-height:220px}
 </style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
@@ -596,7 +598,9 @@ apply();
 /* ARKAN SURVEY V1.0.14 road interface */
 (function(){
  const cards=Array.from(document.querySelectorAll('#roads .roads-stack > article.card'));
- const titles=['المرجع المساحي','طرق الإدخال','بيان الطرق والمحطات','مناسيب طبقات الطريق','سماكات الطبقات والكميات','الكميات وسجل المحطات'];
+ [cards[0],cards[1],cards[2],cards[4],cards[3],cards[5]].forEach(card=>card&&card.parentElement.appendChild(card));
+ const ordered=Array.from(document.querySelectorAll('#roads .roads-stack > article.card'));
+ const titles=['المرجع المساحي','طرق الإدخال','بيان الطرق والمحطات','سماكات الطبقات والكميات','مناسيب طبقات الطريق','الكميات والتقارير'];
  const icons=[
  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 20h18M5 17l7-13 7 13M8 17h8M12 4v16"/></svg>',
  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 20V4m0 4h12l4 4-4 4H4"/></svg>',
@@ -605,14 +609,14 @@ apply();
  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 5h18v4H3zM3 11h18v4H3zM3 17h18v4H3z"/></svg>',
  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg>'
  ];
- cards.forEach(function(card,i){
+ ordered.forEach(function(card,i){
   card.classList.add('road-section');const h=card.querySelector('.card-head h3');
   if(h&&i<titles.length){h.textContent=titles[i];h.insertAdjacentHTML('afterbegin',icons[i]);}
   const head=card.querySelector('.card-head');if(!head)return;
   const b=document.createElement('button');b.type='button';b.className='road-section-toggle';b.textContent='▼';b.setAttribute('aria-expanded','true');
   b.addEventListener('click',function(){const closed=card.classList.toggle('collapsed');b.textContent=closed?'▶':'▼';b.setAttribute('aria-expanded',String(!closed));});head.appendChild(b);
  });
- const methodCard=cards[1],methodBody=methodCard?.querySelector('.card-body');
+ const methodCard=ordered[1],methodBody=methodCard?.querySelector('.card-body');
  if(methodBody&&!document.getElementById('roadStaffReading')){
   const field=document.createElement('div');field.className='roads-field';field.id='roadStaffReadingWrap';
   field.innerHTML='<label for="roadStaffReading">قراءة المسطرة على سطح الإسفلت فقط (م)</label><input id="roadStaffReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة">';
@@ -676,6 +680,38 @@ apply();
   }catch(e){roadStatus('تعذر تصدير Excel: '+e.message,'error');}
  });}
  $('roadStaffReading')?.addEventListener('input',function(){roadSaveCurrent();roadRender();});
+
+ /* Road cross-section, thickness validation and dedicated road report */
+ const qtyCard=ordered[5],qtyBody=qtyCard?.querySelector('.card-body');
+ if(qtyBody&&!document.getElementById('roadReportFields')){
+  const report=document.createElement('div');report.id='roadReportFields';report.className='road-report-fields';
+  report.innerHTML='<h4>تقرير أعمال الطرق</h4><div class="roads-field"><label>اسم المشروع</label><input id="roadProject" type="text" placeholder="اسم المشروع"></div><div class="roads-field"><label>موقع المشروع</label><input id="roadLocation" type="text" placeholder="موقع المشروع"></div><div class="roads-field"><label>المهندس المشرف</label><input id="roadEngineer" type="text" placeholder="اسم المهندس"></div><div class="roads-field"><label>المقاول</label><input id="roadContractor" type="text" placeholder="اسم المقاول"></div><div class="road-signatures"><span>توقيع المهندس: ............................</span><span>ختم المقاول: ............................</span></div><div id="roadThicknessStatus" class="status warn">سيظهر تنبيه مطابقة السماكات عند إدخال المناسيب والسماكات.</div><h4>المقطع العرضي للطريق</h4><div id="roadCrossSection" class="road-cross-section"></div>';
+  qtyBody.appendChild(report);
+ }
+ function renderRoadExtras(){
+  const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0);
+  const rows=roadIds.map((id,i)=>({id,label:roadLabels[i],t:roadVal('road'+id+'Thk'),v:roadVal('road'+id+'Thk')===null?0:roadVal('road'+id+'Thk')/100}));
+  const svg='<svg viewBox="0 0 360 180" role="img" aria-label="Road cross section"><path d="M20 150H340" stroke="#cbd5e1" stroke-width="2"/>'+rows.map((r,i)=>'<rect x="'+(45+i*5)+'" y="'+(130-i*28)+'" width="'+(270-i*10)+'" height="24" fill="'+(['#171717','#888888','#80552e','#a18d70'][i])+'" stroke="#e2e8f0"/><text x="180" y="'+(146-i*28)+'" text-anchor="middle" fill="'+(i<2?'#fff':'#fff')+'" font-size="11">'+r.label+' · '+(r.t===null?'—':r.t+' cm')+'</text>').join('')+'</svg>';
+  const cross=document.getElementById('roadCrossSection');if(cross)cross.innerHTML=svg;
+  let warnings=[];
+  if(roadMode==='level'&&roadStations.length){
+   roadStations.forEach(st=>{const d=roadValues[st.key]||{};roadIds.slice(1).forEach((id,i)=>{const prev=roadIds[i],a=d[prev],b=d[id],t=roadVal('road'+prev+'Thk');if(a!==null&&a!==undefined&&b!==null&&b!==undefined&&t!==null&&Math.abs(Math.abs(a-b)-t/100)>0.02)warnings.push(st.label+' — '+roadLabels[i]+'/'+roadLabels[i+1]);});});
+  }
+  const status=document.getElementById('roadThicknessStatus');
+  if(status){status.className='status'+(warnings.length?' warn':'');status.textContent=warnings.length?'تنبيه: يوجد اختلاف بين فروق المناسيب والسماكات المدخلة في '+warnings.slice(0,5).join('، ')+(warnings.length>5?' ...':''):'لا توجد اختلافات ظاهرة بين فروق المناسيب والسماكات المسجلة.';}
+ }
+ const oldRenderStations=roadRenderStations;
+ roadRenderStations=function(){oldRenderStations();renderRoadExtras();};
+ const pdf=$('roadExportPdf');
+ if(pdf){const btn=pdf.cloneNode(true);pdf.parentNode.replaceChild(btn,pdf);btn.addEventListener('click',function(){
+  roadSaveCurrent();const rows=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(id=>'<td>'+(d[id]??'—')+'</td>').join('')+'</tr>';}).join('');
+  const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0),meta=['roadProject','roadLocation','roadEngineer','roadContractor'].map(id=>document.getElementById(id)?.value||'—');
+  const q=roadIds.map((id,i)=>'<tr><td>'+roadLabels[i]+'</td><td>'+area.toFixed(2)+'</td><td>'+(area*(roadVal('road'+id+'Thk')||0)/100).toFixed(3)+'</td></tr>').join('');
+  const html='<html lang="ar" dir="rtl"><meta charset="utf-8"><title>تقرير أعمال الطرق ARKAN</title><style>body{font-family:Arial;padding:20px;color:#111}h2,h3{text-align:center}table{width:100%;border-collapse:collapse;margin:12px 0}td,th{border:1px solid #777;padding:6px;text-align:center}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sign{display:flex;justify-content:space-between;margin-top:55px}@page{size:A4 landscape;margin:12mm}</style><h2>ARKAN SURVEY — تقرير أعمال الطرق</h2><div class="meta"><div>المشروع: '+meta[0]+'</div><div>الموقع: '+meta[1]+'</div><div>المهندس: '+meta[2]+'</div><div>المقاول: '+meta[3]+'</div></div><h3>سجل المحطات والمناسيب</h3><table><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr>'+rows+'</table><h3>الكميات الإجمالية</h3><table><tr><th>الطبقة</th><th>المساحة m²</th><th>الحجم m³</th></tr>'+q+'</table><div class="sign"><div>توقيع المهندس: ........................</div><div>ختم المقاول: ........................</div></div><script>window.onload=()=>window.print()<\\/script></html>';
+  const w=window.open('','_blank');if(!w){roadStatus('اسمح بفتح نافذة التقرير.','warn');return;}w.document.open();w.document.write(html);w.document.close();
+ });}
+ renderRoadExtras();
+
  roadRender();
 })();
 
