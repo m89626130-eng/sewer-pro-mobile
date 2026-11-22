@@ -330,5 +330,6 @@ $('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(
 $('csvBtn').addEventListener('click',csv);$('csvBtn2').addEventListener('click',csv);
 setInterval(()=>{try{localStorage.setItem('sewerProDraftV109',JSON.stringify(saveData()));}catch(e){}},4000);
 try{const d=localStorage.getItem('sewerProDraftV109');if(d)loadData(JSON.parse(d));}catch(e){}
+buildUnifiedSewerScreen();
 update();
 </script></body></html>
