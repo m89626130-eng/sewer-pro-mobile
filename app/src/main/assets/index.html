@@ -565,92 +565,6 @@ $('roadExportPdf').addEventListener('click',()=>{
  const rows=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(id=>'<td>'+(d[id]===null||d[id]===undefined?'—':roadFmt(d[id]))+'</td>').join('')+'</tr>';}).join('');
  const title='بروفايل أعمال الطرق';
  const body='<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2{text-align:center}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #555;padding:7px;text-align:center}th{background:#eee}@page{size:A4 landscape;margin:12mm}</style></head><body><h2>'+title+'</h2><p>BM: '+(roadVal('roadBM')??'—')+' | BS: '+(roadVal('roadBS')??'—')+' | HI: '+(roadHI()??'—')+'</p><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=()=>setTimeout(()=>window.print(),250)<\\/script>
-/* ARKAN SURVEY V1.0.14: road sections, arrows, single staff reading and volume-only quantities */
-(function(){
- const roadCards=Array.from(document.querySelectorAll('#roads .roads-stack > article.card'));
- const titles=['المرجع المساحي','طرق الإدخال','بيان الطرق والمحطات','مناسيب طبقات الطريق','سماكات الطبقات والكميات','الكميات وسجل المحطات'];
- roadCards.forEach(function(card,i){
-  card.classList.add('road-section');
-  const h=card.querySelector('.card-head h3');
-  if(h && i<titles.length) h.textContent=titles[i];
-  const head=card.querySelector('.card-head');
-  if(head&&!head.querySelector('.road-section-toggle')){
-   const b=document.createElement('button');b.type='button';b.className='road-section-toggle';b.textContent='▼';b.setAttribute('aria-expanded','true');
-   b.addEventListener('click',function(){const closed=card.classList.toggle('collapsed');b.textContent=closed?'▶':'▼';b.setAttribute('aria-expanded',String(!closed));});
-   head.appendChild(b);
-  }
- });
- const svgIcons=[
-  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 20h18M5 17l7-13 7 13M8 17h8M12 4v16"/></svg>',
-  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 20V4m0 4h12l4 4-4 4H4"/></svg>',
-  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 20V4m0 0 5 3-5 3M4 20h16"/></svg>',
-  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h18M3 20h18"/></svg>',
-  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 5h18v4H3zM3 11h18v4H3zM3 17h18v4H3z"/></svg>',
-  '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg>'
- ];
- roadCards.forEach(function(card,i){const h=card.querySelector('.card-head h3');if(h&&i<svgIcons.length&&!h.querySelector('svg'))h.insertAdjacentHTML('afterbegin',svgIcons[i]);});
- document.querySelectorAll('#roads .road-layer').forEach(function(layer){
-  const h=layer.querySelector('h4');if(!h)return;
-  const sw=h.querySelector('.road-swatch');const name=h.textContent.trim();
-  const label=name.replace(/^.*?\s/,'');
-  h.innerHTML='<button class="road-layer-toggle" type="button" aria-expanded="true">'+(sw?sw.outerHTML:'')+'<span>'+label+'</span><span class="layer-arrow">▼</span></button>';
-  h.querySelector('button').addEventListener('click',function(){const closed=layer.classList.toggle('collapsed');h.querySelector('.layer-arrow').textContent=closed?'▶':'▼';h.querySelector('button').setAttribute('aria-expanded',String(!closed));});
- });
- ['Asphalt','Concrete','Subbase','Boulder'].forEach(function(id){
-  const density=document.getElementById('road'+id+'Density');
-  if(density&&density.closest('.roads-field'))density.closest('.roads-field').remove();
-  const thickness=document.getElementById('road'+id+'Thk');if(thickness)thickness.value='';
- });
- const qtyTable=document.querySelector('#roadQtyBody')?.closest('table');
- if(qtyTable){const head=qtyTable.querySelector('thead tr');if(head&&head.children.length>3)head.deleteCell(3);}
- roadRenderQty=function(){
-  const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0);
-  $('roadQtyBody').innerHTML=roadIds.map(function(id,i){const t=roadVal('road'+id+'Thk')||0;return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(area*t/100)+'</td></tr>';}).join('');
- };
- roadSaveCurrent=function(){
-  if(!roadStations.length)return;
-  const d={},H=roadHI();
-  if(roadMode==='reading'){
-   const reading=roadVal('roadAsphaltInput');let level=H!==null&&reading!==null?H-reading:null;
-   roadIds.forEach(function(id,i){if(i>0){const t=roadVal('road'+roadIds[i-1]+'Thk');level=level!==null&&t!==null?level-t/100:null;}d[id]=level;});
-   d._asphaltReading=reading;
-  }else roadIds.forEach(function(id){d[id]=roadVal('road'+id+'Input');});
-  roadValues[roadStations[roadIndex].key]=d;
- };
- roadLoadCurrent=function(){
-  if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};
-  roadIds.forEach(function(id){$('road'+id+'Input').value=d[id]===null||d[id]===undefined?'':d[id];});
-  if(roadMode==='reading')$('roadAsphaltInput').value=d._asphaltReading===undefined?'':d._asphaltReading;
-  $('roadStation').textContent=roadStations[roadIndex].label;roadRender();
- };
- roadRender=function(){
-  const H=roadHI(),levelMode=roadMode==='level';$('roadHI').textContent=roadFmt(H);
-  roadIds.forEach(function(id,i){
-   const input=$('road'+id+'Input'),wrap=input.closest('.roads-field');
-   if(wrap)wrap.hidden=(!levelMode&&i>0);
-   $('road'+id+'InputLabel').textContent=levelMode?'منسوب '+roadLabels[i]+' (م)':'قراءة المسطرة على الإسفلت (م)';
-   $('road'+id+'OtherLabel').textContent=levelMode?'قراءة المسطرة المحسوبة':'المنسوب المحسوب';
-  });
-  let levels={};
-  if(levelMode)roadIds.forEach(function(id){levels[id]=roadVal('road'+id+'Input');});
-  else{let z=H!==null&&roadVal('roadAsphaltInput')!==null?H-roadVal('roadAsphaltInput'):null;roadIds.forEach(function(id,i){if(i>0){const t=roadVal('road'+roadIds[i-1]+'Thk');z=z!==null&&t!==null?z-t/100:null;}levels[id]=z;});}
-  roadIds.forEach(function(id){const z=levels[id];$('road'+id+'Other').textContent=roadFmt(levelMode&&H!==null&&z!==null?H-z:(!levelMode?z:null))+' م';});
-  roadRenderStations();roadRenderQty();roadPersist();
- };
- const excelButton=$('roadExportExcel');
- if(excelButton){const clone=excelButton.cloneNode(true);excelButton.parentNode.replaceChild(clone,excelButton);clone.addEventListener('click',function(){
-  try{roadSaveCurrent();if(!window.XLSX)throw Error('مكتبة Excel غير متاحة.');
-   const wb=XLSX.utils.book_new(),rows=[['Station','Asphalt_Level_m','Concrete_Level_m','Subbase_Level_m','Boulder_Level_m']];
-   roadStations.forEach(function(st){const d=roadValues[st.key]||{};rows.push([st.label,...roadIds.map(function(id){return d[id]??'';})]);});
-   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),'Road Profile');
-   const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0),q=[['Layer','Area_m2','Volume_m3']];
-   roadIds.forEach(function(id,i){q.push([roadLabels[i],area,area*(roadVal('road'+id+'Thk')||0)/100]);});
-   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(q),'Quantities');XLSX.writeFile(wb,'ARKAN_ROAD_WORKS.xlsx');roadStatus('تم تصدير Excel: مساحة وحجم فقط.','ok');
-  }catch(e){roadStatus('تعذر تصدير Excel: '+e.message,'error');}
- });}
- roadRender();
-})();
-
 </script></body></html>';
  const w=window.open('','_blank');if(!w){roadStatus('تعذر فتح صفحة الطباعة. اسمح بفتح نافذة الطباعة ثم أعد المحاولة.','warn');return;}w.document.open();w.document.write(body);w.document.close();roadStatus('تم تجهيز بروفايل للطباعة؛ اختر حفظ بصيغة PDF من نافذة الطباعة.','ok');
 });
@@ -679,4 +593,91 @@ document.getElementById('languageSwitch').addEventListener('click',()=>{language
 new MutationObserver(()=>translate(language==='en')).observe(document.body,{subtree:true,childList:true,characterData:true});
 apply();
 })()
+
+/* ARKAN SURVEY V1.0.14 road interface */
+(function(){
+ const cards=Array.from(document.querySelectorAll('#roads .roads-stack > article.card'));
+ const titles=['المرجع المساحي','طرق الإدخال','بيان الطرق والمحطات','مناسيب طبقات الطريق','سماكات الطبقات والكميات','الكميات وسجل المحطات'];
+ const icons=[
+ '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 20h18M5 17l7-13 7 13M8 17h8M12 4v16"/></svg>',
+ '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 20V4m0 4h12l4 4-4 4H4"/></svg>',
+ '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 20V4m0 0 5 3-5 3M4 20h16"/></svg>',
+ '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 5h18M3 10h18M3 15h18M3 20h18"/></svg>',
+ '<svg class="road-icon" viewBox="0 0 24 24"><path d="M3 5h18v4H3zM3 11h18v4H3zM3 17h18v4H3z"/></svg>',
+ '<svg class="road-icon" viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg>'
+ ];
+ cards.forEach(function(card,i){
+  card.classList.add('road-section');const h=card.querySelector('.card-head h3');
+  if(h&&i<titles.length){h.textContent=titles[i];h.insertAdjacentHTML('afterbegin',icons[i]);}
+  const head=card.querySelector('.card-head');if(!head)return;
+  const b=document.createElement('button');b.type='button';b.className='road-section-toggle';b.textContent='▼';b.setAttribute('aria-expanded','true');
+  b.addEventListener('click',function(){const closed=card.classList.toggle('collapsed');b.textContent=closed?'▶':'▼';b.setAttribute('aria-expanded',String(!closed));});head.appendChild(b);
+ });
+ const methodCard=cards[1],methodBody=methodCard?.querySelector('.card-body');
+ if(methodBody&&!document.getElementById('roadStaffReading')){
+  const field=document.createElement('div');field.className='roads-field';field.id='roadStaffReadingWrap';
+  field.innerHTML='<label for="roadStaffReading">قراءة المسطرة على سطح الإسفلت فقط (م)</label><input id="roadStaffReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة">';
+  methodBody.appendChild(field);
+ }
+ document.querySelectorAll('#roads .road-layer').forEach(function(layer){
+  const h=layer.querySelector('h4');if(!h)return;const sw=h.querySelector('.road-swatch');const label=h.textContent.trim().replace(/^.*?\s/,'');
+  h.innerHTML='<button class="road-layer-toggle" type="button" aria-expanded="true">'+(sw?sw.outerHTML:'')+'<span>'+label+'</span><span class="layer-arrow">▼</span></button>';
+  h.querySelector('button').addEventListener('click',function(){const closed=layer.classList.toggle('collapsed');h.querySelector('.layer-arrow').textContent=closed?'▶':'▼';h.querySelector('button').setAttribute('aria-expanded',String(!closed));});
+ });
+ ['Asphalt','Concrete','Subbase','Boulder'].forEach(function(id){
+  const density=document.getElementById('road'+id+'Density');if(density)density.closest('.roads-field')?.remove();
+  const th=document.getElementById('road'+id+'Thk');if(th)th.value='';
+ });
+ const qtable=document.querySelector('#roadQtyBody')?.closest('table');
+ if(qtable&&qtable.querySelector('thead tr')?.children.length>3)qtable.querySelector('thead tr').deleteCell(3);
+ roadRenderQty=function(){
+  const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0);
+  $('roadQtyBody').innerHTML=roadIds.map(function(id,i){const t=roadVal('road'+id+'Thk')||0;return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(area*t/100)+'</td></tr>';}).join('');
+ };
+ roadSaveCurrent=function(){
+  if(!roadStations.length)return;const d={},H=roadHI();
+  if(roadMode==='reading'){
+   const r=roadVal('roadStaffReading');let z=H!==null&&r!==null?H-r:null;
+   roadIds.forEach(function(id,i){if(i>0){const t=roadVal('road'+roadIds[i-1]+'Thk');z=z!==null&&t!==null?z-t/100:null;}d[id]=z;});
+   d._asphaltReading=r;
+  }else roadIds.forEach(function(id){d[id]=roadVal('road'+id+'Input');});
+  roadValues[roadStations[roadIndex].key]=d;
+ };
+ roadLoadCurrent=function(){
+  if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};
+  roadIds.forEach(function(id){$('road'+id+'Input').value=d[id]===null||d[id]===undefined?'':d[id];});
+  if(roadMode==='reading')$('roadStaffReading').value=d._asphaltReading??'';
+  $('roadStation').textContent=roadStations[roadIndex].label;roadRender();
+ };
+ roadRender=function(){
+  const H=roadHI(),levelMode=roadMode==='level';$('roadHI').textContent=roadFmt(H);
+  roadIds.forEach(function(id){
+   const wrap=$('road'+id+'Input').closest('.roads-field');if(wrap)wrap.hidden=!levelMode;
+   $('road'+id+'InputLabel').textContent='منسوب '+roadLabels[roadIds.indexOf(id)]+' (م)';
+   $('road'+id+'OtherLabel').textContent=levelMode?'قراءة المسطرة المحسوبة':'المنسوب المحسوب';
+  });
+  $('roadStaffReadingWrap').hidden=levelMode;
+  let levels={};
+  if(levelMode)roadIds.forEach(function(id){levels[id]=roadVal('road'+id+'Input');});
+  else{let z=H!==null&&roadVal('roadStaffReading')!==null?H-roadVal('roadStaffReading'):null;
+   roadIds.forEach(function(id,i){if(i>0){const t=roadVal('road'+roadIds[i-1]+'Thk');z=z!==null&&t!==null?z-t/100:null;}levels[id]=z;});
+  }
+  roadIds.forEach(function(id){const z=levels[id];$('road'+id+'Other').textContent=roadFmt(levelMode&&H!==null&&z!==null?H-z:(!levelMode?z:null))+' م';});
+  roadRenderStations();roadRenderQty();roadPersist();
+ };
+ const ex=$('roadExportExcel');
+ if(ex){const btn=ex.cloneNode(true);ex.parentNode.replaceChild(btn,ex);btn.addEventListener('click',function(){
+  try{roadSaveCurrent();if(!window.XLSX)throw Error('مكتبة Excel غير متاحة.');
+   const wb=XLSX.utils.book_new(),rows=[['Station','Asphalt_Level_m','Concrete_Level_m','Subbase_Level_m','Boulder_Level_m']];
+   roadStations.forEach(function(st){const d=roadValues[st.key]||{};rows.push([st.label,...roadIds.map(function(id){return d[id]??'';})]);});
+   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),'Road Profile');
+   const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0),q=[['Layer','Area_m2','Volume_m3']];
+   roadIds.forEach(function(id,i){q.push([roadLabels[i],area,area*(roadVal('road'+id+'Thk')||0)/100]);});
+   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(q),'Quantities');XLSX.writeFile(wb,'ARKAN_ROAD_WORKS.xlsx');roadStatus('تم تصدير Excel: مساحة وحجم فقط.','ok');
+  }catch(e){roadStatus('تعذر تصدير Excel: '+e.message,'error');}
+ });}
+ $('roadStaffReading')?.addEventListener('input',function(){roadSaveCurrent();roadRender();});
+ roadRender();
+})();
+
 </script></body></html>
