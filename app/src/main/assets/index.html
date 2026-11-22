@@ -585,7 +585,7 @@ const attrs={"أدخل BM":"Enter BM","أدخل BS":"Enter BS","أدخل الق�
 const originals=new WeakMap();
 function translate(english){
 const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];while(w.nextNode())nodes.push(w.currentNode);
-nodes.forEach(n=>{if(!originals.has(n))originals.set(n,n.nodeValue);const original=originals.get(n),key=original.trim();if(!key)return;n.nodeValue=english?(dict[key]||original):original;});
+nodes.forEach(n=>{if(!originals.has(n))originals.set(n,n.nodeValue);const original=originals.get(n),key=original.trim();if(!key)return;const translated=english?(dict[key]||original):original;if(n.nodeValue!==translated)n.nodeValue=translated;});
 document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{if(!el.dataset.arPlaceholder)el.dataset.arPlaceholder=el.placeholder;el.placeholder=english?(attrs[el.dataset.arPlaceholder]||el.dataset.arPlaceholder):el.dataset.arPlaceholder;});
 }
 let language=localStorage.getItem('arkanSurveyLanguage')||'ar';
