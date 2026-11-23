@@ -145,6 +145,18 @@ html[dir="ltr"] select{
 select::-ms-expand{display:none}
 
 
+
+/* Road layer compact horizontal cards: material at right, elevation at left */
+#roads .road-layer{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:70px!important;padding:10px 13px!important}
+#roads .road-layer h4{display:flex!important;align-items:center!important;gap:9px!important;flex:0 0 42%!important;margin:0!important;text-align:right!important;font-size:14px!important}
+#roads .road-layer .road-layer-level{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;flex:1 1 auto!important;min-width:0!important;direction:rtl!important}
+#roads .road-layer .road-layer-level>label{font-size:11px!important;white-space:nowrap!important;color:#cbd5e1!important}
+#roads .road-layer .road-layer-level>input{width:104px!important;max-width:40%!important;min-width:0!important;min-height:39px!important;padding:7px!important;text-align:center!important}
+#roads .road-layer .road-level-result{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:1px!important;min-width:0!important}
+#roads .road-layer .road-level-result span{font-size:10px!important;color:#aeb9c7!important}
+#roads .road-layer .road-level-result strong{font-size:16px!important;color:#facc15!important;direction:ltr!important;white-space:nowrap!important}
+#roads .road-layer .road-layer-level .road-level-result{margin-inline-start:auto!important}
+@media(max-width:420px){#roads .road-layer{gap:7px!important;padding:9px!important}#roads .road-layer h4{flex-basis:38%!important;font-size:12px!important}#roads .road-layer .road-layer-level{gap:5px!important}#roads .road-layer .road-layer-level>label{font-size:10px!important}#roads .road-layer .road-layer-level>input{width:82px!important;font-size:12px!important}}
 </style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
@@ -204,10 +216,10 @@ select::-ms-expand{display:none}
    <div class="help" id="roadStationCount">لم يتم إنشاء المحطات بعد.</div>
   </div></article>
   <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
-   <div class="road-layer"><h4><span class="road-swatch asphalt"></span> الإسفلت ASPHALT</h4><div class="roads-field"><label id="roadAsphaltInputLabel">منسوب الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadAsphaltOtherLabel">المنسوب المحسوب</span><strong id="roadAsphaltOther">—</strong></div></div>
-   <div class="road-layer"><h4><span class="road-swatch concrete"></span> الكونكريت CONCRETE</h4><div class="roads-field"><label id="roadConcreteInputLabel">منسوب الكونكريت (م)</label><input id="roadConcreteInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadConcreteOtherLabel">المنسوب المحسوب</span><strong id="roadConcreteOther">—</strong></div></div>
-   <div class="road-layer"><h4><span class="road-swatch subbase"></span> السب بيس SUBBASE</h4><div class="roads-field"><label id="roadSubbaseInputLabel">منسوب السب بيس (م)</label><input id="roadSubbaseInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadSubbaseOtherLabel">المنسوب المحسوب</span><strong id="roadSubbaseOther">—</strong></div></div>
-   <div class="road-layer"><h4><span class="road-swatch boulder"></span> الجلمود BOULDER</h4><div class="roads-field"><label id="roadBoulderInputLabel">منسوب الجلمود (م)</label><input id="roadBoulderInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadBoulderOtherLabel">المنسوب المحسوب</span><strong id="roadBoulderOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch asphalt"></span><span>الإسفلت</span></h4><div class="road-layer-level"><label id="roadAsphaltInputLabel">المنسوب (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadAsphaltOtherLabel">المنسوب المحسوب</span><strong id="roadAsphaltOther">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch concrete"></span><span>الكونكريت</span></h4><div class="road-layer-level"><label id="roadConcreteInputLabel">المنسوب (م)</label><input id="roadConcreteInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadConcreteOtherLabel">المنسوب المحسوب</span><strong id="roadConcreteOther">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch subbase"></span><span>السبيس</span></h4><div class="road-layer-level"><label id="roadSubbaseInputLabel">المنسوب (م)</label><input id="roadSubbaseInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadSubbaseOtherLabel">المنسوب المحسوب</span><strong id="roadSubbaseOther">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch boulder"></span><span>الجلمود</span></h4><div class="road-layer-level"><label id="roadBoulderInputLabel">المنسوب (م)</label><input id="roadBoulderInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadBoulderOtherLabel">المنسوب المحسوب</span><strong id="roadBoulderOther">—</strong></span></div></div>
    <p class="help">تُحسب مناسيب الطبقات التالية بطرح سماكات الطبقات من منسوب الإسفلت المدخل.</p>
   </div></article>
   <article class="card full"><div class="card-head"><h3>سماكات الطبقات والكميات</h3><span class="tag">قيم قابلة للتعديل</span></div><div class="card-body">
