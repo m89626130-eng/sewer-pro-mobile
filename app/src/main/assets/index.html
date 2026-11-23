@@ -157,6 +157,12 @@ select::-ms-expand{display:none}
 #roads .road-layer .road-level-result strong{font-size:16px!important;color:#facc15!important;direction:ltr!important;white-space:nowrap!important}
 #roads .road-layer .road-layer-level .road-level-result{margin-inline-start:auto!important}
 @media(max-width:420px){#roads .road-layer{gap:7px!important;padding:9px!important}#roads .road-layer h4{flex-basis:38%!important;font-size:12px!important}#roads .road-layer .road-layer-level{gap:5px!important}#roads .road-layer .road-layer-level>label{font-size:10px!important}#roads .road-layer .road-layer-level>input{width:82px!important;font-size:12px!important}}
+
+#roads .road-staff-entry{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:10px 12px;border:1px solid #475569;border-radius:10px;background:#172338}
+#roads .road-staff-entry label{font-size:13px;font-weight:700;color:#e2e8f0;white-space:nowrap}
+#roads .road-staff-entry input{max-width:170px;min-height:40px;text-align:center}
+#roads .road-layer .road-layer-level{justify-content:flex-start!important}
+#roads .road-layer .road-level-result{margin-inline-start:0!important}
 </style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
@@ -216,6 +222,7 @@ select::-ms-expand{display:none}
    <div class="help" id="roadStationCount">لم يتم إنشاء المحطات بعد.</div>
   </div></article>
   <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
+   <div class="roads-field road-staff-entry"><label id="roadAsphaltInputLabel" for="roadAsphaltInput">قراءة المسطرة على الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div>
    <div class="road-layer"><h4><span class="road-swatch asphalt"></span><span>الإسفلت</span></h4><div class="road-layer-level"><label id="roadAsphaltInputLabel">المنسوب (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadAsphaltOtherLabel">المنسوب المحسوب</span><strong id="roadAsphaltOther">—</strong></span></div></div>
    <div class="road-layer"><h4><span class="road-swatch concrete"></span><span>الكونكريت</span></h4><div class="road-layer-level"><label id="roadConcreteInputLabel">المنسوب (م)</label><input id="roadConcreteInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadConcreteOtherLabel">المنسوب المحسوب</span><strong id="roadConcreteOther">—</strong></span></div></div>
    <div class="road-layer"><h4><span class="road-swatch subbase"></span><span>السبيس</span></h4><div class="road-layer-level"><label id="roadSubbaseInputLabel">المنسوب (م)</label><input id="roadSubbaseInput" type="number" step="0.001" placeholder="أدخل المنسوب"><span class="road-level-result"><span id="roadSubbaseOtherLabel">المنسوب المحسوب</span><strong id="roadSubbaseOther">—</strong></span></div></div>
@@ -764,9 +771,9 @@ apply();
  const oldPersist=roadPersist;
  function currentInput(){return num('roadAsphaltInput');}
  function calcLevels(){
-  const input=currentInput();
-  if(input===null)return null;
-  const asphalt=input;
+  const reading=currentInput(),HI=roadHI();
+  if(reading===null||HI===null)return null;
+  const asphalt=HI-reading;
   const levels={Asphalt:asphalt};
   for(let i=1;i<ids.length;i++){
    const thickness=num('road'+ids[i-1]+'Thk');
@@ -786,12 +793,8 @@ apply();
   if(!roadStations.length)return;
   const d=roadValues[roadStations[roadIndex].key]||{};
   let v=d._inputValue;
-  if(v!==undefined&&v!==null&&d._inputMode&&d._inputMode!==roadMode&&roadHI()!==null)v=roadHI()-v;
-  if(v===undefined||v===null){
-   if(roadMode==='level')v=d.Asphalt;
-   else if(d.Asphalt!==undefined&&d.Asphalt!==null&&roadHI()!==null)v=roadHI()-d.Asphalt;
-  }
-  $id('roadAsphaltInput').value=v===undefined||v===null?'':v;
+  if(v===undefined||v===null)v='';
+  $id('roadAsphaltInput').value=v;
   ids.slice(1).forEach(id=>{$id('road'+id+'Input').value='';});
   $id('roadStation').textContent=roadStations[roadIndex].label;
   render();
@@ -800,10 +803,10 @@ apply();
   const HI=roadHI();
   $id('roadHI').textContent=fmt(HI);
   ids.forEach((id,i)=>{
-   const inputWrap=$id('road'+id+'Input').closest('.roads-field');
-   if(inputWrap)inputWrap.hidden=i!==0;
-   $id('road'+id+'InputLabel').textContent='منسوب '+labels[id]+' (م)';
-   $id('road'+id+'OtherLabel').textContent='المنسوب المحسوب — '+labels[id];
+   const inputWrap=$id('road'+id+'Input').closest('.road-layer-level');
+   if(inputWrap)inputWrap.querySelector('label')?.remove();
+   if(inputWrap)inputWrap.querySelector('input')?.remove();
+   $id('road'+id+'OtherLabel').textContent='منسوب '+labels[id];
   });
   const extra=$id('roadStaffReadingWrap');if(extra)extra.remove();
   const levels=calcLevels();
@@ -823,11 +826,11 @@ apply();
  roadRender=render;
  const modeCard=document.querySelector('.roads-mode');if(modeCard)modeCard.remove();
  const modeHelp=document.querySelector('.roads-mode')?.nextElementSibling;
- if(modeHelp)modeHelp.textContent='أدخل منسوب الإسفلت، وسيحسب البرنامج بقية مناسيب الطبقات من السماكات.';
+ if(modeHelp)modeHelp.textContent='أدخل قراءة المسطرة مرة واحدة على طبقة الإسفلت، وستظهر مناسيب الطبقات الأربع تلقائياً.';
  const asphaltLabel=$id('roadAsphaltInputLabel');
- if(asphaltLabel)asphaltLabel.textContent='منسوب الإسفلت (م)';
+ if(asphaltLabel)asphaltLabel.textContent='قراءة المسطرة على الإسفلت (م)';
  ids.slice(1).forEach(id=>{$id('road'+id+'Input').value='';});
- $id('roadAsphaltInput').placeholder='أدخل منسوب الإسفلت';
+ $id('roadAsphaltInput').placeholder='أدخل قراءة المسطرة';
  $id('roadAsphaltInput').addEventListener('input',()=>{saveCurrent();render();});
  render();
 })();
