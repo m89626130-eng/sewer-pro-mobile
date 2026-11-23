@@ -193,8 +193,7 @@ select::-ms-expand{display:none}
    <div class="roads-output"><span>HI — منسوب الجهاز</span><strong id="roadHI">—</strong></div>
   </div></article>
   <article class="card full"><div class="card-head"><h3>طريقة إدخال واحدة لجميع الطبقات</h3><span class="tag">خيار موحد</span></div><div class="card-body">
-   <div class="radio-row roads-mode"><label><input type="radio" name="roadMode" value="level" checked> إدخال المنسوب</label><label><input type="radio" name="roadMode" value="reading"> إدخال قراءة المسطرة</label></div>
-   <p class="help">اختر الطريقة مرة واحدة فقط. ستُطبق على الإسفلت والكونكريت والسب بيس والجلمود، ويحسب البرنامج القيمة المقابلة تلقائياً.</p>
+   <p class="help">أدخل منسوب طبقة الإسفلت فقط، وسيحسب البرنامج مناسيب الكونكريت والسبيس والجلمود تلقائياً حسب سماكات الطبقات.</p>
   </div></article>
   <article class="card full"><div class="card-head"><h3>بيانات الطريق والمحطات</h3><span class="tag">توليد تلقائي</span></div><div class="card-body">
    <div class="roads-field"><label>طول الطريق (م)</label><input id="roadLength" type="number" min="0" step="0.01" value="100"></div>
@@ -205,11 +204,11 @@ select::-ms-expand{display:none}
    <div class="help" id="roadStationCount">لم يتم إنشاء المحطات بعد.</div>
   </div></article>
   <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
-   <div class="road-layer"><h4><span class="road-swatch asphalt"></span> الإسفلت ASPHALT</h4><div class="roads-field"><label id="roadAsphaltInputLabel">منسوب الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadAsphaltOtherLabel">قراءة المسطرة</span><strong id="roadAsphaltOther">—</strong></div></div>
-   <div class="road-layer"><h4><span class="road-swatch concrete"></span> الكونكريت CONCRETE</h4><div class="roads-field"><label id="roadConcreteInputLabel">منسوب الكونكريت (م)</label><input id="roadConcreteInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadConcreteOtherLabel">قراءة المسطرة</span><strong id="roadConcreteOther">—</strong></div></div>
-   <div class="road-layer"><h4><span class="road-swatch subbase"></span> السب بيس SUBBASE</h4><div class="roads-field"><label id="roadSubbaseInputLabel">منسوب السب بيس (م)</label><input id="roadSubbaseInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadSubbaseOtherLabel">قراءة المسطرة</span><strong id="roadSubbaseOther">—</strong></div></div>
-   <div class="road-layer"><h4><span class="road-swatch boulder"></span> الجلمود BOULDER</h4><div class="roads-field"><label id="roadBoulderInputLabel">منسوب الجلمود (م)</label><input id="roadBoulderInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadBoulderOtherLabel">قراءة المسطرة</span><strong id="roadBoulderOther">—</strong></div></div>
-   <p class="help">المعادلات: HI = BM + BS، والقراءة = HI − المنسوب، والمنسوب = HI − القراءة.</p>
+   <div class="road-layer"><h4><span class="road-swatch asphalt"></span> الإسفلت ASPHALT</h4><div class="roads-field"><label id="roadAsphaltInputLabel">منسوب الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadAsphaltOtherLabel">المنسوب المحسوب</span><strong id="roadAsphaltOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch concrete"></span> الكونكريت CONCRETE</h4><div class="roads-field"><label id="roadConcreteInputLabel">منسوب الكونكريت (م)</label><input id="roadConcreteInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadConcreteOtherLabel">المنسوب المحسوب</span><strong id="roadConcreteOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch subbase"></span> السب بيس SUBBASE</h4><div class="roads-field"><label id="roadSubbaseInputLabel">منسوب السب بيس (م)</label><input id="roadSubbaseInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadSubbaseOtherLabel">المنسوب المحسوب</span><strong id="roadSubbaseOther">—</strong></div></div>
+   <div class="road-layer"><h4><span class="road-swatch boulder"></span> الجلمود BOULDER</h4><div class="roads-field"><label id="roadBoulderInputLabel">منسوب الجلمود (م)</label><input id="roadBoulderInput" type="number" step="0.001" placeholder="أدخل القيمة"></div><div class="roads-output"><span id="roadBoulderOtherLabel">المنسوب المحسوب</span><strong id="roadBoulderOther">—</strong></div></div>
+   <p class="help">تُحسب مناسيب الطبقات التالية بطرح سماكات الطبقات من منسوب الإسفلت المدخل.</p>
   </div></article>
   <article class="card full"><div class="card-head"><h3>سماكات الطبقات والكميات</h3><span class="tag">قيم قابلة للتعديل</span></div><div class="card-body">
    <div class="roads-field"><label>سماكة الإسفلت (سم)</label><input id="roadAsphaltThk" type="number" min="0" step="0.1" value="5"></div>
@@ -510,7 +509,7 @@ function roadRestore(){
  try{
   const raw=localStorage.getItem('sewerProRoadDraft');if(!raw)return;
   const d=JSON.parse(raw);Object.entries(d.values||{}).forEach(([id,v])=>{if($(id))$(id).value=v;});
-  roadStations=Array.isArray(d.stations)?d.stations:[];roadIndex=Math.max(0,Math.min(roadStations.length-1,Number(d.index)||0));roadMode=d.mode==='reading'?'reading':'level';roadValues=d.stationValues||{};
+  roadStations=Array.isArray(d.stations)?d.stations:[];roadIndex=Math.max(0,Math.min(roadStations.length-1,Number(d.index)||0));roadMode='level';roadValues=d.stationValues||{};
   const mode=document.querySelector('input[name="roadMode"][value="'+roadMode+'"]');if(mode)mode.checked=true;
   if(roadStations.length)roadLoadCurrent();else roadRender();
  }catch(e){roadRender();}
@@ -652,11 +651,7 @@ apply();
   b.addEventListener('click',function(){const closed=card.classList.toggle('collapsed');b.textContent=closed?'▶':'▼';b.setAttribute('aria-expanded',String(!closed));});head.appendChild(b);
  });
  const methodCard=ordered[1],methodBody=methodCard?.querySelector('.card-body');
- if(methodBody&&!document.getElementById('roadStaffReading')){
-  const field=document.createElement('div');field.className='roads-field';field.id='roadStaffReadingWrap';
-  field.innerHTML='<label for="roadStaffReading">قراءة المسطرة على سطح الإسفلت فقط (م)</label><input id="roadStaffReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة">';
-  methodBody.appendChild(field);
- }
+ /* Staff-reading input intentionally removed from Road Works. */
  document.querySelectorAll('#roads .road-layer').forEach(function(layer){
   const h=layer.querySelector('h4');if(!h)return;const sw=h.querySelector('.road-swatch');const label=h.textContent.trim().replace(/^.*?\s/,'');
   h.innerHTML='<button class="road-layer-toggle" type="button" aria-expanded="true">'+(sw?sw.outerHTML:'')+'<span>'+label+'</span><span class="layer-arrow">▼</span></button>';
@@ -684,7 +679,7 @@ apply();
  roadLoadCurrent=function(){
   if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};
   roadIds.forEach(function(id){$('road'+id+'Input').value=d[id]===null||d[id]===undefined?'':d[id];});
-  if(roadMode==='reading')$('roadStaffReading').value=d._asphaltReading??'';
+  /* Staff-reading field removed from Road Works. */
   $('roadStation').textContent=roadStations[roadIndex].label;roadRender();
  };
  roadRender=function(){
@@ -694,7 +689,7 @@ apply();
    $('road'+id+'InputLabel').textContent='منسوب '+roadLabels[roadIds.indexOf(id)]+' (م)';
    $('road'+id+'OtherLabel').textContent=levelMode?'قراءة المسطرة المحسوبة':'المنسوب المحسوب';
   });
-  $('roadStaffReadingWrap').hidden=levelMode;
+  /* No staff-reading field in Road Works. */
   let levels={};
   if(levelMode)roadIds.forEach(function(id){levels[id]=roadVal('road'+id+'Input');});
   else{let z=H!==null&&roadVal('roadStaffReading')!==null?H-roadVal('roadStaffReading'):null;
@@ -714,7 +709,7 @@ apply();
    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(q),'Quantities');XLSX.writeFile(wb,'ARKAN_ROAD_WORKS.xlsx');roadStatus('تم تصدير Excel: مساحة وحجم فقط.','ok');
   }catch(e){roadStatus('تعذر تصدير Excel: '+e.message,'error');}
  });}
- $('roadStaffReading')?.addEventListener('input',function(){roadSaveCurrent();roadRender();});
+ /* Staff-reading input removed from Road Works. */
 
  /* Road cross-section, thickness validation and dedicated road report */
  const qtyCard=ordered[5],qtyBody=qtyCard?.querySelector('.card-body');
@@ -762,10 +757,9 @@ apply();
  const oldPersist=roadPersist;
  function currentInput(){return num('roadAsphaltInput');}
  function calcLevels(){
-  const HI=roadHI(),input=currentInput();
+  const input=currentInput();
   if(input===null)return null;
-  let asphalt=roadMode==='reading'?(HI===null?null:HI-input):input;
-  if(asphalt===null)return null;
+  const asphalt=input;
   const levels={Asphalt:asphalt};
   for(let i=1;i<ids.length;i++){
    const thickness=num('road'+ids[i-1]+'Thk');
@@ -796,20 +790,20 @@ apply();
   render();
  }
  function render(){
-  const HI=roadHI(),readingMode=roadMode==='reading';
+  const HI=roadHI();
   $id('roadHI').textContent=fmt(HI);
   ids.forEach((id,i)=>{
    const inputWrap=$id('road'+id+'Input').closest('.roads-field');
    if(inputWrap)inputWrap.hidden=i!==0;
-   $id('road'+id+'InputLabel').textContent=readingMode?'قراءة المسطرة على الإسفلت (م)':'منسوب الإسفلت (م)';
-   $id('road'+id+'OtherLabel').textContent=(readingMode?'منسوب ':'قراءة المسطرة — ')+labels[id];
+   $id('road'+id+'InputLabel').textContent='منسوب '+labels[id]+' (م)';
+   $id('road'+id+'OtherLabel').textContent='المنسوب المحسوب — '+labels[id];
   });
   const extra=$id('roadStaffReadingWrap');if(extra)extra.remove();
   const levels=calcLevels();
   ids.forEach(id=>{
    let result=null;
    if(levels){
-    result=readingMode?levels[id]:(HI===null?null:HI-levels[id]);
+    result=levels[id];
    }
    $id('road'+id+'Other').textContent=fmt(result)+' م';
   });
@@ -820,12 +814,13 @@ apply();
  roadSaveCurrent=saveCurrent;
  roadLoadCurrent=loadCurrent;
  roadRender=render;
+ const modeCard=document.querySelector('.roads-mode');if(modeCard)modeCard.remove();
  const modeHelp=document.querySelector('.roads-mode')?.nextElementSibling;
- if(modeHelp)modeHelp.textContent='أدخل قيمة واحدة فقط عند طبقة الإسفلت: اختر قراءة المسطرة ليحسب البرنامج مناسيب الطبقات الأربع، أو اختر منسوب الإسفلت ليحسب قراءات المسطرة المقابلة لجميع الطبقات. تُستخدم سماكات الطبقات المحفوظة تلقائياً.';
+ if(modeHelp)modeHelp.textContent='أدخل منسوب الإسفلت، وسيحسب البرنامج بقية مناسيب الطبقات من السماكات.';
  const asphaltLabel=$id('roadAsphaltInputLabel');
- if(asphaltLabel)asphaltLabel.textContent=roadMode==='reading'?'قراءة المسطرة على الإسفلت (م)':'منسوب الإسفلت (م)';
+ if(asphaltLabel)asphaltLabel.textContent='منسوب الإسفلت (م)';
  ids.slice(1).forEach(id=>{$id('road'+id+'Input').value='';});
- $id('roadAsphaltInput').placeholder='أدخل قراءة المسطرة أو منسوب الإسفلت';
+ $id('roadAsphaltInput').placeholder='أدخل منسوب الإسفلت';
  $id('roadAsphaltInput').addEventListener('input',()=>{saveCurrent();render();});
  render();
 })();
