@@ -25,12 +25,18 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import android.speech.RecognizerIntent;
+import org.json.JSONObject;
+import java.util.ArrayList;
 import java.io.OutputStream;
 
 public class MainActivity extends Activity {
     private static final int REQUEST_OPEN_JSON = 701;
     private static final int REQUEST_SAVE_FILE = 702;
     private static final int REQUEST_MIC_PERMISSION = 703;
+    private static final int REQUEST_NATIVE_SPEECH_PERMISSION = 704;
+    private static final int REQUEST_NATIVE_SPEECH = 705;
+    private String pendingSpeechLanguage = "ar-IQ";
     private PermissionRequest pendingWebPermissionRequest;
     private WebView webView;
     private ValueCallback<Uri[]> filePathCallback;
@@ -104,6 +110,15 @@ public class MainActivity extends Activity {
     }
 
     private class SewerNativeBridge {
+        @JavascriptInterface public void startSpeechRecognition(String language) {
+            runOnUiThread(() -> {
+                pendingSpeechLanguage = (language == null || language.isEmpty()) ? "ar-IQ" : language;
+                if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, REQUEST_NATIVE_SPEECH_PERMISSION);
+                } else launchNativeSpeechRecognition();
+            });
+        }
+
         @JavascriptInterface public void saveFile(String fileName, String mimeType, String base64) {
             runOnUiThread(() -> {
                 try {
@@ -134,8 +149,31 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void launchNativeSpeechRecognition() {
+        try {
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, pendingSpeechLanguage);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, pendingSpeechLanguage);
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "تحدث الآن");
+            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+            startActivityForResult(intent, REQUEST_NATIVE_SPEECH);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "خدمة التعرف الصوتي غير مثبتة. ثبّت أو حدّث تطبيق Google.", Toast.LENGTH_LONG).show();
+            webView.evaluateJavascript("window.onNativeSpeechError && window.onNativeSpeechError('unavailable')", null);
+        } catch (Exception e) {
+            Toast.makeText(this, "تعذر بدء التعرف الصوتي", Toast.LENGTH_LONG).show();
+            webView.evaluateJavascript("window.onNativeSpeechError && window.onNativeSpeechError('start')", null);
+        }
+    }
+
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_NATIVE_SPEECH_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) launchNativeSpeechRecognition();
+            else Toast.makeText(this, "اسمح للتطبيق باستخدام المايكروفون أولاً", Toast.LENGTH_LONG).show();
+            return;
+        }
         if (requestCode == REQUEST_MIC_PERMISSION && pendingWebPermissionRequest != null) {
             PermissionRequest request = pendingWebPermissionRequest;
             pendingWebPermissionRequest = null;
@@ -150,6 +188,16 @@ public class MainActivity extends Activity {
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_NATIVE_SPEECH) {
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (matches != null && !matches.isEmpty()) {
+                    String spoken = JSONObject.quote(matches.get(0));
+                    webView.evaluateJavascript("window.onNativeSpeechResult && window.onNativeSpeechResult(" + spoken + ")", null);
+                }
+            } else webView.evaluateJavascript("window.onNativeSpeechError && window.onNativeSpeechError('cancel')", null);
+            return;
+        }
         if (requestCode == REQUEST_OPEN_JSON) {
             if (filePathCallback != null) {
                 Uri[] results = null;
