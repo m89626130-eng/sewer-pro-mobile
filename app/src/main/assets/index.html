@@ -826,4 +826,62 @@ apply();
  render();
 })();
 
+
+/* ARKAN ROAD LEVEL FIX: calculate each layer independently and preserve partial results. */
+(function(){
+ const ids=['Asphalt','Concrete','Subbase','Boulder'];
+ const labels={Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'};
+ const el=id=>document.getElementById(id);
+ const number=id=>{const x=el(id);if(!x||String(x.value).trim()==='')return null;const n=Number(x.value);return Number.isFinite(n)?n:null;};
+ const fmt=n=>n===null||!Number.isFinite(n)?'—':n.toFixed(3)+' م';
+ function calculate(){
+  const bm=number('roadBM'),bs=number('roadBS'),reading=number('roadAsphaltInput');
+  const hi=bm===null||bs===null?null:bm+bs;
+  const levels={Asphalt:hi===null||reading===null?null:hi-reading,Concrete:null,Subbase:null,Boulder:null};
+  for(let i=1;i<ids.length;i++){
+   const previous=ids[i-1],thickness=number('road'+previous+'Thk');
+   levels[ids[i]]=levels[previous]===null||thickness===null?null:levels[previous]-thickness/100;
+  }
+  return {hi,reading,levels};
+ }
+ function save(){
+  if(!Array.isArray(roadStations)||!roadStations.length)return;
+  const d=calculate(),record={_staffReading:d.reading};
+  ids.forEach(id=>record[id]=d.levels[id]);
+  roadValues[roadStations[roadIndex].key]=record;
+ }
+ function render(){
+  const d=calculate();
+  const hi=el('roadHI');if(hi)hi.textContent=fmt(d.hi);
+  const inputLabel=el('roadAsphaltInputLabel');if(inputLabel)inputLabel.textContent='قراءة المسطرة (م)';
+  const input=el('roadAsphaltInput');if(input)input.placeholder='أدخل قراءة المسطرة';
+  ids.forEach(id=>{
+   const out=el('road'+id+'Other');
+   const label=el('road'+id+'OtherLabel');
+   if(label)label.textContent='منسوب '+labels[id];
+   if(out)out.textContent=fmt(d.levels[id]);
+  });
+  if(Array.isArray(roadStations)&&roadStations.length){
+   save();
+   if(typeof roadRenderStations==='function')roadRenderStations();
+  }
+  if(typeof roadRenderQty==='function')roadRenderQty();
+  if(typeof roadPersist==='function')roadPersist();
+ }
+ function load(){
+  if(!Array.isArray(roadStations)||!roadStations.length)return;
+  const record=roadValues[roadStations[roadIndex].key]||{};
+  const input=el('roadAsphaltInput');if(input)input.value=record._staffReading??'';
+  const station=el('roadStation');if(station)station.textContent=roadStations[roadIndex].label;
+  render();
+ }
+ roadSaveCurrent=save;
+ roadLoadCurrent=load;
+ roadRender=render;
+ ['roadBM','roadBS','roadAsphaltInput','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>{
+  const x=el(id);if(x)x.addEventListener('input',render);
+ });
+ render();
+})(); 
+
 </script></body></html>
