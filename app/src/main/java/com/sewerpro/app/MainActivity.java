@@ -17,6 +17,8 @@ import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.ConsoleMessage;
+import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(0xFF06264D);
         getWindow().setNavigationBarColor(0xFF06264D);
         webView = new WebView(this);
+        WebView.setWebContentsDebuggingEnabled(true);
         webView.setBackgroundColor(0xFFEEF3F8);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
@@ -49,6 +52,8 @@ public class MainActivity extends Activity {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.addJavascriptInterface(new SewerNativeBridge(), "SewerNative");
         webView.setWebViewClient(new WebViewClient() {
+            @Override public void onPageFinished(WebView view, String url) { super.onPageFinished(view, url); Log.i("ARKAN_WEB", "Page loaded: " + url); }
+            @Override public void onReceivedError(WebView view, WebResourceRequest request, android.webkit.WebResourceError error) { super.onReceivedError(view, request, error); Log.e("ARKAN_WEB", "Load error: " + request.getUrl() + " / " + error.getDescription()); }
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if ("file".equals(uri.getScheme()) || "about".equals(uri.getScheme())) return false;
@@ -56,6 +61,7 @@ public class MainActivity extends Activity {
             }
         });
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override public boolean onConsoleMessage(ConsoleMessage message) { Log.e("ARKAN_JS", message.message() + " -- " + message.sourceId() + ":" + message.lineNumber()); return true; }
             @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
                 if (filePathCallback != null) filePathCallback.onReceiveValue(null);
                 filePathCallback = callback;
