@@ -487,12 +487,12 @@ let roadStations=[],roadIndex=0,roadMode='level',roadValues={};
 const roadVal=id=>{const e=$(id);if(!e||e.value.trim()==='')return null;const n=Number(e.value);return Number.isFinite(n)?n:null;};
 const roadFmt=n=>Number.isFinite(n)?n.toFixed(3):'—';
 const roadHI=()=>{const b=roadVal('roadBM'),s=roadVal('roadBS');return b===null||s===null?null:b+s;};
-function roadSaveCurrent(){if(!roadStations.length)return;const key=roadStations[roadIndex];roadValues[key]={};roadIds.forEach(n=>roadValues[key][n]=roadVal('road'+n+'Input'));}
-function roadLoadCurrent(){if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex]]||{};roadIds.forEach(n=>{$('road'+n+'Input').value=d[n]===null||d[n]===undefined?'':d[n];});$('roadStation').textContent=roadStations[roadIndex].label;roadRender();}
+function roadSaveCurrent(){if(!roadStations.length)return;const key=roadStations[roadIndex].key;roadValues[key]=roadValues[key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)roadValues[key][n]=roadVal('road'+n+'Input');});}
+function roadLoadCurrent(){if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)e.value=d[n]===null||d[n]===undefined?'':d[n];});const st=$('roadStation');if(st)st.textContent=roadStations[roadIndex].label;roadRender();}
 function roadRender(){
- const H=roadHI();$('roadHI').textContent=roadFmt(H);
- roadIds.forEach(n=>{const levelMode=roadMode==='level';$('road'+n+'InputLabel').textContent=(levelMode?'منسوب ':'قراءة المسطرة — ')+({Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السب بيس',Boulder:'الجلمود'}[n])+(levelMode?' (م)':' (م)');$('road'+n+'OtherLabel').textContent=levelMode?'قراءة المسطرة (محسوبة)':'المنسوب (محسوب)';const v=roadVal('road'+n+'Input');$('road'+n+'Other').textContent=H===null||v===null?'—':roadFmt(levelMode?H-v:H-v)+' م';});
- roadRenderStations();roadRenderQty();roadPersist();
+ const H=roadHI(),hi=$('roadHI');if(hi)hi.textContent=roadFmt(H);
+ roadIds.forEach(n=>{const label=$('road'+n+'InputLabel'),otherLabel=$('road'+n+'OtherLabel'),other=$('road'+n+'Other'),input=$('road'+n+'Input');if(label)label.textContent='منسوب '+({Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'}[n])+' (م)';if(otherLabel)otherLabel.textContent='المنسوب المحسوب';if(other)other.textContent='—';if(input){const wrap=input.closest('.roads-field');if(wrap)wrap.hidden=n!=='Asphalt';}});
+ if(typeof roadRenderStations==='function')roadRenderStations();if(typeof roadRenderQty==='function')roadRenderQty();if(typeof roadPersist==='function')roadPersist();
 }
 function roadRenderStations(){
  $('roadStationCount').textContent=roadStations.length?'عدد المحطات: '+roadStations.length:'لم يتم إنشاء المحطات بعد.';
@@ -513,7 +513,7 @@ $('roadGenerate').addEventListener('click',roadGenerate);
 $('roadPrev').addEventListener('click',()=>roadMove(-1));$('roadNext').addEventListener('click',()=>roadMove(1));
 document.querySelectorAll('input[name="roadMode"]').forEach(e=>e.addEventListener('change',()=>{roadSaveCurrent();roadMode=e.value;roadRender();}));
 ['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>$(id).addEventListener('input',roadRender));
-roadIds.forEach(n=>$('road'+n+'Input').addEventListener('input',()=>{roadSaveCurrent();roadRender();}));
+roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)e.addEventListener('input',()=>{roadSaveCurrent();roadRender();});});
 $('roadCsv').addEventListener('click',()=>{roadSaveCurrent();const rows=[['المحطة',...roadLabels],...roadStations.map(st=>[st.label,...roadIds.map(n=>{const v=(roadValues[st.key]||{})[n];return v===undefined||v===null?'':roadFmt(v);})])];const csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');saveTextFile('ROAD_WORKS_Stations.csv','text/csv',csv);});
 function roadPersist(){
  try{
