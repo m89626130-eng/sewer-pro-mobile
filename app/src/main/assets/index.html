@@ -209,10 +209,10 @@ select::-ms-expand{display:none}
    <div class="roads-field"><label>BM — منسوب نقطة الربط (م)</label><input id="roadBM" type="number" step="0.001" placeholder="أدخل BM"></div>
    <div class="roads-field"><label>BS — قراءة الباك سايد (م)</label><input id="roadBS" type="number" step="0.001" placeholder="أدخل BS"></div>
    <div class="roads-output"><span>HI — منسوب الجهاز</span><strong id="roadHI">—</strong></div>
-   <div class="roads-field road-staff-entry"><label id="roadAsphaltInputLabel" for="roadAsphaltInput">قراءة المسطرة على الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div>
+   <div class="roads-field"><label for="roadInputMode">نوع الإدخال الموحد لجميع الطبقات</label><select id="roadInputMode"><option value="reading">إدخال قراءة المسطرة</option><option value="level">إدخال المنسوب</option></select></div><div class="roads-field road-staff-entry"><label id="roadAsphaltInputLabel" for="roadAsphaltInput">قراءة المسطرة على الإسفلت (م)</label><input id="roadAsphaltInput" type="number" step="0.001" placeholder="أدخل قراءة واحدة فقط"></div>
   </div></article>
   <article class="card full"><div class="card-head"><h3>طريقة إدخال واحدة لجميع الطبقات</h3><span class="tag">خيار موحد</span></div><div class="card-body">
-   <p class="help">أدخل منسوب طبقة الإسفلت فقط، وسيحسب البرنامج مناسيب الكونكريت والسبيس والجلمود تلقائياً حسب سماكات الطبقات.</p>
+   <p class="help">اختر إدخال قراءة واحدة أو منسوب واحد للإسفلت. سيحسب البرنامج المنسوب والقراءة تلقائياً لكل الطبقات الأربع.</p>
   </div></article>
   <article class="card full"><div class="card-head"><h3>بيانات الطريق والمحطات</h3><span class="tag">توليد تلقائي</span></div><div class="card-body">
    <div class="roads-field"><label>طول الطريق (م)</label><input id="roadLength" type="number" min="0" step="0.01" value="100"></div>
@@ -224,10 +224,10 @@ select::-ms-expand{display:none}
   </div></article>
   <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
 
-   <div class="road-layer"><h4><span class="road-swatch asphalt"></span><span>الإسفلت</span></h4><div class="road-layer-level"><span class="road-level-result"><span id="roadAsphaltOtherLabel">المنسوب المحسوب</span><strong id="roadAsphaltOther">—</strong></span></div></div>
-   <div class="road-layer"><h4><span class="road-swatch concrete"></span><span>الكونكريت</span></h4><div class="road-layer-level"><span class="road-level-result"><span id="roadConcreteOtherLabel">المنسوب المحسوب</span><strong id="roadConcreteOther">—</strong></span></div></div>
-   <div class="road-layer"><h4><span class="road-swatch subbase"></span><span>السبيس</span></h4><div class="road-layer-level"><span class="road-level-result"><span id="roadSubbaseOtherLabel">المنسوب المحسوب</span><strong id="roadSubbaseOther">—</strong></span></div></div>
-   <div class="road-layer"><h4><span class="road-swatch boulder"></span><span>الجلمود</span></h4><div class="road-layer-level"><span class="road-level-result"><span id="roadBoulderOtherLabel">المنسوب المحسوب</span><strong id="roadBoulderOther">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch asphalt"></span><span>الإسفلت</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadAsphaltOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadAsphaltReading">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch concrete"></span><span>الكونكريت</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadConcreteOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadConcreteReading">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch subbase"></span><span>السبيس</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadSubbaseOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadSubbaseReading">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch boulder"></span><span>الجلمود</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadBoulderOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadBoulderReading">—</strong></span></div></div>
    <p class="help">تُحسب مناسيب الطبقات التالية بطرح سماكات الطبقات من منسوب الإسفلت المدخل.</p>
   </div></article>
   <article class="card full"><div class="card-head"><h3>سماكات الطبقات والكميات</h3><span class="tag">قيم قابلة للتعديل</span></div><div class="card-body">
@@ -769,4 +769,58 @@ apply();
  render();
 })(); 
 
+
+/* ARKAN ROAD LEVELS — single shared input, dual automatic outputs */
+(function(){
+ const ids=['Asphalt','Concrete','Subbase','Boulder'];
+ const names={Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'};
+ const $=id=>document.getElementById(id);
+ const n=id=>{const e=$(id);if(!e||String(e.value).trim()==='')return null;const v=Number(e.value);return Number.isFinite(v)?v:null;};
+ const fmt=v=>v===null||!Number.isFinite(v)?'—':v.toFixed(3)+' م';
+ function calc(){
+  const bm=n('roadBM'),bs=n('roadBS'),hi=bm===null||bs===null?null:bm+bs;
+  const raw=n('roadAsphaltInput'),mode=$('roadInputMode')?.value||'reading';
+  const asphalt=raw===null||hi===null?null:(mode==='reading'?hi-raw:raw);
+  const levels={Asphalt:asphalt};
+  for(let i=1;i<ids.length;i++){
+   const t=n('road'+ids[i-1]+'Thk'),prev=levels[ids[i-1]];
+   levels[ids[i]]=prev===null||t===null?null:prev-t/100;
+  }
+  const readings={};ids.forEach(id=>readings[id]===undefined&&(readings[id]=hi===null||levels[id]===null?null:hi-levels[id]));
+  return {hi,levels,readings,mode,raw};
+ }
+ function save(){
+  if(!Array.isArray(roadStations)||!roadStations.length)return;
+  const d=calc(),rec={_staffReading:d.raw,_inputMode:d.mode};
+  ids.forEach(id=>rec[id]=d.levels[id]);
+  roadValues[roadStations[roadIndex].key]=rec;
+ }
+ function render(){
+  const d=calc(),hi=$('roadHI');if(hi)hi.textContent=fmt(d.hi);
+  const label=$('roadAsphaltInputLabel'),input=$('roadAsphaltInput');
+  if(label)label.textContent=d.mode==='reading'?'قراءة المسطرة على الإسفلت (م)':'منسوب الإسفلت (م)';
+  if(input)input.placeholder=d.mode==='reading'?'أدخل قراءة واحدة فقط':'أدخل منسوباً واحداً فقط';
+  ids.forEach(id=>{
+   const level=$( 'road'+id+'Other'),reading=$('road'+id+'Reading');
+   if(level)level.textContent=fmt(d.levels[id]);
+   if(reading)reading.textContent=fmt(d.readings[id]);
+  });
+  if(Array.isArray(roadStations)&&roadStations.length){save();if(typeof roadRenderStations==='function')roadRenderStations();}
+  if(typeof roadRenderQty==='function')roadRenderQty();
+  if(typeof roadPersist==='function')roadPersist();
+ }
+ function load(){
+  if(!Array.isArray(roadStations)||!roadStations.length)return;
+  const rec=roadValues[roadStations[roadIndex].key]||{};
+  const input=$('roadAsphaltInput'),mode=$('roadInputMode');
+  if(input)input.value=rec._staffReading??'';
+  if(mode)mode.value=rec._inputMode||'reading';
+  const station=$('roadStation');if(station)station.textContent=roadStations[roadIndex].label;
+  render();
+ }
+ if($('roadInputMode'))$('roadInputMode').addEventListener('change',render);
+ ['roadBM','roadBS','roadAsphaltInput','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>$(id)?.addEventListener('input',render));
+ roadSaveCurrent=save;roadLoadCurrent=load;roadRender=render;
+ render();
+})();
 </script></body></html>
