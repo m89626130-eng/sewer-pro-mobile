@@ -624,8 +624,8 @@ nodes.forEach(n=>{if(!originals.has(n))originals.set(n,n.nodeValue);const origin
 document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{if(!el.dataset.arPlaceholder)el.dataset.arPlaceholder=el.placeholder;el.placeholder=english?(attrs[el.dataset.arPlaceholder]||el.dataset.arPlaceholder):el.dataset.arPlaceholder;});
 }
 let language=localStorage.getItem('arkanSurveyLanguage')||'ar';
-function apply(){const en=language==='en';document.documentElement.lang=en?'en':'ar';document.documentElement.dir=en?'ltr':'rtl';translate(en);document.getElementById('languageSwitchText').textContent=en?'عربي':'EN';document.getElementById('languageSwitch').title=en?'Switch to Arabic':'Switch to English';}
-document.getElementById('languageSwitch').addEventListener('click',()=>{language=language==='ar'?'en':'ar';localStorage.setItem('arkanSurveyLanguage',language);apply();});
+function apply(){const en=language==='en';document.documentElement.lang=en?'en':'ar';document.documentElement.dir=en?'ltr':'rtl';translate(en);const label=document.getElementById('languageSwitchText');const button=document.getElementById('languageSwitch');if(label)label.textContent=en?'عربي':'EN';if(button)button.title=en?'Switch to Arabic':'Switch to English';}
+const languageButton=document.getElementById('languageSwitch');if(languageButton)languageButton.addEventListener('click',()=>{language=language==='ar'?'en':'ar';try{localStorage.setItem('arkanSurveyLanguage',language);}catch(e){}apply();});
 new MutationObserver(()=>translate(language==='en')).observe(document.body,{subtree:true,childList:true,characterData:true});
 apply();
 })()
