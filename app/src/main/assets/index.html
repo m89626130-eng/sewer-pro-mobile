@@ -863,6 +863,7 @@ apply();
 #arkanAiForm{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #435164}
 #arkanAiInput{min-width:0;flex:1;border:1px solid #64748b;border-radius:10px;background:#101b29;color:white;padding:11px;font:inherit}
 #arkanAiSend{background:#7b1838;color:white;padding:10px 16px}
+#arkanAiMic{background:#31536d;color:#fff;padding:10px 13px;min-width:44px}#arkanAiMic.listening{background:#b42335;box-shadow:0 0 0 3px #b4233566}
 #arkanAiNote{padding:7px 12px;color:#c4ccd7;font-size:10px;text-align:center;background:#121d2a}
 @media(min-width:700px){#arkanAiPanel{align-items:center}}
 </style>
@@ -872,8 +873,8 @@ apply();
   <header id="arkanAiHead"><div><h3>✦ ARKAN AI</h3><small>المساعد الهندسي المحلي – إصدار تجريبي</small></div><button id="arkanAiClose" type="button">إغلاق ✕</button></header>
   <div id="arkanAiMsgs" aria-live="polite"></div>
   <div id="arkanAiQuick"><button type="button" data-ai-q="اشرح حساب كميات الحفر">حساب الحفر</button><button type="button" data-ai-q="اشرح حساب الحجوم">حساب الحجوم</button><button type="button" data-ai-q="كيف أحول إحداثيات UTM؟">إحداثيات UTM</button><button type="button" data-ai-q="ما هي طريقة حساب المساحة؟">حساب المساحة</button></div>
-  <form id="arkanAiForm"><input id="arkanAiInput" autocomplete="off" placeholder="اكتب سؤالك الهندسي هنا..." aria-label="سؤالك"><button id="arkanAiSend" type="submit">إرسال</button></form>
-  <div id="arkanAiNote">يعمل دون إنترنت بإجابات إرشادية مبرمجة. محرك الذكاء الاصطناعي اللغوي الكامل غير مدمج في هذا الإصدار.</div>
+  <form id="arkanAiForm"><input id="arkanAiInput" autocomplete="off" placeholder="اكتب سؤالك / Type your question..." aria-label="سؤالك" dir="auto"><button id="arkanAiMic" type="button" aria-label="تحدث / Speak" title="تحدث / Speak">🎙️</button><button id="arkanAiSend" type="submit">إرسال / Send</button></form>
+  <div id="arkanAiNote">اكتب بالعربية أو English. الرد الصوتي والتحدث يعتمدان على دعم خدمات الصوت في جهازك. المساعد الحالي إرشادي مبرمج وليس نموذجاً لغوياً كاملاً.</div>
  </section>
 </div>
 <script>
@@ -881,19 +882,27 @@ apply();
  const panel=document.getElementById('arkanAiPanel'),msgs=document.getElementById('arkanAiMsgs'),input=document.getElementById('arkanAiInput');
  if(!panel||!msgs||!input)return;
  const add=(text,who)=>{const d=document.createElement('div');d.className='ai-msg '+who;d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;};
+ const isEnglish=q=>/[A-Za-z]/.test(q)&&!/[\\u0600-\\u06FF]/.test(q);
  const answer=q=>{
-  const s=q.toLowerCase();
-  if(/حفر|excavat/.test(s))return 'حساب كمية الحفر:\nالحجم = الطول × العرض × العمق.\nمثال: 100 م × 1 م × 1.5 م = 150 م³.\nأدخل الأبعاد في أداة «حساب كميات الحفر». هذه نتيجة حسابية وليست اعتماداً تصميمياً.';
-  if(/حجم|volume|خرسانة|سماك/.test(s))return 'حساب الحجم:\nالحجم = الطول × العرض × الارتفاع/السماكة.\nمثال: 10 × 2 × 0.15 = 3 م³.\nاختر «حساب الحجوم» أو «الخرسانة ومواد التنفيذ» حسب نوع البند.';
-  if(/مساح|area/.test(s))return 'حساب المساحة:\nالمساحة = الطول × العرض.\nمثال: 12 م × 4 م = 48 م².\nاستخدم أداة «حساب المساحات».';
-  if(/طول|length/.test(s))return 'لحساب الأطوال، أدخل طول العنصر بالمتر ثم اضغط «إضافة». يجمع البرنامج البنود ويعرض إجمالي الأطوال في جدول الكميات.';
-  if(/utm|إحداث|احداث|شرق|شمال|zone|38/.test(s))return 'تحويل الإحداثيات يتم من أداة UTM باستخدام نظام WGS84. المنطقة الافتراضية للمشروع هي 38N، ويمكن تغيير رقم المنطقة ونصف الكرة عند الحاجة. تأكد من اختيار المنطقة الصحيحة قبل التحويل.';
-  if(/تقرير|طباع|pdf|csv/.test(s))return 'لإخراج تقرير الكميات: أضف البنود أولاً، ثم افتح قسم الجداول والتقارير واستخدم أمر الطباعة أو التصدير المتاح. راجع الوحدات والكميات قبل اعتماد التقرير.';
-  if(/صرف|أنبوب|انبوب|منهول|منهل|ميل|انحدار/.test(s))return 'أستطيع حالياً تقديم إرشادات عامة عن أعمال البنية التحتية. لحساب ميل الأنبوب: الميل = فرق المنسوب ÷ طول الأنبوب، ويُعرض كنسبة مئوية عند ضرب الناتج في 100. لا تعتمد أي منسوب تنفيذي دون مراجعة بيانات المشروع.';
-  if(/مرحبا|السلام|هلا/.test(s))return 'أهلاً بك. أنا مساعد ARKAN المحلي التجريبي. اسألني عن حساب الأطوال والمساحات والحجوم والحفر أو تحويل إحداثيات UTM.';
-  return 'لم أجد إجابة مناسبة في قاعدة المساعدة المحلية الحالية. جرّب تحديد الموضوع: الحفر، الحجوم، المساحات، الأطوال، UTM، أو التقارير. محرك المحادثة الذكي الكامل يحتاج إلى دمج نموذج لغوي محلي مستقل.';
+  const s=q.toLowerCase(),en=isEnglish(q);
+  const replies=[
+   [/حفر|excavat/, 'Excavation quantity = length × width × depth. Example: 100 m × 1 m × 1.5 m = 150 m³. Enter the dimensions in the Excavation Quantity tool.', 'حساب كمية الحفر = الطول × العرض × العمق. مثال: 100 م × 1 م × 1.5 م = 150 م³. أدخل الأبعاد في أداة حساب كميات الحفر.'],
+   [/حجم|volume|خرسانة|concrete|thickness|سماك/, 'Volume = length × width × height/thickness. Example: 10 × 2 × 0.15 = 3 m³. Use the Volume or Concrete tool.', 'حساب الحجم = الطول × العرض × الارتفاع/السماكة. مثال: 10 × 2 × 0.15 = 3 م³. استخدم أداة حساب الحجوم أو الخرسانة.'],
+   [/مساح|area/, 'Area = length × width. Example: 12 m × 4 m = 48 m². Use the Area tool.', 'حساب المساحة = الطول × العرض. مثال: 12 م × 4 م = 48 م². استخدم أداة حساب المساحات.'],
+   [/طول|length/, 'Enter the element length in meters and press Add. The app totals the lengths in the quantity table.', 'أدخل طول العنصر بالمتر ثم اضغط إضافة. يجمع البرنامج الأطوال في جدول الكميات.'],
+   [/utm|إحداث|احداث|easting|northing|zone|38/, 'UTM conversion uses WGS84. The project default is Zone 38N; change the zone and hemisphere when your project requires it. Verify the correct zone before conversion.', 'تحويل الإحداثيات يتم باستخدام WGS84. المنطقة الافتراضية للمشروع هي 38N، ويمكن تغيير المنطقة ونصف الكرة عند الحاجة. تأكد من اختيار المنطقة الصحيحة قبل التحويل.'],
+   [/تقرير|طباع|pdf|csv|report|print|export/, 'Add the quantity items first, then open Tables and Reports and use the available print or export command. Check units and quantities before approval.', 'أضف بنود الكميات أولاً، ثم افتح الجداول والتقارير واستخدم أمر الطباعة أو التصدير المتاح. راجع الوحدات والكميات قبل الاعتماد.'],
+   [/صرف|أنبوب|انبوب|منهول|منهل|ميل|انحدار|sewer|pipe|manhole|slope/, 'Pipe slope = invert level difference ÷ pipe length. Multiply by 100 to express it as a percentage. Do not approve construction levels without checking project data.', 'ميل الأنبوب = فرق منسوب القاع ÷ طول الأنبوب. اضرب الناتج في 100 لتحصل على النسبة المئوية. لا تعتمد المناسيب التنفيذية دون مراجعة بيانات المشروع.'],
+   [/مرحبا|السلام|هلا|hello|hi|good morning/, 'Hello! I am the ARKAN local engineering helper. Ask me about excavation, volumes, areas, lengths, UTM, reports, or sewer networks.', 'أهلاً بك. أنا مساعد ARKAN الهندسي المحلي. اسألني عن الحفر والحجوم والمساحات والأطوال وإحداثيات UTM والتقارير وشبكات الصرف.']
+  ];
+  for(const [re,enText,arText] of replies)if(re.test(s))return en?enText:arText;
+  return en?'I could not find a matching topic in the current local help library. Try: excavation, volume, area, length, UTM, reports, or sewer pipe slope.':'لم أجد إجابة مناسبة في قاعدة المساعدة المحلية الحالية. جرّب تحديد الموضوع: الحفر، الحجوم، المساحات، الأطوال، UTM، التقارير أو ميل الأنابيب.';
  };
- const send=q=>{q=String(q||'').trim();if(!q)return;add(q,'user');input.value='';setTimeout(()=>add(answer(q),'bot'),120);};
+ const speak=(text,lang)=>{if(!('speechSynthesis'in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang||(/^[\\x00-\\x7F]*$/.test(text)?'en-US':'ar');speechSynthesis.speak(u);}catch(e){}};
+ const send=q=>{q=String(q||'').trim();if(!q)return;add(q,'user');input.value='';const reply=answer(q),en=isEnglish(q);setTimeout(()=>{add(reply,'bot');speak(reply,en?'en-US':'ar');},120);};
+ const mic=document.getElementById('arkanAiMic');
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(mic)mic.addEventListener('click',()=>{if(!SR){add('التعرف الصوتي غير متاح في WebView هذا الجهاز. يمكنك استخدام لوحة المفاتيح الصوتية في الهاتف. / Voice recognition is not available here; use your phone keyboard microphone.','bot');return;}try{const rec=new SR();rec.lang='ar-IQ';rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>mic.classList.add('listening');rec.onend=()=>mic.classList.remove('listening');rec.onerror=()=>{mic.classList.remove('listening');add('تعذر تشغيل المايكروفون. تحقق من إذن الميكروفون وإعدادات اللغة.','bot');};rec.onresult=e=>{const said=e.results[0][0].transcript;input.value=said;send(said);};rec.start();}catch(e){add('لم يتمكن التطبيق من بدء التسجيل الصوتي.','bot');}});
  document.getElementById('arkanAiFab').addEventListener('click',()=>{panel.classList.add('open');if(!msgs.childElementCount)add('مرحباً بك في ARKAN AI. أستطيع مساعدتك بإرشادات الحسابات المساحية والكميات المتوفرة محلياً.','bot');input.focus();});
  document.getElementById('arkanAiClose').addEventListener('click',()=>panel.classList.remove('open'));
  panel.addEventListener('click',e=>{if(e.target===panel)panel.classList.remove('open');});
