@@ -654,7 +654,6 @@ apply();
   h.querySelector('button').addEventListener('click',function(){const closed=layer.classList.toggle('collapsed');h.querySelector('.layer-arrow').textContent=closed?'▶':'▼';h.querySelector('button').setAttribute('aria-expanded',String(!closed));});
  });
  ['Asphalt','Concrete','Subbase','Boulder'].forEach(function(id){
-  const density=document.getElementById('road'+id+'Density');if(density)density.closest('.roads-field')?.remove();
   const th=document.getElementById('road'+id+'Thk');if(th)th.value='';
  });
  const qtable=document.querySelector('#roadQtyBody')?.closest('table');
