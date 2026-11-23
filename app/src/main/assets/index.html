@@ -488,7 +488,7 @@ const roadVal=id=>{const e=$(id);if(!e||e.value.trim()==='')return null;const n=
 const roadFmt=n=>Number.isFinite(n)?n.toFixed(3):'—';
 const roadHI=()=>{const b=roadVal('roadBM'),s=roadVal('roadBS');return b===null||s===null?null:b+s;};
 function roadSaveCurrent(){if(!roadStations.length)return;const key=roadStations[roadIndex].key;roadValues[key]=roadValues[key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)roadValues[key][n]=roadVal('road'+n+'Input');});}
-function roadLoadCurrent(){if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)e.value=d[n]===null||d[n]===undefined?'':d[n];});const st=$('roadStation');if(st)st.textContent=roadStations[roadIndex].label;roadRender();if(typeof window.roadLoadCurrent==='function')window.roadLoadCurrent();}
+function roadLoadCurrent(){if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)e.value=d[n]===null||d[n]===undefined?'':d[n];});const st=$('roadStation');if(st)st.textContent=roadStations[roadIndex].label;roadRender();}
 function roadRender(){
  const H=roadHI(),hi=$('roadHI');if(hi)hi.textContent=roadFmt(H);
  roadIds.forEach(n=>{const label=$('road'+n+'InputLabel'),otherLabel=$('road'+n+'OtherLabel'),other=$('road'+n+'Other'),input=$('road'+n+'Input');if(label)label.textContent='منسوب '+({Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'}[n])+' (م)';if(otherLabel)otherLabel.textContent='المنسوب المحسوب';if(other)other.textContent='—';if(input){const wrap=input.closest('.roads-field');if(wrap)wrap.hidden=n!=='Asphalt';}});
@@ -715,7 +715,7 @@ apply();
   });
   const mode=$('roadInputMode');if(mode){mode.addEventListener('input',render);mode.addEventListener('change',render);}
   window.roadSaveCurrent=save;window.roadLoadCurrent=load;window.roadRender=render;
-  render();
+  if(Array.isArray(roadStations)&&roadStations.length)load();else render();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(); 
