@@ -673,9 +673,7 @@ apply();
   h.innerHTML='<button class="road-layer-toggle" type="button" aria-expanded="true">'+(sw?sw.outerHTML:'')+'<span>'+label+'</span><span class="layer-arrow">▼</span></button>';
   h.querySelector('button').addEventListener('click',function(){const closed=layer.classList.toggle('collapsed');h.querySelector('.layer-arrow').textContent=closed?'▶':'▼';h.querySelector('button').setAttribute('aria-expanded',String(!closed));});
  });
- ['Asphalt','Concrete','Subbase','Boulder'].forEach(function(id){
-  const th=document.getElementById('road'+id+'Thk');if(th)th.value='';
- });
+ /* Keep the preset layer thicknesses; blank thicknesses prevent downstream levels from calculating. */
  const qtable=document.querySelector('#roadQtyBody')?.closest('table');
  if(qtable&&qtable.querySelector('thead tr')?.children.length>3)qtable.querySelector('thead tr').deleteCell(3);
  roadRenderQty=function(){
