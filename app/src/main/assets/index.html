@@ -770,57 +770,75 @@ apply();
 })(); 
 
 
-/* ARKAN ROAD LEVELS — single shared input, dual automatic outputs */
+/* ARKAN ROAD LEVELS — repaired authoritative calculator */
 (function(){
  const ids=['Asphalt','Concrete','Subbase','Boulder'];
  const names={Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'};
  const $=id=>document.getElementById(id);
- const n=id=>{const e=$(id);if(!e||String(e.value).trim()==='')return null;const v=Number(e.value);return Number.isFinite(v)?v:null;};
- const fmt=v=>v===null||!Number.isFinite(v)?'—':v.toFixed(3)+' م';
- function calc(){
-  const bm=n('roadBM'),bs=n('roadBS'),hi=bm===null||bs===null?null:bm+bs;
-  const raw=n('roadAsphaltInput'),mode=$('roadInputMode')?.value||'reading';
-  const asphalt=raw===null||hi===null?null:(mode==='reading'?hi-raw:raw);
-  const levels={Asphalt:asphalt};
-  for(let i=1;i<ids.length;i++){
-   const t=n('road'+ids[i-1]+'Thk'),prev=levels[ids[i-1]];
-   levels[ids[i]]=prev===null||t===null?null:prev-t/100;
+ const read=id=>{
+  const e=$(id); if(!e) return null;
+  const raw=String(e.value??'').trim();
+  if(raw==='') return null;
+  const v=Number(raw); return Number.isFinite(v)?v:null;
+ };
+ const show=v=>v===null||!Number.isFinite(v)?'—':v.toFixed(3)+' م';
+ function calculate(){
+  const bm=read('roadBM'),bs=read('roadBS');
+  const hi=bm===null||bs===null?null:bm+bs;
+  const mode=$('roadInputMode')?.value||'reading';
+  const entered=read('roadAsphaltInput');
+  const levels={Asphalt:null,Concrete:null,Subbase:null,Boulder:null};
+  const readings={Asphalt:null,Concrete:null,Subbase:null,Boulder:null};
+  if(hi!==null&&entered!==null) levels.Asphalt=mode==='level'?entered:hi-entered;
+  for(let k=1;k<ids.length;k++){
+   const thickness=read('road'+ids[k-1]+'Thk');
+   const prior=levels[ids[k-1]];
+   if(prior!==null&&thickness!==null) levels[ids[k]]=prior-thickness/100;
   }
-  const readings={};ids.forEach(id=>readings[id]===undefined&&(readings[id]=hi===null||levels[id]===null?null:hi-levels[id]));
-  return {hi,levels,readings,mode,raw};
+  ids.forEach(id=>{if(hi!==null&&levels[id]!==null)readings[id]=hi-levels[id];});
+  return {hi,mode,entered,levels,readings};
  }
  function save(){
-  if(!Array.isArray(roadStations)||!roadStations.length)return;
-  const d=calc(),rec={_staffReading:d.raw,_inputMode:d.mode};
-  ids.forEach(id=>rec[id]=d.levels[id]);
-  roadValues[roadStations[roadIndex].key]=rec;
+  if(!Array.isArray(window.roadStations)||!roadStations.length||!window.roadValues)return;
+  const d=calculate(),station=roadStations[window.roadIndex||0];
+  if(!station)return;
+  const record={_staffReading:d.entered,_inputMode:d.mode,_hi:d.hi};
+  ids.forEach(id=>{record[id]=d.levels[id];record[id+'_reading']=d.readings[id];});
+  roadValues[station.key]=record;
  }
  function render(){
-  const d=calc(),hi=$('roadHI');if(hi)hi.textContent=fmt(d.hi);
+  const d=calculate();
+  if($('roadHI')) $('roadHI').textContent=show(d.hi);
   const label=$('roadAsphaltInputLabel'),input=$('roadAsphaltInput');
-  if(label)label.textContent=d.mode==='reading'?'قراءة المسطرة على الإسفلت (م)':'منسوب الإسفلت (م)';
-  if(input)input.placeholder=d.mode==='reading'?'أدخل قراءة واحدة فقط':'أدخل منسوباً واحداً فقط';
+  if(label)label.textContent=d.mode==='level'?'منسوب الإسفلت (م)':'قراءة المسطرة على الإسفلت (م)';
+  if(input)input.placeholder=d.mode==='level'?'أدخل منسوب الإسفلت':'أدخل قراءة المسطرة على الإسفلت';
   ids.forEach(id=>{
-   const level=$( 'road'+id+'Other'),reading=$('road'+id+'Reading');
-   if(level)level.textContent=fmt(d.levels[id]);
-   if(reading)reading.textContent=fmt(d.readings[id]);
+   const lev=$('road'+id+'Other'),reading=$('road'+id+'Reading');
+   if(lev)lev.textContent=show(d.levels[id]);
+   if(reading)reading.textContent=show(d.readings[id]);
   });
-  if(Array.isArray(roadStations)&&roadStations.length){save();if(typeof roadRenderStations==='function')roadRenderStations();}
-  if(typeof roadRenderQty==='function')roadRenderQty();
-  if(typeof roadPersist==='function')roadPersist();
+  try{save();}catch(e){console.error('Road station save:',e);}
+  try{if(typeof roadRenderStations==='function')roadRenderStations();}catch(e){console.error('Road station table:',e);}
+  try{if(typeof roadRenderQty==='function')roadRenderQty();}catch(e){console.error('Road quantities:',e);}
+  try{if(typeof roadPersist==='function')roadPersist();}catch(e){console.error('Road persistence:',e);}
  }
  function load(){
-  if(!Array.isArray(roadStations)||!roadStations.length)return;
-  const rec=roadValues[roadStations[roadIndex].key]||{};
-  const input=$('roadAsphaltInput'),mode=$('roadInputMode');
-  if(input)input.value=rec._staffReading??'';
-  if(mode)mode.value=rec._inputMode||'reading';
-  const station=$('roadStation');if(station)station.textContent=roadStations[roadIndex].label;
+  if(!Array.isArray(window.roadStations)||!roadStations.length)return;
+  const st=roadStations[window.roadIndex||0],rec=st&&roadValues?roadValues[st.key]:null;
+  if(!rec)return;
+  if($('roadAsphaltInput'))$('roadAsphaltInput').value=rec._staffReading??'';
+  if($('roadInputMode'))$('roadInputMode').value=rec._inputMode||'reading';
+  if($('roadStation'))$('roadStation').textContent=st.label||'';
   render();
  }
- if($('roadInputMode'))$('roadInputMode').addEventListener('change',render);
- ['roadBM','roadBS','roadAsphaltInput','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>$(id)?.addEventListener('input',render));
- roadSaveCurrent=save;roadLoadCurrent=load;roadRender=render;
- render();
-})();
+ function init(){
+  ['roadBM','roadBS','roadAsphaltInput','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>{
+   const e=$(id);if(e){e.addEventListener('input',render);e.addEventListener('change',render);}
+  });
+  const mode=$('roadInputMode');if(mode){mode.addEventListener('input',render);mode.addEventListener('change',render);}
+  window.roadSaveCurrent=save;window.roadLoadCurrent=load;window.roadRender=render;
+  render();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})(); 
 </script></body></html>
