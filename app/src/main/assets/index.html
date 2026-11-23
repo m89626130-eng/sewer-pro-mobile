@@ -175,7 +175,7 @@ select::-ms-expand{display:none}
 .qty-tool{min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:#202a36;color:#f1f5f9;border:1px solid #526171;border-radius:13px;padding:12px}
 .qty-tool span{font-size:29px;line-height:1}.qty-tool b{font-size:13px;text-align:center}.qty-tool.active{background:#254b35;border:2px solid #9acd32;color:#eaffd8}
 @media(max-width:600px){.qty-tools{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.qty-tool{min-height:94px;padding:9px}.qty-tool span{font-size:26px}}
-</style>
+\n@media print{body.qty-print-mode .page{display:none!important}body.qty-print-mode #quantities.page{display:block!important}body.qty-print-mode #quantities .card{break-inside:auto}body.qty-print-mode #quantities .table-wrap{overflow:visible!important}body.qty-print-mode #quantities table{width:100%;border-collapse:collapse}body.qty-print-mode #quantities th,body.qty-print-mode #quantities td{border:1px solid #888;padding:6px;color:#111!important}}\n</style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
@@ -806,7 +806,7 @@ apply();
  };
  let mode='length',items=[];
  try{items=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(items))items=[];}catch(e){items=[];}
- const n=id=>{const v=Number($(id)?.value);return $(id)?.value!==''&&Number.isFinite(v)&&v>=0?v:null;};
+ const n=id=>{const raw=String($(id)?.value??'').trim(),v=Number(raw);return raw!==''&&Number.isFinite(v)&&v>0?v:null;};
  const fmt=v=>Number(v).toFixed(3);
  function choose(m){mode=m;document.querySelectorAll('.qty-tool').forEach(b=>b.classList.toggle('active',b.dataset.qty===m));const c=cfg[m];$('qtyCalcCard').hidden=m==='reports';$('qtyToolTitle').textContent=c?c.title:'📊 الجداول والتقارير';if(!c)return;
  $('qtyAName').textContent=c.a;$('qtyBName').textContent=c.b||'العرض (م)';$('qtyCName').textContent=c.c||'العمق / السماكة (م)';
@@ -825,11 +825,11 @@ apply();
  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
  document.querySelectorAll('.qty-tool').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.qty)));
  ['qtyA','qtyB','qtyC'].forEach(id=>$(id)?.addEventListener('input',calc));
- $('qtyAdd')?.addEventListener('click',()=>{const r=calc();if(!r||r.v===null){alert('أدخل جميع الأبعاد المطلوبة بقيم صحيحة أكبر من أو تساوي صفراً.');return;}const dia=n('qtyDiameter');items.push({mode,name:($('qtyName').value.trim()||r.c.title.replace(/^\S+\s*/,'')),dims:[r.a,r.b===1&&r.c.fields[0]===0?null:r.b,r.d===1&&r.c.fields[1]===0?null:r.d].filter(v=>v!==null).join(' × ')+(mode==='length'&&dia?' | قطر '+dia+' ملم':''),value:r.v,unit:r.c.unit,material:r.c.material?$('qtyMaterial').value:''});persist();render();});
+ $('qtyAdd')?.addEventListener('click',()=>{const r=calc();if(!r||r.v===null){alert('أدخل جميع الأبعاد المطلوبة بقيم أكبر من صفر.');return;}const diaRaw=String($('qtyDiameter')?.value??'').trim(),dia=diaRaw===''?null:Number(diaRaw);if(diaRaw!==''&&(!Number.isFinite(dia)||dia<=0)){alert('قطر الأنبوب الاختياري يجب أن يكون أكبر من صفر.');return;}items.push({mode,name:($('qtyName').value.trim()||r.c.title.replace(/^\S+\s*/,'')),dims:[r.a,r.b===1&&r.c.fields[0]===0?null:r.b,r.d===1&&r.c.fields[1]===0?null:r.d].filter(v=>v!==null).join(' × ')+(mode==='length'&&dia!==null?' | قطر '+dia+' ملم':''),value:r.v,unit:r.c.unit,material:r.c.material?$('qtyMaterial').value:''});persist();render();});
  $('qtyClear')?.addEventListener('click',()=>['qtyName','qtyA','qtyB','qtyC','qtyDiameter'].forEach(id=>$(id).value=''));
  $('qtyDeleteAll')?.addEventListener('click',()=>{if(confirm('هل تريد حذف جميع بنود الكميات؟')){items=[];persist();render();}});
  $('qtyExport')?.addEventListener('click',()=>{const rows=[['No','Item','Description','Dimensions','Quantity','Unit','Material'],...items.map((x,i)=>[i+1,x.mode,x.name,x.dims,x.value,x.unit,x.material||''])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ARKAN_QUANTITIES.csv';a.click();URL.revokeObjectURL(a.href);});
- $('qtyPrint')?.addEventListener('click',()=>window.print());
+ window.addEventListener('afterprint',()=>document.body.classList.remove('qty-print-mode'));$('qtyPrint')?.addEventListener('click',()=>{document.body.classList.add('qty-print-mode');window.print();setTimeout(()=>document.body.classList.remove('qty-print-mode'),30000);});
  choose('length');render();
 })();
 
