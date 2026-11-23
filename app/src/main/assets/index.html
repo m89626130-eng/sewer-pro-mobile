@@ -678,7 +678,7 @@ apply();
   return {hi,mode,entered,levels,readings};
  }
  function save(){
-  if(!Array.isArray(window.roadStations)||!roadStations.length||!window.roadValues)return;
+  if(!Array.isArray(roadStations)||!roadStations.length||!roadValues)return;
   const d=calculate(),station=roadStations[window.roadIndex||0];
   if(!station)return;
   const record={_staffReading:d.entered,_inputMode:d.mode,_hi:d.hi};
@@ -702,7 +702,7 @@ apply();
   try{if(typeof roadPersist==='function')roadPersist();}catch(e){console.error('Road persistence:',e);}
  }
  function load(){
-  if(!Array.isArray(window.roadStations)||!roadStations.length)return;
+  if(!Array.isArray(roadStations)||!roadStations.length)return;
   const st=roadStations[window.roadIndex||0],rec=st&&roadValues?roadValues[st.key]:null;
   if(!rec)return;
   if($('roadAsphaltInput'))$('roadAsphaltInput').value=rec._staffReading??'';
