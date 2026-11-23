@@ -845,4 +845,61 @@ apply();
  $('geoToUtm')?.addEventListener('click',()=>{try{const z=zone(),lat=num('utmLatInput'),lon=num('utmLonInput');if(lat===null||lon===null)throw Error('أدخل خط العرض وخط الطول.');const r=forward(lat,lon,z);$('utmEastingOut').textContent=fmt(r.E,3);$('utmNorthingOut').textContent=fmt(r.N,3);$('utmHemisphere').value=lat>=0?'N':'S';}catch(e){alert(e.message);}});
  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{const t=$(b.dataset.copy)?.textContent||'';if(t==='—')return;try{await navigator.clipboard.writeText(t);b.textContent='تم النسخ';setTimeout(()=>b.textContent='نسخ',1200);}catch(e){alert('تعذر النسخ من هذا الجهاز.');}}));
 })();
-</script></body></html>
+</script>
+<style>
+#arkanAiFab{position:fixed;z-index:10001;bottom:22px;inset-inline-end:18px;border:0;border-radius:28px;padding:13px 18px;background:#7b1838;color:#fff;font-weight:900;box-shadow:0 5px 20px #0006}
+#arkanAiPanel{position:fixed;z-index:10002;inset:0;background:#07182dcc;display:none;align-items:flex-end;justify-content:center;padding:12px}
+#arkanAiPanel.open{display:flex}
+#arkanAiBox{width:min(100%,620px);height:min(78vh,720px);background:#182433;border:1px solid #596778;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 60px #0009}
+#arkanAiHead{padding:14px 16px;background:linear-gradient(110deg,#431326,#7b1838);display:flex;justify-content:space-between;align-items:center;color:#fff}
+#arkanAiHead h3{margin:0;font-size:17px}#arkanAiHead small{display:block;color:#f5dce5;margin-top:4px}
+#arkanAiClose{background:#ffffff20;color:#fff;padding:7px 11px}
+#arkanAiMsgs{padding:13px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:90%;padding:10px 12px;border-radius:12px;line-height:1.7;font-size:14px;white-space:pre-wrap}
+.ai-msg.bot{align-self:flex-start;background:#26384b;color:#edf4fb;border:1px solid #40546a}
+.ai-msg.user{align-self:flex-end;background:#7b1838;color:white}
+#arkanAiQuick{display:flex;gap:7px;overflow:auto;padding:8px 12px;border-top:1px solid #435164}
+#arkanAiQuick button{white-space:nowrap;background:#2a3a4d;color:#e7eef7;padding:8px 10px;font-size:12px}
+#arkanAiForm{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #435164}
+#arkanAiInput{min-width:0;flex:1;border:1px solid #64748b;border-radius:10px;background:#101b29;color:white;padding:11px;font:inherit}
+#arkanAiSend{background:#7b1838;color:white;padding:10px 16px}
+#arkanAiNote{padding:7px 12px;color:#c4ccd7;font-size:10px;text-align:center;background:#121d2a}
+@media(min-width:700px){#arkanAiPanel{align-items:center}}
+</style>
+<button id="arkanAiFab" type="button" aria-label="فتح مساعد ARKAN">✦ ARKAN AI</button>
+<div id="arkanAiPanel" role="dialog" aria-modal="true" aria-label="مساعد ARKAN">
+ <section id="arkanAiBox">
+  <header id="arkanAiHead"><div><h3>✦ ARKAN AI</h3><small>المساعد الهندسي المحلي – إصدار تجريبي</small></div><button id="arkanAiClose" type="button">إغلاق ✕</button></header>
+  <div id="arkanAiMsgs" aria-live="polite"></div>
+  <div id="arkanAiQuick"><button type="button" data-ai-q="اشرح حساب كميات الحفر">حساب الحفر</button><button type="button" data-ai-q="اشرح حساب الحجوم">حساب الحجوم</button><button type="button" data-ai-q="كيف أحول إحداثيات UTM؟">إحداثيات UTM</button><button type="button" data-ai-q="ما هي طريقة حساب المساحة؟">حساب المساحة</button></div>
+  <form id="arkanAiForm"><input id="arkanAiInput" autocomplete="off" placeholder="اكتب سؤالك الهندسي هنا..." aria-label="سؤالك"><button id="arkanAiSend" type="submit">إرسال</button></form>
+  <div id="arkanAiNote">يعمل دون إنترنت بإجابات إرشادية مبرمجة. محرك الذكاء الاصطناعي اللغوي الكامل غير مدمج في هذا الإصدار.</div>
+ </section>
+</div>
+<script>
+(function(){
+ const panel=document.getElementById('arkanAiPanel'),msgs=document.getElementById('arkanAiMsgs'),input=document.getElementById('arkanAiInput');
+ if(!panel||!msgs||!input)return;
+ const add=(text,who)=>{const d=document.createElement('div');d.className='ai-msg '+who;d.textContent=text;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;};
+ const answer=q=>{
+  const s=q.toLowerCase();
+  if(/حفر|excavat/.test(s))return 'حساب كمية الحفر:\nالحجم = الطول × العرض × العمق.\nمثال: 100 م × 1 م × 1.5 م = 150 م³.\nأدخل الأبعاد في أداة «حساب كميات الحفر». هذه نتيجة حسابية وليست اعتماداً تصميمياً.';
+  if(/حجم|volume|خرسانة|سماك/.test(s))return 'حساب الحجم:\nالحجم = الطول × العرض × الارتفاع/السماكة.\nمثال: 10 × 2 × 0.15 = 3 م³.\nاختر «حساب الحجوم» أو «الخرسانة ومواد التنفيذ» حسب نوع البند.';
+  if(/مساح|area/.test(s))return 'حساب المساحة:\nالمساحة = الطول × العرض.\nمثال: 12 م × 4 م = 48 م².\nاستخدم أداة «حساب المساحات».';
+  if(/طول|length/.test(s))return 'لحساب الأطوال، أدخل طول العنصر بالمتر ثم اضغط «إضافة». يجمع البرنامج البنود ويعرض إجمالي الأطوال في جدول الكميات.';
+  if(/utm|إحداث|احداث|شرق|شمال|zone|38/.test(s))return 'تحويل الإحداثيات يتم من أداة UTM باستخدام نظام WGS84. المنطقة الافتراضية للمشروع هي 38N، ويمكن تغيير رقم المنطقة ونصف الكرة عند الحاجة. تأكد من اختيار المنطقة الصحيحة قبل التحويل.';
+  if(/تقرير|طباع|pdf|csv/.test(s))return 'لإخراج تقرير الكميات: أضف البنود أولاً، ثم افتح قسم الجداول والتقارير واستخدم أمر الطباعة أو التصدير المتاح. راجع الوحدات والكميات قبل اعتماد التقرير.';
+  if(/صرف|أنبوب|انبوب|منهول|منهل|ميل|انحدار/.test(s))return 'أستطيع حالياً تقديم إرشادات عامة عن أعمال البنية التحتية. لحساب ميل الأنبوب: الميل = فرق المنسوب ÷ طول الأنبوب، ويُعرض كنسبة مئوية عند ضرب الناتج في 100. لا تعتمد أي منسوب تنفيذي دون مراجعة بيانات المشروع.';
+  if(/مرحبا|السلام|هلا/.test(s))return 'أهلاً بك. أنا مساعد ARKAN المحلي التجريبي. اسألني عن حساب الأطوال والمساحات والحجوم والحفر أو تحويل إحداثيات UTM.';
+  return 'لم أجد إجابة مناسبة في قاعدة المساعدة المحلية الحالية. جرّب تحديد الموضوع: الحفر، الحجوم، المساحات، الأطوال، UTM، أو التقارير. محرك المحادثة الذكي الكامل يحتاج إلى دمج نموذج لغوي محلي مستقل.';
+ };
+ const send=q=>{q=String(q||'').trim();if(!q)return;add(q,'user');input.value='';setTimeout(()=>add(answer(q),'bot'),120);};
+ document.getElementById('arkanAiFab').addEventListener('click',()=>{panel.classList.add('open');if(!msgs.childElementCount)add('مرحباً بك في ARKAN AI. أستطيع مساعدتك بإرشادات الحسابات المساحية والكميات المتوفرة محلياً.','bot');input.focus();});
+ document.getElementById('arkanAiClose').addEventListener('click',()=>panel.classList.remove('open'));
+ panel.addEventListener('click',e=>{if(e.target===panel)panel.classList.remove('open');});
+ document.getElementById('arkanAiForm').addEventListener('submit',e=>{e.preventDefault();send(input.value);});
+ panel.querySelectorAll('[data-ai-q]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.aiQ)));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')panel.classList.remove('open');});
+})();
+</script>
+</body></html>
