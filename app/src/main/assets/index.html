@@ -215,11 +215,7 @@ select::-ms-expand{display:none}
    <div class="roads-field"><label>سماكة الكونكريت (سم)</label><input id="roadConcreteThk" type="number" min="0" step="0.1" value="20"></div>
    <div class="roads-field"><label>سماكة السب بيس (سم)</label><input id="roadSubbaseThk" type="number" min="0" step="0.1" value="20"></div>
    <div class="roads-field"><label>سماكة الجلمود (سم)</label><input id="roadBoulderThk" type="number" min="0" step="0.1" value="30"></div>
-   <div class="roads-field"><label>كثافة الإسفلت (طن/م³) — اختياري</label><input id="roadAsphaltDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
-   <div class="roads-field"><label>كثافة الكونكريت (طن/م³) — اختياري</label><input id="roadConcreteDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
-   <div class="roads-field"><label>كثافة السب بيس (طن/م³) — اختياري</label><input id="roadSubbaseDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
-   <div class="roads-field"><label>كثافة الجلمود (طن/م³) — اختياري</label><input id="roadBoulderDensity" type="number" min="0" step="0.01" placeholder="أدخل الكثافة"></div>
-   <div class="table-wrap"><table><thead><tr><th>الطبقة</th><th>المساحة م²</th><th>الحجم م³</th><th>الوزن طن</th></tr></thead><tbody id="roadQtyBody"></tbody></table></div>
+   <div class="table-wrap"><table><thead><tr><th>الطبقة</th><th>المساحة م²</th><th>الحجم م³</th></tr></thead><tbody id="roadQtyBody"></tbody></table></div>
    <button class="btn btn-green" id="roadCsv">تصدير كميات الطرق CSV</button>
    <div class="road-profile-tools">
     <h4>استيراد وتصدير بروفايل الطريق</h4>
@@ -484,7 +480,7 @@ function roadRenderStations(){
 }
 function roadRenderQty(){
  const len=roadVal('roadLength')||0,w=roadVal('roadWidth')||0,area=len*w;
- $('roadQtyBody').innerHTML=roadIds.map((n,i)=>{const t=roadVal('road'+n+'Thk')||0,d=roadVal('road'+n+'Density'),vol=area*t/100,weight=d===null?'—':roadFmt(vol*d);return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(vol)+'</td><td class="num">'+weight+'</td></tr>';}).join('');
+ $('roadQtyBody').innerHTML=roadIds.map((n,i)=>{const t=roadVal('road'+n+'Thk')||0,vol=area*t/100;return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(vol)+'</td></tr>';}).join('');
 }
 function roadGenerate(){
  roadSaveCurrent();const len=roadVal('roadLength'),step=roadVal('roadInterval');if(len===null||step===null||len<0||step<=0){alert('أدخل طولاً صحيحاً ومسافة محطة أكبر من صفر.');return;}
@@ -496,7 +492,7 @@ function roadMove(delta){if(!roadStations.length)return;roadSaveCurrent();roadIn
 $('roadGenerate').addEventListener('click',roadGenerate);
 $('roadPrev').addEventListener('click',()=>roadMove(-1));$('roadNext').addEventListener('click',()=>roadMove(1));
 document.querySelectorAll('input[name="roadMode"]').forEach(e=>e.addEventListener('change',()=>{roadSaveCurrent();roadMode=e.value;roadRender();}));
-['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk','roadAsphaltDensity','roadConcreteDensity','roadSubbaseDensity','roadBoulderDensity'].forEach(id=>$(id).addEventListener('input',roadRender));
+['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>$(id).addEventListener('input',roadRender));
 roadIds.forEach(n=>$('road'+n+'Input').addEventListener('input',()=>{roadSaveCurrent();roadRender();}));
 $('roadCsv').addEventListener('click',()=>{roadSaveCurrent();const rows=[['المحطة',...roadLabels],...roadStations.map(st=>[st.label,...roadIds.map(n=>{const v=(roadValues[st.key]||{})[n];return v===undefined||v===null?'':roadFmt(v);})])];const csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');saveTextFile('ROAD_WORKS_Stations.csv','text/csv',csv);});
 function roadPersist(){
@@ -588,7 +584,7 @@ $('roadExportExcel').addEventListener('click',()=>{
   const rows=[headers,...roadStations.map(st=>{const d=roadValues[st.key]||{};return [st.label,...roadIds.map(id=>d[id]??'')];})];
   const ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Road Profile');
-  const qty=[['Layer','Area_m2','Volume_m3','Weight_ton'],...roadIds.map((id,i)=>{const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0),thk=roadVal('road'+id+'Thk')||0,d=roadVal('road'+id+'Density');const volume=area*thk/100;return [roadLabels[i],area,volume,d===null?'':volume*d];})];
+  const qty=[['Layer','Area_m2','Volume_m3'],...roadIds.map((id,i)=>{const area=(roadVal('roadLength')||0)*(roadVal('roadWidth')||0),thk=roadVal('road'+id+'Thk')||0;const volume=area*thk/100;return [roadLabels[i],area,volume];})];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(qty),'Quantities');
   const out=XLSX.write(wb,{bookType:'xlsx',type:'array'});const bytes=new Uint8Array(out);let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);
   window.SewerNative?.saveFile('ROAD_PROFILE.xlsx','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',btoa(bin));
