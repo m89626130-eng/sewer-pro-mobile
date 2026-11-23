@@ -349,7 +349,7 @@ function buildUnifiedSewerScreen(){
   const page=$(id);if(!page)return;
   const head=page.querySelector('.page-head');
   const grid=page.querySelector('.grid');
-  if(head){head.dataset.icon=id;host.appendChild(head);}
+  if(head){head.dataset.icon=id;head.id='sewer-section-'+id;host.appendChild(head);}
   if(grid)host.appendChild(grid);
  });
  host.dataset.built='1';
@@ -430,11 +430,16 @@ $('asphaltLevel').addEventListener('input',()=>{if(asphaltEntryMode==='level')up
 document.querySelectorAll('input[name="pipeMode"]').forEach(el=>el.addEventListener('change',update));
 const sewerPages=['dashboard','survey','pipe','base','layers','excavation','report'];
 function showPage(page){
- if(sewerPages.includes(page))page='dashboard';
- document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));
- document.querySelectorAll('#mainNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page || (b.dataset.page==='infrastructure' && sewerPages.includes(page))));
- document.querySelectorAll('#sewerNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
- $('sewerNav').classList.toggle('visible',sewerPages.includes(page));
+ const sewerTarget=sewerPages.includes(page)?page:null;
+ const pageToShow=sewerTarget?'dashboard':page;
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===pageToShow));
+ document.querySelectorAll('#mainNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===pageToShow || (b.dataset.page==='infrastructure' && !!sewerTarget)));
+ document.querySelectorAll('#sewerNav button').forEach(b=>b.classList.toggle('active',b.dataset.page===(sewerTarget||'dashboard')));
+ $('sewerNav').classList.toggle('visible',!!sewerTarget);
+ if(sewerTarget && sewerTarget!=='dashboard'){
+  const section=document.getElementById('sewer-section-'+sewerTarget);
+  if(section)requestAnimationFrame(()=>section.scrollIntoView({behavior:'smooth',block:'start'}));
+ }
 }
 $('mainNav').addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page);});
 $('sewerNav').addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page);});
