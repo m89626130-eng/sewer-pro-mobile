@@ -169,6 +169,12 @@ select::-ms-expand{display:none}
 .utm-result{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:10px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft)}
 .utm-result strong{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
 .utm-result .btn{padding:7px 12px}
+
+/* ARKAN Quantity Survey tools */
+.qty-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:12px 0 16px}
+.qty-tool{min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:#202a36;color:#f1f5f9;border:1px solid #526171;border-radius:13px;padding:12px}
+.qty-tool span{font-size:29px;line-height:1}.qty-tool b{font-size:13px;text-align:center}.qty-tool.active{background:#254b35;border:2px solid #9acd32;color:#eaffd8}
+@media(max-width:600px){.qty-tools{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.qty-tool{min-height:94px;padding:9px}.qty-tool span{font-size:26px}}
 </style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
@@ -283,8 +289,34 @@ select::-ms-expand{display:none}
 </section>
 
 <section class="page" id="quantities">
- <div class="page-head"><div><h2>حساب الكميات</h2><p>قسم مستقل لحساب كميات الأعمال وربطها بالمشروع.</p></div><span class="tag">قيد التطوير</span></div>
- <article class="card full"><div class="card-body"><h3>أدوات حصر الكميات</h3><p class="help">سيشمل هذا القسم كميات الحفر والردم والأنابيب والمناهيل والخرسانة ومواد الطرق، مع جداول وتقارير قابلة للتصدير. لم تُفعّل هذه الحسابات بعد.</p></div></article>
+ <div class="page-head"><div><h2>حساب الكميات</h2><p>اختر الأداة؛ أدخل الأبعاد وسيحسب البرنامج النتائج والإجماليات تلقائياً.</p></div><span class="tag">حسابات الكميات</span></div>
+ <div class="qty-tools">
+  <button class="qty-tool active" data-qty="length"><span>📏</span><b>حساب الأطوال</b></button>
+  <button class="qty-tool" data-qty="area"><span>📐</span><b>حساب المساحات</b></button>
+  <button class="qty-tool" data-qty="volume"><span>🧊</span><b>حساب الحجوم</b></button>
+  <button class="qty-tool" data-qty="excavation"><span>🚜</span><b>كميات الحفر</b></button>
+  <button class="qty-tool" data-qty="materials"><span>🏗️</span><b>الخرسانة ومواد التنفيذ</b></button>
+  <button class="qty-tool" data-qty="reports"><span>📊</span><b>الجداول والتقارير</b></button>
+ </div>
+ <article class="card full" id="qtyCalcCard"><div class="card-head"><h3 id="qtyToolTitle">📏 حساب الأطوال</h3><span class="tag">إدخال وحساب تلقائي</span></div><div class="card-body">
+  <div class="fields">
+   <div class="field"><label>وصف البند / المقطع</label><input id="qtyName" placeholder="مثال: خط أنابيب شارع 1"></div>
+   <div class="field"><label id="qtyAName">الطول (م)</label><input id="qtyA" type="number" min="0" step="any" placeholder="أدخل الطول"></div>
+   <div class="field" id="qtyBWrap" hidden><label id="qtyBName">العرض (م)</label><input id="qtyB" type="number" min="0" step="any"></div>
+   <div class="field" id="qtyCWrap" hidden><label id="qtyCName">العمق / السماكة (م)</label><input id="qtyC" type="number" min="0" step="any"></div>
+   <div class="field" id="qtyMaterialWrap" hidden><label>نوع المادة</label><select id="qtyMaterial"><option>خرسانة</option><option>سبيس</option><option>جلمود</option><option>إسفلت</option><option>مواد أخرى</option></select></div>
+   <div class="field" id="qtyDiameterWrap" hidden><label>قطر الأنبوب (ملم) - اختياري</label><input id="qtyDiameter" type="number" min="0" step="any" placeholder="مثال: 400"></div>
+  </div>
+  <div class="result blue"><span id="qtyResultLabel">الكمية المحسوبة</span><strong id="qtyResult">—</strong></div>
+  <p class="help" id="qtyFormula">الحساب: الطول بالمتر.</p>
+  <div class="inline no-print" style="margin-top:13px"><button class="btn-primary" id="qtyAdd">➕ إضافة إلى جدول الكميات</button><button class="btn-ghost" id="qtyClear">مسح الحقول</button></div>
+ </div></article>
+ <article class="card full"><div class="card-head"><h3>📊 جدول الكميات الإجمالي</h3><span class="tag" id="qtyCount">0 بند</span></div><div class="card-body">
+  <div class="summary" id="qtySummary"><div class="metric"><span>مجموع الأطوال</span><strong id="qtyTotalLength">0.000</strong><small>متر</small></div><div class="metric"><span>مجموع المساحات</span><strong id="qtyTotalArea">0.000</strong><small>متر مربع</small></div><div class="metric"><span>مجموع الحجوم</span><strong id="qtyTotalVolume">0.000</strong><small>متر مكعب</small></div><div class="metric"><span>عدد البنود</span><strong id="qtyTotalRows">0</strong><small>بند</small></div></div>
+  <div class="table-wrap"><table><thead><tr><th>البند</th><th>الوصف</th><th>الأبعاد</th><th>الكمية</th><th>الوحدة</th><th class="no-print">حذف</th></tr></thead><tbody id="qtyRows"><tr><td colspan="6">لا توجد بنود مضافة بعد.</td></tr></tbody></table></div>
+  <div class="inline no-print" style="margin-top:13px"><button class="btn-green" id="qtyExport">⬇️ تصدير CSV</button><button class="btn-ghost" id="qtyPrint">🖨️ طباعة التقرير</button><button class="btn-ghost" id="qtyDeleteAll">حذف جميع البنود</button></div>
+  <p class="help">تُحفظ البنود تلقائياً على الجهاز. الحفر والمواد تُحسب هندسياً من الأبعاد المدخلة؛ لا تُخصم أحجام الأنابيب أو الهدر تلقائياً إلا عند إضافة معامل/خصم محدد.</p>
+ </div></article>
 </section>
 
 <section class="page" id="dashboard">
@@ -760,6 +792,46 @@ apply();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(); 
+
+
+/* ARKAN quantity survey module */
+(function(){
+ const $=id=>document.getElementById(id), key='arkanQuantityItemsV1';
+ const cfg={
+  length:{title:'📏 حساب الأطوال',a:'الطول (م)',formula:'الكمية = الطول المدخل',unit:'م',fields:[0,0]},
+  area:{title:'📐 حساب المساحات',a:'الطول (م)',b:'العرض (م)',formula:'المساحة = الطول × العرض',unit:'م²',fields:[1,0]},
+  volume:{title:'🧊 حساب الحجوم',a:'الطول (م)',b:'العرض (م)',c:'الارتفاع (م)',formula:'الحجم = الطول × العرض × الارتفاع',unit:'م³',fields:[1,1]},
+  excavation:{title:'🚜 حساب كميات الحفر',a:'طول الحفر (م)',b:'عرض الحفر (م)',c:'عمق الحفر (م)',formula:'حجم الحفر = الطول × العرض × العمق',unit:'م³',fields:[1,1]},
+  materials:{title:'🏗️ حساب الخرسانة ومواد التنفيذ',a:'الطول (م)',b:'العرض (م)',c:'السماكة (م)',formula:'حجم المادة = الطول × العرض × السماكة',unit:'م³',fields:[1,1],material:1}
+ };
+ let mode='length',items=[];
+ try{items=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(items))items=[];}catch(e){items=[];}
+ const n=id=>{const v=Number($(id)?.value);return $(id)?.value!==''&&Number.isFinite(v)&&v>=0?v:null;};
+ const fmt=v=>Number(v).toFixed(3);
+ function choose(m){mode=m;document.querySelectorAll('.qty-tool').forEach(b=>b.classList.toggle('active',b.dataset.qty===m));const c=cfg[m];$('qtyCalcCard').hidden=m==='reports';$('qtyToolTitle').textContent=c?c.title:'📊 الجداول والتقارير';if(!c)return;
+ $('qtyAName').textContent=c.a;$('qtyBName').textContent=c.b||'العرض (م)';$('qtyCName').textContent=c.c||'العمق / السماكة (م)';
+ $('qtyBWrap').hidden=!c.fields[0];$('qtyCWrap').hidden=!c.fields[1];$('qtyMaterialWrap').hidden=!c.material;$('qtyDiameterWrap').hidden=m!=='length';
+ $('qtyFormula').textContent=c.formula;$('qtyResultLabel').textContent='الكمية المحسوبة ('+c.unit+')';calc();
+ }
+ function calc(){const c=cfg[mode];if(!c)return;const a=n('qtyA'),b=c.fields[0]?n('qtyB'):1,d=c.fields[1]?n('qtyC'):1;let v=null;if(a!==null&&b!==null&&d!==null)v=a*b*d;$('qtyResult').textContent=v===null?'—':fmt(v)+' '+c.unit;return {v,c,a,b,d};}
+ function persist(){try{localStorage.setItem(key,JSON.stringify(items));}catch(e){}}
+ function render(){const body=$('qtyRows');if(!body)return;body.innerHTML=items.length?items.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.dims)+'</td><td class="num">'+fmt(x.value)+'</td><td>'+x.unit+'</td><td class="no-print"><button class="btn-ghost" data-del="'+i+'">حذف</button></td></tr>').join(''):'<tr><td colspan="6">لا توجد بنود مضافة بعد.</td></tr>';
+ $('qtyCount').textContent=items.length+' بند';$('qtyTotalRows').textContent=items.length;
+ $('qtyTotalLength').textContent=fmt(items.filter(x=>x.unit==='م').reduce((a,x)=>a+x.value,0));
+ $('qtyTotalArea').textContent=fmt(items.filter(x=>x.unit==='م²').reduce((a,x)=>a+x.value,0));
+ $('qtyTotalVolume').textContent=fmt(items.filter(x=>x.unit==='م³').reduce((a,x)=>a+x.value,0));
+ body.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{items.splice(Number(b.dataset.del),1);persist();render();}));
+ }
+ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+ document.querySelectorAll('.qty-tool').forEach(b=>b.addEventListener('click',()=>choose(b.dataset.qty)));
+ ['qtyA','qtyB','qtyC'].forEach(id=>$(id)?.addEventListener('input',calc));
+ $('qtyAdd')?.addEventListener('click',()=>{const r=calc();if(!r||r.v===null){alert('أدخل جميع الأبعاد المطلوبة بقيم صحيحة أكبر من أو تساوي صفراً.');return;}const dia=n('qtyDiameter');items.push({mode,name:($('qtyName').value.trim()||r.c.title.replace(/^\S+\s*/,'')),dims:[r.a,r.b===1&&r.c.fields[0]===0?null:r.b,r.d===1&&r.c.fields[1]===0?null:r.d].filter(v=>v!==null).join(' × ')+(mode==='length'&&dia?' | قطر '+dia+' ملم':''),value:r.v,unit:r.c.unit,material:r.c.material?$('qtyMaterial').value:''});persist();render();});
+ $('qtyClear')?.addEventListener('click',()=>['qtyName','qtyA','qtyB','qtyC','qtyDiameter'].forEach(id=>$(id).value=''));
+ $('qtyDeleteAll')?.addEventListener('click',()=>{if(confirm('هل تريد حذف جميع بنود الكميات؟')){items=[];persist();render();}});
+ $('qtyExport')?.addEventListener('click',()=>{const rows=[['No','Item','Description','Dimensions','Quantity','Unit','Material'],...items.map((x,i)=>[i+1,x.mode,x.name,x.dims,x.value,x.unit,x.material||''])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ARKAN_QUANTITIES.csv';a.click();URL.revokeObjectURL(a.href);});
+ $('qtyPrint')?.addEventListener('click',()=>window.print());
+ choose('length');render();
+})();
 
 /* ARKAN UTM coordinate converter — WGS84 */
 (function(){
