@@ -762,20 +762,17 @@ apply();
 
 
 
-/* ARKAN SURVEY 1.0.18 — single asphalt input with automatic layer conversion */
+/* ARKAN SURVEY 1.0.19 — one staff reading below HI; safe single-input calculation */
 (function(){
  const $id=id=>document.getElementById(id);
  const labels={Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'};
  const ids=['Asphalt','Concrete','Subbase','Boulder'];
- const num=id=>{const e=$id(id);if(!e||e.value.trim()==='')return null;const n=Number(e.value);return Number.isFinite(n)?n:null;};
+ const num=id=>{const e=$id(id);if(!e||String(e.value).trim()==='')return null;const n=Number(e.value);return Number.isFinite(n)?n:null;};
  const fmt=n=>Number.isFinite(n)?n.toFixed(3):'—';
- const oldPersist=roadPersist;
- function currentInput(){return num('roadAsphaltInput');}
  function calcLevels(){
-  const reading=currentInput(),HI=roadHI();
+  const reading=num('roadAsphaltInput'),HI=roadHI();
   if(reading===null||HI===null)return null;
-  const asphalt=HI-reading;
-  const levels={Asphalt:asphalt};
+  const levels={Asphalt:HI-reading};
   for(let i=1;i<ids.length;i++){
    const thickness=num('road'+ids[i-1]+'Thk');
    if(thickness===null)return null;
@@ -786,53 +783,46 @@ apply();
  function saveCurrent(){
   if(!roadStations.length)return;
   const levels=calcLevels();
-  const record={_inputValue:currentInput(),_inputMode:roadMode};
+  const record={_staffReading:num('roadAsphaltInput')};
   ids.forEach(id=>record[id]=levels?levels[id]:null);
   roadValues[roadStations[roadIndex].key]=record;
  }
  function loadCurrent(){
   if(!roadStations.length)return;
   const d=roadValues[roadStations[roadIndex].key]||{};
-  let v=d._inputValue;
-  if(v===undefined||v===null)v='';
-  $id('roadAsphaltInput').value=v;
-  ids.slice(1).forEach(id=>{$id('road'+id+'Input').value='';});
-  $id('roadStation').textContent=roadStations[roadIndex].label;
+  const input=$id('roadAsphaltInput');
+  if(input)input.value=d._staffReading??'';
+  const station=$id('roadStation');if(station)station.textContent=roadStations[roadIndex].label;
   render();
  }
  function render(){
-  const HI=roadHI();
-  $id('roadHI').textContent=fmt(HI);
-  ids.forEach((id,i)=>{
-   const inputWrap=$id('road'+id+'Input').closest('.road-layer-level');
-   if(inputWrap)inputWrap.querySelector('label')?.remove();
-   if(inputWrap)inputWrap.querySelector('input')?.remove();
-   $id('road'+id+'OtherLabel').textContent='منسوب '+labels[id];
-  });
-  const extra=$id('roadStaffReadingWrap');if(extra)extra.remove();
+  const HI=roadHI(),hi=$id('roadHI');if(hi)hi.textContent=fmt(HI);
+  const readingLabel=$id('roadAsphaltInputLabel');
+  if(readingLabel)readingLabel.textContent='قراءة المسطرة (م)';
+  const input=$id('roadAsphaltInput');
+  if(input)input.placeholder='أدخل قراءة المسطرة';
   const levels=calcLevels();
   ids.forEach(id=>{
-   let result=null;
-   if(levels){
-    result=levels[id];
-   }
-   $id('road'+id+'Other').textContent=fmt(result)+' م';
+   const label=$id('road'+id+'OtherLabel'),output=$id('road'+id+'Other');
+   if(label)label.textContent='منسوب '+labels[id];
+   if(output)output.textContent=fmt(levels?levels[id]:null)+' م';
   });
-  roadRenderStations();
-  roadRenderQty();
+  if(typeof roadRenderStations==='function')roadRenderStations();
+  if(typeof roadRenderQty==='function')roadRenderQty();
   if(typeof roadPersist==='function')roadPersist();
  }
  roadSaveCurrent=saveCurrent;
  roadLoadCurrent=loadCurrent;
  roadRender=render;
  const modeCard=document.querySelector('.roads-mode');if(modeCard)modeCard.remove();
- const modeHelp=document.querySelector('.roads-mode')?.nextElementSibling;
- if(modeHelp)modeHelp.textContent='أدخل قراءة المسطرة مرة واحدة على طبقة الإسفلت، وستظهر مناسيب الطبقات الأربع تلقائياً.';
- const asphaltLabel=$id('roadAsphaltInputLabel');
- if(asphaltLabel)asphaltLabel.textContent='قراءة المسطرة على الإسفلت (م)';
- ids.slice(1).forEach(id=>{$id('road'+id+'Input').value='';});
- $id('roadAsphaltInput').placeholder='أدخل قراءة المسطرة';
- $id('roadAsphaltInput').addEventListener('input',()=>{saveCurrent();render();});
+ const staffWrap=$id('roadAsphaltInput')?.closest('.roads-field');
+ if(staffWrap)staffWrap.classList.add('road-staff-entry');
+ const help=document.querySelector('#roads .roads-stack .card:nth-child(2) .card-body .help');
+ if(help)help.textContent='أدخل قراءة المسطرة مرة واحدة في الحقل المستقل أسفل HI، وستُحسب مناسيب الإسفلت والكونكريت والسبيس والجلمود تلقائياً حسب سماكات الطبقات.';
+ ['roadBM','roadBS','roadAsphaltInput','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>{
+  const el=$id(id);if(el)el.addEventListener('input',()=>{saveCurrent();render();});
+ });
+ ids.forEach(id=>{const el=$id('road'+id+'Thk');if(el)el.addEventListener('input',()=>{saveCurrent();render();});});
  render();
 })();
 
