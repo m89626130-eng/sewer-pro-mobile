@@ -544,67 +544,73 @@ try{const d=localStorage.getItem('sewerProDraftV109');if(d)loadData(JSON.parse(d
 buildUnifiedSewerScreen();
 update();
 
-/* ROAD WORKS calculator */
+/* ROAD WORKS calculator — one asphalt input, automatic levels/readings */
 const roadIds=['Asphalt','Concrete','Subbase','Boulder'];
 const roadLabels=['الإسفلت','الكونكريت','السب بيس','الجلمود'];
 let roadStations=[],roadIndex=0,roadMode='level',roadValues={};
 const roadVal=id=>{const e=$(id);if(!e||e.value.trim()==='')return null;const n=Number(e.value);return Number.isFinite(n)?n:null;};
 const roadFmt=n=>Number.isFinite(n)?n.toFixed(3):'—';
 const roadHI=()=>{const b=roadVal('roadBM'),s=roadVal('roadBS');return b===null||s===null?null:b+s;};
-function roadSaveCurrent(){if(!roadStations.length)return;const key=roadStations[roadIndex].key;roadValues[key]=roadValues[key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)roadValues[key][n]=roadVal('road'+n+'Input');});}
-function roadLoadCurrent(){if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{};roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)e.value=d[n]===null||d[n]===undefined?'':d[n];});const st=$('roadStation');if(st)st.textContent=roadStations[roadIndex].label;roadRender();}
+const roadThickness=n=>(roadVal('road'+n+'Thk')||0)/100;
+function roadCurrentResults(){
+ const H=roadHI(),raw=roadVal('roadAsphaltInput'),mode=$('roadInputMode')?.value||'level';
+ const asphalt=raw===null?null:(mode==='reading'?(H===null?null:H-raw):raw);
+ const levels={};let level=asphalt;
+ roadIds.forEach((n,i)=>{if(i>0&&level!==null)level-=roadThickness(roadIds[i-1]);levels[n]=level;});
+ return {H,raw,mode,levels,readings:Object.fromEntries(roadIds.map(n=>[n,H!==null&&levels[n]!==null?H-levels[n]:null]))};
+}
+function roadSaveCurrent(){
+ if(!roadStations.length)return;const key=roadStations[roadIndex].key,r=roadCurrentResults();
+ roadValues[key]={};roadIds.forEach(n=>roadValues[key][n]=r.levels[n]);roadValues[key]._input=r.raw;roadValues[key]._mode=r.mode;
+}
+function roadLoadCurrent(){
+ if(!roadStations.length)return;const d=roadValues[roadStations[roadIndex].key]||{},input=$('roadAsphaltInput');
+ if(input)input.value=d._input===null||d._input===undefined?'':d._input;
+ if($('roadInputMode')&&d._mode)$('roadInputMode').value=d._mode;
+ if($('roadStation'))$('roadStation').textContent=roadStations[roadIndex].label;roadRender();
+}
 function roadRender(){
- const H=roadHI(),hi=$('roadHI');if(hi)hi.textContent=roadFmt(H);
- roadIds.forEach(n=>{const label=$('road'+n+'InputLabel'),otherLabel=$('road'+n+'OtherLabel'),other=$('road'+n+'Other'),input=$('road'+n+'Input');if(label)label.textContent='منسوب '+({Asphalt:'الإسفلت',Concrete:'الكونكريت',Subbase:'السبيس',Boulder:'الجلمود'}[n])+' (م)';if(otherLabel)otherLabel.textContent='المنسوب المحسوب';if(other)other.textContent='—';if(input){const wrap=input.closest('.roads-field');if(wrap)wrap.hidden=n!=='Asphalt';}});
- if(typeof roadRenderStations==='function')roadRenderStations();if(typeof roadRenderQty==='function')roadRenderQty();if(typeof roadPersist==='function')roadPersist();
+ const r=roadCurrentResults();if($('roadHI'))$('roadHI').textContent=roadFmt(r.H);
+ if($('roadAsphaltInputLabel'))$('roadAsphaltInputLabel').textContent=r.mode==='reading'?'قراءة المسطرة على الإسفلت (م)':'منسوب الإسفلت (م)';
+ if($('roadAsphaltInput'))$('roadAsphaltInput').placeholder=r.mode==='reading'?'أدخل قراءة المسطرة على الإسفلت':'أدخل منسوب الإسفلت';
+ roadIds.forEach(n=>{if($('road'+n+'Other'))$('road'+n+'Other').textContent=roadFmt(r.levels[n]);if($('road'+n+'Reading'))$('road'+n+'Reading').textContent=roadFmt(r.readings[n]);});
+ if(roadStations.length){const k=roadStations[roadIndex].key;roadValues[k]=roadValues[k]||{};roadIds.forEach(n=>roadValues[k][n]=r.levels[n]);roadValues[k]._input=r.raw;roadValues[k]._mode=r.mode;}
+ roadRenderStations();roadRenderQty();roadPersist();
 }
 function roadRenderStations(){
- $('roadStationCount').textContent=roadStations.length?'عدد المحطات: '+roadStations.length:'لم يتم إنشاء المحطات بعد.';
- $('roadStationsBody').innerHTML=roadStations.map((st,i)=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(n=>'<td class="num">'+(d[n]===null||d[n]===undefined?'—':roadFmt(d[n]))+'</td>').join('')+'</tr>';}).join('');
+ if($('roadStationCount'))$('roadStationCount').textContent=roadStations.length?'عدد المحطات: '+roadStations.length+' — المحطة '+(roadIndex+1)+' من '+roadStations.length:'لم يتم إنشاء المحطات بعد.';
+ if($('roadStationsBody'))$('roadStationsBody').innerHTML=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(n=>'<td class="num">'+(d[n]===null||d[n]===undefined?'—':roadFmt(d[n]))+'</td>').join('')+'</tr>';}).join('');
 }
 function roadRenderQty(){
- const len=roadVal('roadLength')||0,w=roadVal('roadWidth')||0,area=len*w;
- $('roadQtyBody').innerHTML=roadIds.map((n,i)=>{const t=roadVal('road'+n+'Thk')||0,vol=area*t/100;return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(vol)+'</td></tr>';}).join('');
+ const len=roadVal('roadLength')||0,w=roadVal('roadWidth')||0,area=len*w;if(!$('roadQtyBody'))return;
+ $('roadQtyBody').innerHTML=roadIds.map((n,i)=>{const t=roadVal('road'+n+'Thk')||0;return '<tr><td>'+roadLabels[i]+'</td><td class="num">'+roadFmt(area)+'</td><td class="num">'+roadFmt(area*t/100)+'</td></tr>';}).join('');
 }
 function roadGenerate(){
- roadSaveCurrent();const len=roadVal('roadLength'),step=roadVal('roadInterval');if(len===null||step===null||len<0||step<=0){alert('أدخل طولاً صحيحاً ومسافة محطة أكبر من صفر.');return;}
+ const len=roadVal('roadLength'),step=roadVal('roadInterval');if(len===null||step===null||len<=0||step<=0){alert('أدخل طول طريق أكبر من صفر ومسافة محطة أكبر من صفر.');return;}
  roadStations=[];for(let d=0;d<len;d+=step){const mm=Math.round(d*1000);roadStations.push({key:String(mm),label:Math.floor(d/1000)+'+'+String(Math.round(d-Math.floor(d/1000)*1000)).padStart(3,'0')});}
- if(!roadStations.length||Number(roadStations[roadStations.length-1].key)!==Math.round(len*1000)){const mm=Math.round(len*1000);roadStations.push({key:String(mm),label:Math.floor(len/1000)+'+'+String(Math.round(len-Math.floor(len/1000)*1000)).padStart(3,'0')});}
+ const mm=Math.round(len*1000);if(!roadStations.length||Number(roadStations[roadStations.length-1].key)!==mm)roadStations.push({key:String(mm),label:Math.floor(len/1000)+'+'+String(Math.round(len-Math.floor(len/1000)*1000)).padStart(3,'0')});
  roadIndex=0;roadValues={};roadLoadCurrent();
 }
 function roadMove(delta){
- if(!Array.isArray(roadStations)||!roadStations.length){const c=$('roadStationCount');if(c)c.textContent='أنشئ المحطات أولاً حتى تتمكن من التنقل.';return;}
- if(typeof window.roadSaveCurrent==='function')window.roadSaveCurrent();
- const next=Math.max(0,Math.min(roadStations.length-1,roadIndex+delta));
- if(next===roadIndex)return;
- roadIndex=next;
- if(typeof window.roadLoadCurrent==='function')window.roadLoadCurrent();
- const c=$('roadStationCount');if(c)c.textContent='المحطة '+(roadIndex+1)+' من '+roadStations.length;
+ if(!roadStations.length){if($('roadStationCount'))$('roadStationCount').textContent='أنشئ المحطات أولاً حتى تتمكن من التنقل.';return;}
+ roadSaveCurrent();const next=Math.max(0,Math.min(roadStations.length-1,roadIndex+delta));if(next===roadIndex)return;roadIndex=next;roadLoadCurrent();
 }
 $('roadGenerate').addEventListener('click',e=>{e.preventDefault();roadGenerate();});
 $('roadPrev').addEventListener('click',e=>{e.preventDefault();roadMove(-1);});
 $('roadNext').addEventListener('click',e=>{e.preventDefault();roadMove(1);});
-document.querySelectorAll('input[name="roadMode"]').forEach(e=>e.addEventListener('change',()=>{roadSaveCurrent();roadMode=e.value;roadRender();}));
-['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>$(id).addEventListener('input',roadRender));
-roadIds.forEach(n=>{const e=$('road'+n+'Input');if(e)e.addEventListener('input',()=>{roadSaveCurrent();roadRender();});});
+$('roadInputMode').addEventListener('change',roadRender);
+['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk','roadAsphaltInput'].forEach(id=>$(id).addEventListener('input',roadRender));
 $('roadCsv').addEventListener('click',()=>{roadSaveCurrent();const rows=[['المحطة',...roadLabels],...roadStations.map(st=>[st.label,...roadIds.map(n=>{const v=(roadValues[st.key]||{})[n];return v===undefined||v===null?'':roadFmt(v);})])];const csv='\ufeff'+rows.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\r\n');saveTextFile('ROAD_WORKS_Stations.csv','text/csv',csv);});
 function roadPersist(){
- try{
-  const values={};['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk'].forEach(id=>values[id]=$(id).value);
-  localStorage.setItem('sewerProRoadDraft',JSON.stringify({values,stations:roadStations,index:roadIndex,mode:roadMode,stationValues:roadValues}));
- }catch(e){}
+ try{const values={};['roadBM','roadBS','roadLength','roadInterval','roadWidth','roadAsphaltThk','roadConcreteThk','roadSubbaseThk','roadBoulderThk','roadAsphaltInput','roadInputMode'].forEach(id=>values[id]=$(id).value);
+ localStorage.setItem('sewerProRoadDraft',JSON.stringify({values,stations:roadStations,index:roadIndex,mode:roadMode,stationValues:roadValues}));}catch(e){}
 }
 function roadRestore(){
- try{
-  const raw=localStorage.getItem('sewerProRoadDraft');if(!raw)return;
-  const d=JSON.parse(raw);Object.entries(d.values||{}).forEach(([id,v])=>{if($(id))$(id).value=v;});
-  roadStations=Array.isArray(d.stations)?d.stations:[];roadIndex=Math.max(0,Math.min(roadStations.length-1,Number(d.index)||0));roadMode='level';roadValues=d.stationValues||{};
-  const mode=document.querySelector('input[name="roadMode"][value="'+roadMode+'"]');if(mode)mode.checked=true;
-  if(roadStations.length)roadLoadCurrent();else roadRender();
- }catch(e){roadRender();}
+ try{const raw=localStorage.getItem('sewerProRoadDraft');if(!raw)return;const d=JSON.parse(raw);Object.entries(d.values||{}).forEach(([id,v])=>{if($(id))$(id).value=v;});
+ roadStations=Array.isArray(d.stations)?d.stations:[];roadIndex=Math.max(0,Math.min(Math.max(0,roadStations.length-1),Number(d.index)||0));roadValues=d.stationValues||{};
+ if(roadStations.length)roadLoadCurrent();else roadRender();}catch(e){roadRender();}
 }
-roadRestore();
-roadRender();
+roadRestore();roadRender();
 
 let roadPendingImport=null;
 const roadStatus=(msg,kind='')=>{const e=$('roadProfileStatus');e.textContent=msg;e.className='status'+(kind?' '+kind:'');};
