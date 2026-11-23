@@ -17,6 +17,8 @@ import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.PermissionRequest;
+import android.content.pm.PackageManager;
 import android.webkit.ConsoleMessage;
 import android.util.Log;
 import android.webkit.WebResourceRequest;
@@ -28,6 +30,8 @@ import java.io.OutputStream;
 public class MainActivity extends Activity {
     private static final int REQUEST_OPEN_JSON = 701;
     private static final int REQUEST_SAVE_FILE = 702;
+    private static final int REQUEST_MIC_PERMISSION = 703;
+    private PermissionRequest pendingWebPermissionRequest;
     private WebView webView;
     private ValueCallback<Uri[]> filePathCallback;
     private byte[] pendingSaveBytes;
@@ -61,6 +65,26 @@ public class MainActivity extends Activity {
             }
         });
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override public void onPermissionRequest(PermissionRequest request) {
+                runOnUiThread(() -> {
+                    boolean audioRequested = false;
+                    for (String resource : request.getResources()) {
+                        if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)) audioRequested = true;
+                        else { request.deny(); return; }
+                    }
+                    if (!audioRequested) { request.deny(); return; }
+                    if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                        request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+                    } else {
+                        if (pendingWebPermissionRequest != null) pendingWebPermissionRequest.deny();
+                        pendingWebPermissionRequest = request;
+                        requestPermissions(new String[]{android.Manifest.permission.RECORD_AUDIO}, REQUEST_MIC_PERMISSION);
+                    }
+                });
+            }
+            @Override public void onPermissionRequestCanceled(PermissionRequest request) {
+                if (pendingWebPermissionRequest == request) pendingWebPermissionRequest = null;
+            }
             @Override public boolean onConsoleMessage(ConsoleMessage message) { Log.e("ARKAN_JS", message.message() + " -- " + message.sourceId() + ":" + message.lineNumber()); return true; }
             @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
                 if (filePathCallback != null) filePathCallback.onReceiveValue(null);
@@ -107,6 +131,20 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, "تعذرت الطباعة على هذا الجهاز", Toast.LENGTH_LONG).show();
                 }
             });
+        }
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_MIC_PERMISSION && pendingWebPermissionRequest != null) {
+            PermissionRequest request = pendingWebPermissionRequest;
+            pendingWebPermissionRequest = null;
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+            } else {
+                request.deny();
+                Toast.makeText(this, "يجب السماح باستخدام المايكروفون لتفعيل التحدث الصوتي", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
