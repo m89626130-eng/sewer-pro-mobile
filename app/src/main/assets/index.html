@@ -163,6 +163,12 @@ select::-ms-expand{display:none}
 #roads .road-staff-entry input{max-width:170px;min-height:40px;text-align:center}
 #roads .road-layer .road-layer-level{justify-content:flex-start!important}
 #roads .road-layer .road-level-result{margin-inline-start:0!important}
+
+.utm-nav-btn{background:#9ACD32!important;color:#17320a!important;border:1px solid #83b52a!important;font-weight:800!important}
+.utm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.utm-result{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:10px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft)}
+.utm-result strong{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}
+.utm-result .btn{padding:7px 12px}
 </style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
@@ -171,6 +177,7 @@ select::-ms-expand{display:none}
  <button data-page="infrastructure">أعمال البنية التحتية</button>
  <button data-page="roads">أعمال الطرق</button>
  <button data-page="quantities">حساب الكميات</button>
+ <button class="utm-nav-btn" data-page="utm" type="button">📍 UTM الإحداثيات</button>
 </nav>
 <nav class="nav no-print secondary-nav" id="sewerNav">
  <span class="nav-caption">شبكات الصرف الصحي:</span>
@@ -248,6 +255,31 @@ select::-ms-expand{display:none}
   </div></article>
   <article class="card full"><div class="card-head"><h3>سجل المحطات</h3><span class="tag">القراءات المحفوظة</span></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody id="roadStationsBody"></tbody></table></div><p class="help">يُحفظ إدخال كل محطة أثناء التنقل بينها، وتُستعاد بياناتها عند الرجوع إليها.</p></div></article>
  </div>
+</section>
+
+<section class="page" id="utm">
+ <div class="page-head"><div><h2>تحويل الإحداثيات UTM</h2><p>تحويل بين إحداثيات UTM والإحداثيات الجغرافية مع اعتماد Zone 38N افتراضياً.</p></div><span class="tag">WGS84 · UTM</span></div>
+ <article class="card full"><div class="card-head"><h3>إعدادات المنطقة</h3><span class="tag">قابلة للتغيير</span></div><div class="card-body utm-grid">
+  <div class="roads-field"><label for="utmZone">رقم المنطقة UTM Zone (1–60)</label><input id="utmZone" type="number" min="1" max="60" step="1" value="38"></div>
+  <div class="roads-field"><label for="utmHemisphere">نصف الكرة</label><select id="utmHemisphere"><option value="N">شمالي (N)</option><option value="S">جنوبي (S)</option></select></div>
+ </div></article>
+ <div class="grid">
+  <article class="card"><div class="card-head"><h3>UTM إلى جغرافي</h3><span class="tag">E / N → Lat / Lon</span></div><div class="card-body">
+   <div class="roads-field"><label for="utmEasting">Easting — E (متر)</label><input id="utmEasting" type="number" step="0.001" placeholder="مثال: 500000"></div>
+   <div class="roads-field"><label for="utmNorthing">Northing — N (متر)</label><input id="utmNorthing" type="number" step="0.001" placeholder="أدخل Northing"></div>
+   <button class="btn btn-primary" type="button" id="utmToGeo">تحويل إلى Latitude / Longitude</button>
+   <div class="utm-result"><span>Latitude</span><strong id="utmLatitude">—</strong><button class="btn btn-ghost" type="button" data-copy="utmLatitude">نسخ</button></div>
+   <div class="utm-result"><span>Longitude</span><strong id="utmLongitude">—</strong><button class="btn btn-ghost" type="button" data-copy="utmLongitude">نسخ</button></div>
+  </div></article>
+  <article class="card"><div class="card-head"><h3>جغرافي إلى UTM</h3><span class="tag">Lat / Lon → E / N</span></div><div class="card-body">
+   <div class="roads-field"><label for="utmLatInput">Latitude — خط العرض</label><input id="utmLatInput" type="number" step="0.0000001" placeholder="مثال: 31.0000000"></div>
+   <div class="roads-field"><label for="utmLonInput">Longitude — خط الطول</label><input id="utmLonInput" type="number" step="0.0000001" placeholder="مثال: 46.0000000"></div>
+   <button class="btn btn-primary" type="button" id="geoToUtm">تحويل إلى UTM</button>
+   <div class="utm-result"><span>Easting — E</span><strong id="utmEastingOut">—</strong><button class="btn btn-ghost" type="button" data-copy="utmEastingOut">نسخ</button></div>
+   <div class="utm-result"><span>Northing — N</span><strong id="utmNorthingOut">—</strong><button class="btn btn-ghost" type="button" data-copy="utmNorthingOut">نسخ</button></div>
+  </div></article>
+ </div>
+ <p class="help">ملاحظة: التحويل يعتمد مرجع WGS84. تأكد من اختيار Zone ونصف الكرة الصحيحين للموقع.</p>
 </section>
 
 <section class="page" id="quantities">
@@ -728,4 +760,17 @@ apply();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(); 
+
+/* ARKAN UTM coordinate converter — WGS84 */
+(function(){
+ const $=id=>document.getElementById(id), rad=Math.PI/180, a=6378137, f=1/298.257223563, k0=.9996, e2=f*(2-f), ep2=e2/(1-e2);
+ const num=id=>{const v=Number($(id)?.value);return Number.isFinite(v)&&String($(id)?.value??'').trim()!==''?v:null;};
+ function zone(){const z=num('utmZone');if(z===null||!Number.isInteger(z)||z<1||z>60)throw Error('رقم المنطقة يجب أن يكون بين 1 و60.');return z;}
+ function forward(lat,lon,z){if(lat < -80||lat>84||lon < -180||lon>180)throw Error('خط العرض يجب أن يكون بين -80 و84 وخط الطول بين -180 و180.');const p=lat*rad,l=lon*rad,lon0=((z-1)*6-180+3)*rad,N=a/Math.sqrt(1-e2*Math.sin(p)**2),T=Math.tan(p)**2,C=ep2*Math.cos(p)**2,A=Math.cos(p)*(l-lon0),M=a*((1-e2/4-3*e2**2/64-5*e2**3/256)*p-(3*e2/8+3*e2**2/32+45*e2**3/1024)*Math.sin(2*p)+(15*e2**2/256+45*e2**3/1024)*Math.sin(4*p)-(35*e2**3/3072)*Math.sin(6*p));const E=500000+k0*N*(A+(1-T+C)*A**3/6+(5-18*T+T*T+72*C-58*ep2)*A**5/120);let NN=k0*(M+N*Math.tan(p)*(A*A/2+(5-T+9*C+4*C*C)*A**4/24+(61-58*T+T*T+600*C-330*ep2)*A**6/720));if(lat<0)NN+=10000000;return {E,N:NN};}
+ function inverse(E,N,z,hem){if(E<100000||E>900000||N<0||N>10000000)throw Error('تحقق من قيم E وN؛ القيم خارج النطاق المعتاد لـ UTM.');let y=N-(hem==='S'?10000000:0),x=E-500000,M=y/k0,mu=M/(a*(1-e2/4-3*e2**2/64-5*e2**3/256)),e1=(1-Math.sqrt(1-e2))/(1+Math.sqrt(1-e2)),J1=3*e1/2-27*e1**3/32,J2=21*e1**2/16-55*e1**4/32,J3=151*e1**3/96,J4=1097*e1**4/512,fp=mu+J1*Math.sin(2*mu)+J2*Math.sin(4*mu)+J3*Math.sin(6*mu)+J4*Math.sin(8*mu),C1=ep2*Math.cos(fp)**2,T1=Math.tan(fp)**2,N1=a/Math.sqrt(1-e2*Math.sin(fp)**2),R1=a*(1-e2)/Math.pow(1-e2*Math.sin(fp)**2,1.5),D=x/(N1*k0),lat=fp-(N1*Math.tan(fp)/R1)*(D**2/2-(5+3*T1+10*C1-4*C1**2-9*ep2)*D**4/24+(61+90*T1+298*C1+45*T1**2-252*ep2-3*C1**2)*D**6/720),lon0=((z-1)*6-180+3)*rad,lon=lon0+(D-(1+2*T1+C1)*D**3/6+(5-2*C1+28*T1-3*C1**2+8*ep2+24*T1**2)*D**5/120)/Math.cos(fp);return {lat:lat/rad,lon:lon/rad};}
+ const fmt=(v,n)=>v.toFixed(n);
+ $('utmToGeo')?.addEventListener('click',()=>{try{const z=zone(),E=num('utmEasting'),N=num('utmNorthing');if(E===null||N===null)throw Error('أدخل قيمتي Easting وNorthing.');const r=inverse(E,N,z,$('utmHemisphere').value);$('utmLatitude').textContent=fmt(r.lat,8);$('utmLongitude').textContent=fmt(r.lon,8);}catch(e){alert(e.message);}});
+ $('geoToUtm')?.addEventListener('click',()=>{try{const z=zone(),lat=num('utmLatInput'),lon=num('utmLonInput');if(lat===null||lon===null)throw Error('أدخل خط العرض وخط الطول.');const r=forward(lat,lon,z);$('utmEastingOut').textContent=fmt(r.E,3);$('utmNorthingOut').textContent=fmt(r.N,3);$('utmHemisphere').value=lat>=0?'N':'S';}catch(e){alert(e.message);}});
+ document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{const t=$(b.dataset.copy)?.textContent||'';if(t==='—')return;try{await navigator.clipboard.writeText(t);b.textContent='تم النسخ';setTimeout(()=>b.textContent='نسخ',1200);}catch(e){alert('تعذر النسخ من هذا الجهاز.');}}));
+})();
 </script></body></html>
