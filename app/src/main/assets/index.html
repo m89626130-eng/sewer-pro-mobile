@@ -175,7 +175,68 @@ select::-ms-expand{display:none}
 .qty-tool{min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:#202a36;color:#f1f5f9;border:1px solid #526171;border-radius:13px;padding:12px}
 .qty-tool span{font-size:29px;line-height:1}.qty-tool b{font-size:13px;text-align:center}.qty-tool.active{background:#254b35;border:2px solid #9acd32;color:#eaffd8}
 @media(max-width:600px){.qty-tools{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.qty-tool{min-height:94px;padding:9px}.qty-tool span{font-size:26px}}
-\n@media print{body.qty-print-mode .page{display:none!important}body.qty-print-mode #quantities.page{display:block!important}body.qty-print-mode #quantities .card{break-inside:auto}body.qty-print-mode #quantities .table-wrap{overflow:visible!important}body.qty-print-mode #quantities table{width:100%;border-collapse:collapse}body.qty-print-mode #quantities th,body.qty-print-mode #quantities td{border:1px solid #888;padding:6px;color:#111!important}}\n</style>
+\n@media print{body.qty-print-mode .page{display:none!important}body.qty-print-mode #quantities.page{display:block!important}body.qty-print-mode #quantities .card{break-inside:auto}body.qty-print-mode #quantities .table-wrap{overflow:visible!important}body.qty-print-mode #quantities table{width:100%;border-collapse:collapse}body.qty-print-mode #quantities th,body.qty-print-mode #quantities td{border:1px solid #888;padding:6px;color:#111!important}}\n
+/* ARKAN UI refinement: brown main section tabs, cyan road headings, compact horizontal fields */
+#mainNav button[data-page="infrastructure"],
+#mainNav button[data-page="roads"],
+#mainNav button[data-page="quantities"]{
+  color:#c58a55!important;
+  border-color:#765239!important;
+}
+#mainNav button[data-page="infrastructure"].active,
+#mainNav button[data-page="roads"].active,
+#mainNav button[data-page="quantities"].active{
+  background:#49301f!important;
+  color:#f0c49a!important;
+  border-color:#c58a55!important;
+}
+#roads .roads-stack>article:nth-child(1) .card-head h3,
+#roads .roads-stack>article:nth-child(2) .card-head h3,
+#roads .roads-stack>article:nth-child(4) .card-head h3,
+#roads .roads-stack>article:nth-child(5) .card-head h3{
+  color:#67d5f5!important;
+}
+#roads .roads-stack .roads-field{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-height:44px!important;
+  margin:0!important;
+}
+#roads .roads-stack .roads-field>label{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  margin:0!important;
+  text-align:right!important;
+}
+#roads .roads-stack .roads-field>input:not([type="file"]),
+#roads .roads-stack .roads-field>select{
+  flex:0 0 104px!important;
+  width:104px!important;
+  max-width:42%!important;
+  min-width:0!important;
+  min-height:39px!important;
+  height:39px!important;
+  padding:7px!important;
+  text-align:center!important;
+}
+#roads .roads-stack .road-staff-entry>input{
+  flex-basis:104px!important;
+  width:104px!important;
+  max-width:42%!important;
+  min-height:39px!important;
+  height:39px!important;
+}
+@media(max-width:420px){
+  #roads .roads-stack .roads-field{gap:6px!important}
+  #roads .roads-stack .roads-field>label{font-size:11px!important}
+  #roads .roads-stack .roads-field>input:not([type="file"]),
+  #roads .roads-stack .roads-field>select{flex-basis:92px!important;width:92px!important}
+}
+
+</style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
