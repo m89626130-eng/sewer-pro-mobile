@@ -73,7 +73,7 @@ td,th{border-color:#454a54}
 .sewer-all-sections .page-head:before{font-size:25px;line-height:1;flex:0 0 34px;text-align:center}
 .sewer-all-sections .page-head[data-icon="survey"]:before{content:"📐"}
 .sewer-all-sections .page-head[data-icon="pipe"]:before{content:"🟦"}
-.sewer-all-sections .page-head[data-icon="base"]:before{content:"🕳️"}
+.sewer-all-sections .page-head[data-icon="layerHeights"]:before{content:"🧱"}
 .sewer-all-sections .page-head[data-icon="layers"]:before{content:"🧱"}
 .sewer-all-sections .page-head[data-icon="excavation"]:before{content:"🚜"}
 .sewer-all-sections .page-head[data-icon="report"]:before{content:"📊"}
@@ -326,6 +326,14 @@ select::-ms-expand{display:none}
  background-repeat:no-repeat!important;background-position:left 12px center!important;
  background-size:22px 16px!important;padding-inline-start:42px!important;
 }
+
+/* Unified manual layer-height entry: labels right, values left */
+.layer-heights-card{display:flex;flex-direction:column;gap:11px}
+.layer-height-row{display:flex;flex-direction:row;direction:rtl;align-items:center;justify-content:space-between;gap:14px;min-height:58px;padding:9px 12px;border:1px solid #505967;border-radius:10px;background:#202a36}
+.layer-height-row label{flex:1;text-align:right;font-size:14px;font-weight:800;color:#edf1f7}
+.layer-height-row input{flex:0 0 125px;width:125px;min-height:42px;text-align:center;direction:ltr;background:#252930;border:1px solid #697586;border-radius:8px;color:#fff;padding:8px;font:inherit}
+@media(max-width:420px){.layer-height-row{gap:8px;padding:8px 9px}.layer-height-row label{font-size:13px}.layer-height-row input{flex-basis:105px;width:105px}}
+
 </style>
 
 <style id="arkan-compact-all-fields-v1">
@@ -438,8 +446,6 @@ select::-ms-expand{display:none}
  <button class="active" data-page="dashboard">لوحة الشبكة</button>
  <button data-page="survey">الإدخال المساحي</button>
  <button data-page="pipe">قطر الأنبوب</button>
- <button data-page="base">قاعدة المنهول</button>
- <button data-page="layers">السبيس والجلمود</button>
  <button data-page="excavation">الحفر</button>
  <button data-page="report">النتائج والتقرير</button>
 </nav>
@@ -619,30 +625,14 @@ select::-ms-expand{display:none}
  </div></article></div>
 </section>
 
-<section class="page" id="base">
- <div class="page-head"><div><h2>قاعدة المنهول</h2><p>أدخل سماكة القاعدة فقط؛ المرجع هو منسوب أسفل الأنبوب المحسوب من القراءة الوحيدة.</p></div></div>
- <div class="grid"><article class="card"><div class="card-head"><h3>سماكة قاعدة المنهول</h3><span class="tag">إدخال السماكة فقط</span></div><div class="card-body">
-  <div class="field"><label>سماكة قاعدة المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30"></div>
-  <div class="result blue"><span>قراءة قاعدة المنهول (المسطرة)</span><strong id="baseBottomReadingOut">—</strong></div>
-  <div class="result"><span>منسوب المنهول (م)</span><strong id="manholeLevelOut">—</strong></div>
-  <p class="help">منسوب المنهول يُحسب تلقائياً = منسوب أسفل الأنبوب − سماكة قاعدة المنهول المدخلة يدوياً.</p>
+<section class="page" id="layerHeights">
+ <div class="page-head"><div><h2>ارتفاعات الطبقات</h2><p>أدخل ارتفاع كل طبقة يدوياً بالسنتيمتر؛ وتُحدّث قراءات المسطرة والحسابات تلقائياً.</p></div></div>
+ <div class="grid"><article class="card full"><div class="card-head"><h3>إدخال ارتفاعات الطبقات</h3><span class="tag">إدخال يدوي</span></div><div class="card-body layer-heights-card">
+  <div class="layer-height-row"><label for="baseThk">ارتفاع المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30" aria-label="ارتفاع المنهول بالسنتيمتر"></div>
+  <div class="layer-height-row"><label for="spaceThk">ارتفاع السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20" aria-label="ارتفاع السبيس بالسنتيمتر"></div>
+  <div class="layer-height-row"><label for="gilmoodThk">ارتفاع الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30" aria-label="ارتفاع الجلمود بالسنتيمتر"></div>
+  <p class="help">تُدخل القيم الثلاث يدوياً من جهة اليسار، وتظهر أسماء الارتفاعات من جهة اليمين. تبقى الحسابات وقراءات المسطرة مرتبطة تلقائياً بمرجع ظهر الأنبوب.</p>
  </div></article></div>
-</section>
-
-<section class="page" id="layers">
- <div class="page-head"><div><h2>طبقتا السبيس والجلمود</h2><p>أدخل السماكات يدوياً فقط؛ لا تحتاج إلى قراءة مسطرة منفصلة لكل طبقة.</p></div></div>
- <div class="grid">
-  <article class="card"><div class="card-head"><h3>طبقة السبيس</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
-   <div class="field"><label>سمك السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20"></div>
-   <div class="result"><span>قراءة السبيس (المسطرة)</span><strong id="spaceBottomReadingOut">—</strong></div>
-   <p class="help">قراءة السبيس = قراءة ظهر البوري + قطر البوري + ارتفاع قاعدة المنهول + ارتفاع السبيس.</p>
-  </div></article>
-  <article class="card"><div class="card-head"><h3>طبقة الجلمود</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
-   <div class="field"><label>سمك الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30"></div>
-   <div class="result"><span>قراءة الجلمود (المسطرة)</span><strong id="gilmoodBottomReadingOut">—</strong></div>
-   <p class="help">قراءة الجلمود = قراءة ظهر البوري + قطر البوري + ارتفاع قاعدة المنهول + ارتفاع السبيس + ارتفاع الجلمود.</p>
-  </div></article>
- </div>
 </section>
 
 <section class="page" id="excavation">
@@ -682,7 +672,7 @@ function buildUnifiedSewerScreen(){
  const host=$('sewerAllSections');
  if(!host || host.dataset.built==='1')return;
  const order=[
-  ['survey','📐'],['pipe','🟦'],['base','🕳️'],['layers','🧱'],['excavation','🚜'],['report','📊']
+  ['survey','📐'],['pipe','🟦'],['layerHeights','🧱'],['excavation','🚜'],['report','📊']
  ];
  order.forEach(([id])=>{
   const page=$(id);if(!page)return;
