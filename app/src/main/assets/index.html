@@ -318,6 +318,14 @@ select::-ms-expand{display:none}
   #excavation .field>select{flex-basis:92px!important;width:92px!important}
 }
 
+
+/* Yellow dropdown arrow for the pipe reference selector */
+#pipeMode{
+ -webkit-appearance:none!important;appearance:none!important;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='16' viewBox='0 0 22 16'%3E%3Cpath d='M2 3h18L11 14z' fill='%23FFD400' stroke='%23E6B800' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+ background-repeat:no-repeat!important;background-position:left 12px center!important;
+ background-size:22px 16px!important;padding-inline-start:42px!important;
+}
 </style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
@@ -486,7 +494,7 @@ select::-ms-expand{display:none}
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
   </div><div class="result"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div></div></article>
   <article class="card"><div class="card-head"><h3>مرجع ظهر الأنبوب — إدخال واحد فقط</h3><span class="tag">قراءة أو منسوب</span></div><div class="card-body">
-   <div class="radio-row"><label><input type="radio" name="pipeMode" value="reading" checked> أدخل قراءة المسطرة فوق ظهر الأنبوب</label><label><input type="radio" name="pipeMode" value="rl"> أدخل منسوب ظهر الأنبوب مباشرة</label></div>
+   <div class="field"><label for="pipeMode">طريقة إدخال مرجع ظهر الأنبوب</label><select id="pipeMode"><option value="reading" selected>إدخال قراءة المسطرة فوق ظهر الأنبوب</option><option value="rl">إدخال منسوب ظهر الأنبوب</option></select></div>
    <div class="field"><label id="pipeValueLabel">قراءة المسطرة فوق ظهر الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
    <p class="help">عند اختيار قراءة المسطرة: منسوب ظهر الأنبوب = HI − القراءة. وعند اختيار إدخال المنسوب، يستخدم البرنامج المنسوب الذي أدخلته كما هو. لا تدخل أي قراءة أخرى للقاعدة أو الطبقات أو الحفر.</p>
   </div></article>
@@ -497,9 +505,10 @@ select::-ms-expand{display:none}
  <div class="page-head"><div><h2>قطر الأنبوب</h2><p>تحدد القطر فقط؛ قراءة ظهر الأنبوب مأخوذة تلقائياً من الإدخال المساحي.</p></div></div>
  <div class="grid"><article class="card"><div class="card-head"><h3>بيانات الأنبوب PIPE</h3><span class="tag">إدخال يدوي</span></div><div class="card-body">
   <div class="field"><label>قطر الأنبوب (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
+  <div class="result blue"><span>منسوب ظهر الأنبوب (Crown RL)</span><strong id="pipeCrownOut">—</strong></div>
   <div class="result"><span>منسوب أسفل الأنبوب (IL)</span><strong id="pipeInvertOut">—</strong></div>
   <div class="status" id="pipeStatus">أدخل قراءة المسطرة في الإدخال المساحي وحدد قطر الأنبوب لعرض منسوب أسفل الأنبوب.</div>
-  <p class="help">يُحسب IL تلقائياً = HI − قراءة المسطرة فوق ظهر الأنبوب − قطر الأنبوب بالمتر. لا تحتاج إلى إدخال قراءة إضافية هنا.</p>
+  <p class="help">يظهر منسوب ظهر الأنبوب أولاً، ثم يُحسب منسوب أسفله بطرح القطر من منسوب الظهر. عند اختيار قراءة المسطرة يحسب الظهر = HI − القراءة، وعند اختيار المنسوب يستخدم القيمة المدخلة.</p>
  </div></article></div>
 </section>
 
@@ -563,7 +572,7 @@ const fmt=v=>Number.isFinite(v)?v.toFixed(3)+' m':'—';
 const fmtN=v=>Number.isFinite(v)?v.toFixed(3):'—';
 const set=(id,v)=>{$(id).textContent=fmt(v);};
 const hi=()=>{const bm=val('bm'),bs=val('bs');return bm!==null&&bs!==null?bm+bs:null;};
-const selectedMode=()=>document.querySelector('input[name="pipeMode"]:checked')?.value||'reading';
+const selectedMode=()=>$('pipeMode')?.value||'reading';
 
 function buildUnifiedSewerScreen(){
  const host=$('sewerAllSections');
@@ -596,6 +605,7 @@ function update(){
  const dia=val('pipeDia');
  // Pipe invert level (IL) is calculated from the single crown reading and selected diameter.
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
+ set('pipeCrownOut',pipeCrown);
  set('pipeInvertOut',pipeInvert);
  $('pipeStatus').textContent=pipeInvert===null?'أدخل بيانات المساحة وقطر الأنبوب لاحتساب IL.':`تم حساب منسوب أسفل الأنبوب IL = ${fmtN(pipeInvert)} م`;
  const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
@@ -643,7 +653,7 @@ function saveData(){
 function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
  Object.entries(d.values).forEach(([id,v])=>{if($(id))$(id).value=v;});
- if(d.modes?.pipe){const el=document.querySelector(`input[name="pipeMode"][value="${d.modes.pipe}"]`);if(el)el.checked=true;}
+ if(d.modes?.pipe && $('pipeMode'))$('pipeMode').value=d.modes.pipe;
  if(d.modes?.asphalt){asphaltEntryMode=d.modes.asphalt;const ae=document.querySelector(`input[name="asphaltMode"][value="${asphaltEntryMode}"]`);if(ae)ae.checked=true;}
  syncAsphaltMode();update();
 }
@@ -657,7 +667,7 @@ function csv(){
 document.querySelectorAll('input[name="asphaltMode"]').forEach(el=>el.addEventListener('change',()=>{asphaltEntryMode=el.value;$('asphaltReading').value='';$('asphaltLevel').value='';syncAsphaltMode();update();}));
 $('asphaltReading').addEventListener('input',()=>{if(asphaltEntryMode==='reading')update();});
 $('asphaltLevel').addEventListener('input',()=>{if(asphaltEntryMode==='level')update();});
-document.querySelectorAll('input[name="pipeMode"]').forEach(el=>el.addEventListener('change',update));
+$('pipeMode').addEventListener('change',update);
 const sewerPages=['dashboard','survey','pipe','base','layers','excavation','report'];
 function showPage(page){
  const sewerTarget=sewerPages.includes(page)?page:null;
