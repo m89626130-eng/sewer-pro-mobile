@@ -360,7 +360,7 @@ select::-ms-expand{display:none}
 <style id="arkan-compact-fields-final-v2">
 /* Compact all sewer entry fields, calculated readings and report controls */
 #sewerAllSections .field{gap:2px!important;margin-bottom:2px!important}
-#sewerAllSections .field label{font-size:10px!important;line-height:1.15!important;margin-bottom:1px!important}
+#sewerAllSections .field label{font-size:9px!important;line-height:1.1!important;margin-bottom:0!important}
 #sewerAllSections .field input,
 #sewerAllSections .field select,
 #survey .field input,#survey .field select,
@@ -369,7 +369,7 @@ select::-ms-expand{display:none}
 #layers .field input,#layers .field select,
 #excavation .field input,#excavation .field select,
 #report .field input,#report .field select{
- min-height:31px!important;height:31px!important;padding:3px 6px!important;font-size:11px!important;border-radius:6px!important
+ min-height:27px!important;height:27px!important;padding:2px 5px!important;font-size:10px!important;border-radius:5px!important
 }
 #sewerAllSections .fields,#survey .fields,#pipe .fields,#base .fields,#layers .fields,#excavation .fields,#report .fields{gap:5px!important}
 #sewerAllSections .card-body,#survey .card-body,#pipe .card-body,#base .card-body,#layers .card-body,#excavation .card-body,#report .card-body{padding:7px!important}
@@ -571,9 +571,9 @@ select::-ms-expand{display:none}
  <div class="page-head"><div><h2>لوحة شبكة الصرف الصحي</h2><p>داخل أعمال البنية التحتية: قراءة واحدة فقط على ظهر الأنبوب أو إدخال منسوبه مباشرة؛ بقية المناسيب تُحسب آلياً.</p></div><span class="tag">حساب مترابط تلقائي</span></div>
  <div class="summary">
   <div class="metric"><span>HI · منسوب الجهاز</span><strong id="mHI">—</strong><small>BM + BS</small></div>
-  <div class="metric"><span>منسوب أسفل قاعدة المنهول</span><strong id="mBase">—</strong><small>النتيجة المطلوبة</small></div>
-  <div class="metric"><span>منسوب أسفل السبيس</span><strong id="mSpace">—</strong><small>بعد سماكة السبيس</small></div>
-  <div class="metric"><span>منسوب أسفل الجلمود</span><strong id="mGilmood">—</strong><small>بعد سماكة الجلمود</small></div>
+  <div class="metric"><span>قراءة قاعدة المنهول</span><strong id="mBase">—</strong><small>قراءة المسطرة</small></div>
+  <div class="metric"><span>قراءة السبيس</span><strong id="mSpace">—</strong><small>قراءة المسطرة</small></div>
+  <div class="metric"><span>قراءة الجلمود</span><strong id="mGilmood">—</strong><small>قراءة المسطرة</small></div>
  </div>
  <div class="grid">
   <article class="card"><div class="card-head"><h3>عمق الحفر الكلي</h3><span class="tag">نتيجة نهائية</span></div><div class="card-body"><div class="result amber"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="mDepth">—</strong></div><p class="help">يعتمد العمق على منسوب الأرض الطبيعية GL المدخل يدوياً، وعلى منسوب أسفل الجلمود المحسوب من مرجع الأنبوب.</p></div></article>
@@ -625,9 +625,8 @@ select::-ms-expand{display:none}
  <div class="page-head"><div><h2>قاعدة المنهول</h2><p>أدخل سماكة القاعدة فقط؛ المرجع هو منسوب أسفل الأنبوب المحسوب من القراءة الوحيدة.</p></div></div>
  <div class="grid"><article class="card"><div class="card-head"><h3>سماكة قاعدة المنهول</h3><span class="tag">إدخال السماكة فقط</span></div><div class="card-body">
   <div class="field"><label>سماكة قاعدة المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30"></div>
-  <div class="result"><span>منسوب أسفل قاعدة المنهول</span><strong id="baseBottomOut">—</strong></div>
-  <div class="result blue"><span>قراءة المسطرة المحسوبة لأسفل القاعدة</span><strong id="baseBottomReadingOut">—</strong></div>
-  <p class="help">الحساب المتسلسل المعتمد: منسوب أسفل قاعدة المنهول = منسوب أسفل الأنبوب − سماكة القاعدة. لا يظهر منسوب أعلى القاعدة.</p>
+  <div class="result blue"><span>قراءة قاعدة المنهول (المسطرة)</span><strong id="baseBottomReadingOut">—</strong></div>
+  <p class="help">قراءة قاعدة المنهول = قراءة ظهر البوري + قطر البوري + ارتفاع القاعدة.</p>
  </div></article></div>
 </section>
 
@@ -636,15 +635,13 @@ select::-ms-expand{display:none}
  <div class="grid">
   <article class="card"><div class="card-head"><h3>طبقة السبيس</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
    <div class="field"><label>سمك السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20"></div>
-   <div class="result blue"><span>منسوب أسفل السبيس</span><strong id="spaceBottomOut">—</strong></div>
-   <div class="result"><span>قراءة المسطرة المحسوبة لأسفل السبيس</span><strong id="spaceBottomReadingOut">—</strong></div>
-   <p class="help">يُحسب من منسوب أسفل قاعدة المنهول بعد طرح سمك السبيس.</p>
+   <div class="result"><span>قراءة السبيس (المسطرة)</span><strong id="spaceBottomReadingOut">—</strong></div>
+   <p class="help">قراءة السبيس = قراءة ظهر البوري + قطر البوري + ارتفاع القاعدة + ارتفاع السبيس.</p>
   </div></article>
   <article class="card"><div class="card-head"><h3>طبقة الجلمود</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
    <div class="field"><label>سمك الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30"></div>
-   <div class="result blue"><span>منسوب أسفل الجلمود</span><strong id="gilmoodBottomOut">—</strong></div>
-   <div class="result"><span>قراءة المسطرة المحسوبة لأسفل الجلمود</span><strong id="gilmoodBottomReadingOut">—</strong></div>
-   <p class="help">يُحسب من منسوب أسفل السبيس بعد طرح سمك الجلمود.</p>
+   <div class="result"><span>قراءة الجلمود (المسطرة)</span><strong id="gilmoodBottomReadingOut">—</strong></div>
+   <p class="help">قراءة الجلمود = قراءة ظهر البوري + قطر البوري + ارتفاع القاعدة + ارتفاع السبيس + ارتفاع الجلمود.</p>
   </div></article>
  </div>
 </section>
@@ -731,12 +728,12 @@ function update(){
  set('spaceBottomReadingOut',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);
  set('gilmoodBottomReadingOut',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);
  set('excDepthInStation',depth);
- set('mBase',baseBottom);set('mSpace',spaceBottom);set('mGilmood',gilmoodBottom);set('mDepth',depth);
+ set('mBase',(H!==null&&baseBottom!==null)?H-baseBottom:null);set('mSpace',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);set('mGilmood',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);set('mDepth',depth);
  $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
  $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
  $('excStatus').textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';
- renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,spaceT,spaceBottom,gilmoodT,gilmoodBottom,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading: H!==null&&baseBottom!==null?H-baseBottom:null,spaceT,spaceBottom,spaceBottomReading:H!==null&&spaceBottom!==null?H-spaceBottom:null,gilmoodT,gilmoodBottom,gilmoodBottomReading:H!==null&&gilmoodBottom!==null?H-gilmoodBottom:null,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
 }
 
 // ARKAN pipe-by-pipe interpolation between manholes; socket overlap is automatic by diameter.
@@ -788,11 +785,11 @@ function renderReport(d){
  ['الأنبوب','قطر الأنبوب',d.dia,'mm'],
  ['الأنبوب','منسوب أسفل الأنبوب IL',d.pipeInvert,'m'], 
  ['قاعدة المنهول','سماكة القاعدة',d.baseT,'cm'],
- ['قاعدة المنهول','منسوب أسفل قاعدة المنهول',d.baseBottom,'m'],
+ ['قاعدة المنهول','قراءة المسطرة لقاعدة المنهول',d.baseBottomReading,'m reading'],
  ['السبيس','سمك السبيس',d.spaceT,'cm'],
- ['السبيس','منسوب أسفل السبيس',d.spaceBottom,'m'],
+ ['السبيس','قراءة المسطرة للسبيس',d.spaceBottomReading,'m reading'],
  ['الجلمود','سمك الجلمود',d.gilmoodT,'cm'],
- ['الجلمود','منسوب أسفل الجلمود',d.gilmoodBottom,'m'],
+ ['الجلمود','قراءة المسطرة للجلمود',d.gilmoodBottomReading,'m reading'],
  ['المناسيب','قراءة المسطرة على الأسفلت',d.asphaltReading,'m reading'],
  ['المناسيب','منسوب الأسفلت',d.asphaltLevel,'m'],
  ['الحفر','منسوب الأرض الطبيعية GL',d.GL,'m'],
