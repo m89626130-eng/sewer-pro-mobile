@@ -1033,29 +1033,7 @@ $('roadExportPdf').addEventListener('click',()=>{
  const rows=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(id=>'<td>'+(d[id]===null||d[id]===undefined?'—':roadFmt(d[id]))+'</td>').join('')+'</tr>';}).join('');
  const title='بروفايل أعمال الطرق';
  const body='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2{text-align:center}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #555;padding:7px;text-align:center}th{background:#eee}@page{size:A4 landscape;margin:12mm}</style></head><body><h2>'+title+'</h2><p>BM: '+(roadVal('roadBM')??'—')+' | BS: '+(roadVal('roadBS')??'—')+' | HI: '+(roadHI()??'—')+'</p><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody>'+rows+'</tbody></table>
-<style id="arkan-mobile-compact-ui">
-/* Compact mobile controls and icons */
-button, .btn, .nav button, .toolbar button { min-height:34px; padding:6px 9px; }
-button .icon, .btn .icon, .nav button .icon,
-button svg, .btn svg, .nav button svg,
-.road-icon, .language-switch svg {
-  width:14px !important; height:14px !important;
-  min-width:14px !important; min-height:14px !important;
-  font-size:14px !important;
-}
-.page-head:before, .section-title:before { font-size:15px !important; }
-#roadInputMode, #asphaltMode, #pipeMode {
-  min-height:32px !important; height:32px !important;
-  max-width:100% !important; padding:4px 28px 4px 9px !important;
-  font-size:12px !important; line-height:1.2 !important;
-  border-radius:7px !important;
-}
-select { font-size:12px; }
-@media (max-width:600px) {
-  button, .btn { gap:5px; }
-  button .icon, button svg, .btn svg { width:13px !important; height:13px !important; }
-}
-</style>
+
 
 </body></html>';
  const w=window.open('','_blank');if(!w){roadStatus('تعذر فتح صفحة الطباعة. اسمح بفتح نافذة الطباعة ثم أعد المحاولة.','warn');return;}w.document.open();w.document.write(body);w.document.close();roadStatus('تم تجهيز بروفايل للطباعة؛ اختر حفظ بصيغة PDF من نافذة الطباعة.','ok');
@@ -1280,4 +1258,29 @@ apply();
  document.addEventListener('keydown',e=>{if(e.key==='Escape')panel.classList.remove('open');});
 })();
 </script>
+
+<style id="arkan-mobile-compact-ui">
+/* Compact mobile controls and icons */
+button, .btn, .nav button, .toolbar button { min-height:34px; padding:6px 9px; }
+button .icon, .btn .icon, .nav button .icon,
+button svg, .btn svg, .nav button svg,
+.road-icon, .language-switch svg {
+  width:14px !important; height:14px !important;
+  min-width:14px !important; min-height:14px !important;
+  font-size:14px !important;
+}
+.page-head:before, .section-title:before { font-size:15px !important; }
+#roadInputMode, #asphaltMode, #pipeMode {
+  min-height:32px !important; height:32px !important;
+  max-width:100% !important; padding:4px 28px 4px 9px !important;
+  font-size:12px !important; line-height:1.2 !important;
+  border-radius:7px !important;
+}
+select { font-size:12px; }
+@media (max-width:600px) {
+  button, .btn { gap:5px; }
+  button .icon, button svg, .btn svg { width:13px !important; height:13px !important; }
+}
+</style>
+
 </body></html>
