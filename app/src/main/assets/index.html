@@ -654,6 +654,7 @@ select::-ms-expand{display:none}
    <tr><td>قراءة قاعدة المنهولة</td><td id="layerBaseReading">—</td></tr>
    <tr><td>قراءة السبيس</td><td id="layerSpaceReading">—</td></tr>
    <tr><td>قراءة الجلمود</td><td id="layerGilmoodReading">—</td></tr>
+   <tr><td>عمق الحفر</td><td id="layerExcavationReading">—</td></tr>
   </tbody></table></div>
   <p class="help">تُحدّث القراءات تلقائياً عند تغيير أي قيمة أو قراءة في الحسابات.</p>
  </div></article></div>
@@ -737,14 +738,16 @@ function update(){
  // Staff readings: pipe-back staff reading + pipe diameter + successive layer thicknesses.
  const pipeBackStaff=(H!==null&&pipeCrown!==null)?H-pipeCrown:null;
  const baseReading=(pipeBackStaff!==null&&dia!==null&&dia>=0)?pipeBackStaff+dia/1000:null;
- const spaceReading=(baseReading!==null&&spaceT!==null&&spaceT>=0)?baseReading+spaceT/100:null;
- // Gilmood staff reading includes the gilmood layer height as requested.
- const gilmoodReading=(spaceReading!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceReading+gilmoodT/100:null;
+ // Reading sequence: pipe -> manhole base -> subbase (space) -> gilmood -> excavation depth.
+ const spaceReading=(baseReading!==null&&baseT!==null&&baseT>=0)?baseReading+baseT/100:null;
+ const gilmoodReading=(spaceReading!==null&&spaceT!==null&&spaceT>=0)?spaceReading+spaceT/100:null;
+ const excavationReading=(gilmoodReading!==null&&gilmoodT!==null&&gilmoodT>=0)?gilmoodReading+gilmoodT/100:null;
  const showLayerReading=(id,value)=>{const el=$(id);if(el)el.textContent=Number.isFinite(value)?value.toFixed(3):'—';};
  showLayerReading('layerPipeReading',pipeBackStaff);
  showLayerReading('layerBaseReading',baseReading);
  showLayerReading('layerSpaceReading',spaceReading);
  showLayerReading('layerGilmoodReading',gilmoodReading);
+ showLayerReading('layerExcavationReading',excavationReading);
  // Total manhole depth = top manhole/cover level (asphalt level) minus manhole bottom level (pipe invert level).
  const manholeLevel=baseBottom;
  const depth=(finalAsphaltLevel!==null&&manholeLevel!==null)?finalAsphaltLevel-manholeLevel:null;
