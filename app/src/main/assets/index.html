@@ -507,7 +507,8 @@ select::-ms-expand{display:none}
  <div class="page-head"><div><h2>قاعدة المنهول</h2><p>أدخل سماكة القاعدة فقط؛ المرجع هو منسوب أسفل الأنبوب المحسوب من القراءة الوحيدة.</p></div></div>
  <div class="grid"><article class="card"><div class="card-head"><h3>سماكة قاعدة المنهول</h3><span class="tag">إدخال السماكة فقط</span></div><div class="card-body">
   <div class="field"><label>سماكة قاعدة المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30"></div>
-  <div class="result"><span>منسوب أسفل قاعدة المنهول فقط</span><strong id="baseBottomOut">—</strong></div>
+  <div class="result"><span>منسوب أسفل قاعدة المنهول</span><strong id="baseBottomOut">—</strong></div>
+  <div class="result blue"><span>قراءة المسطرة المحسوبة لأسفل القاعدة</span><strong id="baseBottomReadingOut">—</strong></div>
   <p class="help">الحساب المتسلسل المعتمد: منسوب أسفل قاعدة المنهول = منسوب أسفل الأنبوب − سماكة القاعدة. لا يظهر منسوب أعلى القاعدة.</p>
  </div></article></div>
 </section>
@@ -518,11 +519,13 @@ select::-ms-expand{display:none}
   <article class="card"><div class="card-head"><h3>طبقة السبيس</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
    <div class="field"><label>سمك السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20"></div>
    <div class="result blue"><span>منسوب أسفل السبيس</span><strong id="spaceBottomOut">—</strong></div>
+   <div class="result"><span>قراءة المسطرة المحسوبة لأسفل السبيس</span><strong id="spaceBottomReadingOut">—</strong></div>
    <p class="help">يُحسب من منسوب أسفل قاعدة المنهول بعد طرح سمك السبيس.</p>
   </div></article>
   <article class="card"><div class="card-head"><h3>طبقة الجلمود</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
    <div class="field"><label>سمك الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30"></div>
    <div class="result blue"><span>منسوب أسفل الجلمود</span><strong id="gilmoodBottomOut">—</strong></div>
+   <div class="result"><span>قراءة المسطرة المحسوبة لأسفل الجلمود</span><strong id="gilmoodBottomReadingOut">—</strong></div>
    <p class="help">يُحسب من منسوب أسفل السبيس بعد طرح سمك الجلمود.</p>
   </div></article>
  </div>
@@ -600,6 +603,10 @@ function update(){
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
  const GL=val('glInput'),depth=(GL!==null&&gilmoodBottom!==null)?GL-gilmoodBottom:null;
  set('baseBottomOut',baseBottom);set('spaceBottomOut',spaceBottom);set('gilmoodBottomOut',gilmoodBottom);set('excDepthOut',depth);
+ // Calculate each staff reading from the same HI and derived level, regardless of the initial pipe input mode.
+ set('baseBottomReadingOut',(H!==null&&baseBottom!==null)?H-baseBottom:null);
+ set('spaceBottomReadingOut',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);
+ set('gilmoodBottomReadingOut',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);
  set('mBase',baseBottom);set('mSpace',spaceBottom);set('mGilmood',gilmoodBottom);set('mDepth',depth);
  $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
