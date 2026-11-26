@@ -395,6 +395,27 @@ select::-ms-expand{display:none}
 }
 </style>
 
+
+<style id="arkan-final-layout-colors">
+/* Remove the former sewer overview/dashboard; retain its final excavation depth in the instrument HI field. */
+#sewerOverview,#sewerDashboard,#dashboard,.sewer-overview{display:none!important}
+#stationHiResult{display:block!important}
+#stationHiResult>div{color:inherit}
+/* Maroon backgrounds on the six complete sewer sections, not only their title bars. */
+#sewerAllSections>#sewer-section-survey,
+#sewerAllSections>#sewer-section-pipe,
+#sewerAllSections>#sewer-section-base,
+#sewerAllSections>#sewer-section-layers,
+#sewerAllSections>#sewer-section-excavation,
+#sewerAllSections>#sewer-section-report{
+ background:#6f1837!important;color:#fff!important;
+ border:1px solid #8e3554!important;border-radius:10px!important;
+ padding:10px 12px!important;margin:0 0 8px!important;
+}
+#sewerAllSections>.page-head h2,
+#sewerAllSections>.page-head p{color:#fff!important}
+</style>
+
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
@@ -572,7 +593,7 @@ select::-ms-expand{display:none}
   <article class="card"><div class="card-head"><h3>محطة الجهاز BM / BS / HI</h3><span class="tag">إدخال يدوي</span></div><div class="card-body"><div class="fields">
    <div class="field"><label>BM · منسوب البيج مارك (م)</label><input id="bm" type="number" step="0.001" value="100.000"></div>
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
-  </div><div class="result"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div></div></article>
+  </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="excDepthInStation">—</strong></div></div></div></article>
   <article class="card"><div class="card-head"><h3>مرجع ظهر الأنبوب — إدخال واحد فقط</h3><span class="tag">قراءة أو منسوب</span></div><div class="card-body">
    <div class="field"><label for="pipeMode">طريقة إدخال مرجع ظهر الأنبوب</label><select id="pipeMode"><option value="reading" selected>إدخال قراءة المسطرة فوق ظهر الأنبوب</option><option value="rl">إدخال منسوب ظهر الأنبوب</option></select></div>
    <div class="field"><label id="pipeValueLabel">قراءة المسطرة فوق ظهر الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
@@ -697,6 +718,7 @@ function update(){
  set('baseBottomReadingOut',(H!==null&&baseBottom!==null)?H-baseBottom:null);
  set('spaceBottomReadingOut',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);
  set('gilmoodBottomReadingOut',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);
+ set('excDepthInStation',depth);
  set('mBase',baseBottom);set('mSpace',spaceBottom);set('mGilmood',gilmoodBottom);set('mDepth',depth);
  $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
