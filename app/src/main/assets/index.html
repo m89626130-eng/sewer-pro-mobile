@@ -768,12 +768,13 @@ function update(){
    globalStart+=L;
   }
   out('pipeRunDistanceOut',total);out('pipeRunCountOut',count,0);out('pipeRunDropOut',firstIL!==null&&lastIL!==null?firstIL-lastIL:NaN);
-  $p('pipeRunResultRows').innerHTML=result.length?result.map(x=>{const names=x.from.split(' – '),name=x.atManholeEnd?(names[1]||names[0]):names[0],asphalt=nval($p('asphaltLevel')?.value),manholeIL=x.atManholeEnd?x.il2:x.il1,depth=(asphalt!==null&&manholeIL!==null)?asphalt-manholeIL:null,type=depth===null||depth<0?'—':depth<1.70?'AS':depth<3?'BS':depth<4?'CS':'CD',manholeClass=x.atManholeEnd?'inside-manhole':'';return '<tr><td class="'+manholeClass+'">'+esc(name)+'</td><td class="num pipe-top-reading '+manholeClass+'">'+(x.r2===null?'—':x.r2.toFixed(3))+'</td><td class="num">'+(depth===null?'—':depth.toFixed(3))+'</td><td class="num">'+type+'</td></tr>';}).join(''):'<tr><td colspan="4">أدخل مسافة ومنسوب IL صحيحين لكل منهولين متتاليين، وأدخل منسوب الأسفلت.</td></tr>';
+  $p('pipeRunResultRows').innerHTML=result.length?result.map(x=>{const names=x.from.split(' – '),name=x.atManholeEnd?(names[1]||names[0]):names[0],asphalt=(nval($p('asphaltLevel')?.value)??nval($p('glInput')?.value)),manholeIL=x.atManholeEnd?x.il2:x.il1,depth=(asphalt!==null&&manholeIL!==null)?asphalt-manholeIL:null,type=depth===null||depth<0?'—':depth<1.70?'AS':depth<3?'BS':depth<4?'CS':'CD',manholeClass=x.atManholeEnd?'inside-manhole':'';return '<tr><td class="'+manholeClass+'">'+esc(name)+'</td><td class="num pipe-top-reading '+manholeClass+'">'+(x.r2===null?'—':x.r2.toFixed(3))+'</td><td class="num">'+(depth===null?'—':depth.toFixed(3))+'</td><td class="num">'+type+'</td></tr>';}).join(''):'<tr><td colspan="4">أدخل مسافة ومنسوب IL صحيحين لكل منهولين متتاليين، وأدخل منسوب الأسفلت.</td></tr>';
   $p('pipeRunStatus').textContent=result.length?'تم الحساب: العمق = منسوب الأسفلت − IL عند نهاية البوري. التصنيف: أقل من 1.70 AS، من 1.70 إلى أقل من 3 BS، من 3 إلى أقل من 4 CS، و4 فأكثر CD.':'أدخل منهولين على الأقل، والمسافة ومنسوب IL لكل منهول، وأدخل قراءة أو منسوب الأسفلت.';
  }
  $p('pipeManholeAdd').addEventListener('click',()=>{rows.push({name:'MH-'+String(rows.length+1).padStart(2,'0'),dist:'',il:''});draw();});
  $p('pipeRunCalc').addEventListener('click',calc);
- body.addEventListener('input',e=>{const i=Number(e.target.dataset.i),k=e.target.dataset.k;if(k&&rows[i])rows[i][k]=e.target.value;});
+  ['asphaltLevel','asphaltReading','glInput','bm','bs'].forEach(id=>document.getElementById(id)?.addEventListener('input',calc));
+ body.addEventListener('input',e=>{const i=Number(e.target.dataset.i),k=e.target.dataset.k;if(k&&rows[i]){rows[i][k]=e.target.value;calc();}});
  body.addEventListener('click',e=>{if(e.target.dataset.del!==undefined&&rows.length>2){rows.splice(Number(e.target.dataset.del),1);draw();}});
  ['pipeDia','bm','bs'].forEach(id=>document.getElementById(id)?.addEventListener('change',calc));
  draw();
