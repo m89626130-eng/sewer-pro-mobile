@@ -70,7 +70,14 @@ td,th{border-color:#454a54}
 #sewerNav{display:none!important}
 .sewer-all-sections{display:flex;flex-direction:column;gap:14px;margin-top:14px}
 .sewer-all-sections .page-head{display:flex;align-items:center;justify-content:flex-start;gap:12px;margin:14px 0 8px;padding:10px 13px;border-right:5px solid #5b9f20;background:linear-gradient(90deg,#1c2a38,#263646);border-radius:10px}
-.sewer-all-sections .page-head:before{font-size:25px;line-height:1;flex:0 0 34px;text-align:center}
+.sewer-all-sections .page-head:before{font-size:17px;line-height:1;flex:0 0 23px;width:23px;text-align:center}
+.asphalt-mode-field{margin-top:8px;margin-bottom:8px}
+.asphalt-mode-field select{min-height:34px!important;height:34px!important;padding:5px 30px 5px 8px!important;font-size:12px!important;max-width:100%;border-radius:7px}
+.road-icon{width:17px;height:17px}
+button .icon, .btn .icon, .nav button .icon{width:16px;height:16px;font-size:15px}
+.nav button{font-size:12px;padding:7px 9px;min-height:34px}
+.top-actions .btn{padding:6px 9px;font-size:11px}
+
 .sewer-all-sections .page-head[data-icon="survey"]:before{content:"📐"}
 .sewer-all-sections .page-head[data-icon="pipe"]:before{content:"🟦"}
 .sewer-all-sections .page-head[data-icon="layerHeights"]:before{content:"🧱"}
@@ -650,7 +657,7 @@ select::-ms-expand{display:none}
 <section class="page" id="excavation">
  <div class="page-head"><div><h2>الحفر النهائي</h2><p>أدخل منسوب الأرض الطبيعية GL فقط؛ قاع الحفر يُستنتج من تسلسل السماكات.</p></div></div>
  <div class="grid"><article class="card"><div class="card-head"><h3>حساب عمق المنهول</h3><span class="tag">حساب تلقائي</span></div><div class="card-body">
-<div class="radio-row" style="margin-top:12px"><label><input type="radio" name="asphaltMode" value="reading" checked> إدخال قراءة المسطرة</label><label><input type="radio" name="asphaltMode" value="level"> إدخال منسوب الأسفلت</label></div><div class="fields"><div class="field"><label>قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div><div class="field"><label>منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت" readonly></div></div><p class="help">منسوب الإسفلت = HI − قراءة المسطرة على الإسفلت، ويُحسب تلقائياً.</p>
+<div class="field asphalt-mode-field"><label for="asphaltMode">طريقة الإدخال</label><select id="asphaltMode"><option value="reading" selected>إدخال قراءة المسطرة</option><option value="level">إدخال منسوب الأسفلت</option></select></div><div class="fields"><div class="field"><label>قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div><div class="field"><label>منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت" readonly></div></div><p class="help">منسوب الإسفلت = HI − قراءة المسطرة على الإسفلت، ويُحسب تلقائياً.</p>
   <div class="result amber"><span>عمق المنهول الكلي</span><strong id="excDepthOut">—</strong></div>
   <p class="help">عمق المنهول الكلي = منسوب الأرض الطبيعية GL − منسوب قاع قاعدة المنهول.</p>
   <div class="status" id="excStatus">أدخل GL، وسيُحسب عمق الحفر تلقائياً عند اكتمال البيانات.</div>
@@ -702,7 +709,7 @@ function buildUnifiedSewerScreen(){
 
 let asphaltEntryMode='reading';
 const setInput=(id,v)=>{const el=$(id);if(el)el.value=Number.isFinite(v)?v.toFixed(3):'';};
-function syncAsphaltMode(){const mode=document.querySelector('input[name="asphaltMode"]:checked')?.value||'reading';$('asphaltReading').readOnly=mode!=='reading';$('asphaltLevel').readOnly=mode!=='level';$('asphaltReading').placeholder=mode==='reading'?'أدخل قراءة المسطرة':'تُحسب تلقائياً';$('asphaltLevel').placeholder=mode==='level'?'أدخل منسوب الأسفلت':'يُحسب تلقائياً';}
+function syncAsphaltMode(){const mode=$('asphaltMode')?.value||'reading';$('asphaltReading').readOnly=mode!=='reading';$('asphaltLevel').readOnly=mode!=='level';$('asphaltReading').placeholder=mode==='reading'?'أدخل قراءة المسطرة':'تُحسب تلقائياً';$('asphaltLevel').placeholder=mode==='level'?'أدخل منسوب الأسفلت':'يُحسب تلقائياً';}
 function update(){
  const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
  const asphaltReading=val('asphaltReading'),asphaltLevelInput=val('asphaltLevel');
@@ -819,7 +826,7 @@ function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
  Object.entries(d.values).forEach(([id,v])=>{if($(id))$(id).value=v;});
  if(d.modes?.pipe && $('pipeMode'))$('pipeMode').value=d.modes.pipe;
- if(d.modes?.asphalt){asphaltEntryMode=d.modes.asphalt;const ae=document.querySelector(`input[name="asphaltMode"][value="${asphaltEntryMode}"]`);if(ae)ae.checked=true;}
+ if(d.modes?.asphalt){asphaltEntryMode=d.modes.asphalt;if($('asphaltMode'))$('asphaltMode').value=asphaltEntryMode;}
  syncAsphaltMode();update();
 }
 function csv(){
@@ -829,7 +836,7 @@ function csv(){
  saveTextFile('SEWER_PRO_Report.csv','text/csv',content);
 }
 ['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk'].forEach(id=>{$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
-document.querySelectorAll('input[name="asphaltMode"]').forEach(el=>el.addEventListener('change',()=>{asphaltEntryMode=el.value;$('asphaltReading').value='';$('asphaltLevel').value='';syncAsphaltMode();update();}));
+$('asphaltMode').addEventListener('change',()=>{asphaltEntryMode=$('asphaltMode').value;$('asphaltReading').value='';$('asphaltLevel').value='';syncAsphaltMode();update();});
 $('asphaltReading').addEventListener('input',()=>{if(asphaltEntryMode==='reading')update();});
 $('asphaltLevel').addEventListener('input',()=>{if(asphaltEntryMode==='level')update();});
 $('pipeMode').addEventListener('change',update);
