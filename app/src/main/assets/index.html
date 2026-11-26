@@ -641,7 +641,7 @@ select::-ms-expand{display:none}
   <article class="card"><div class="card-head"><h3>طبقة الجلمود</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
    <div class="field"><label>سمك الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30"></div>
    <div class="result"><span>قراءة الجلمود (المسطرة)</span><strong id="gilmoodBottomReadingOut">—</strong></div>
-   <p class="help">قراءة الجلمود = قراءة ظهر البوري + قطر البوري + ارتفاع القاعدة + ارتفاع السبيس + ارتفاع الجلمود.</p>
+   <p class="help">قراءة الجلمود = قراءة ظهر البوري + قطر البوري + ارتفاع قاعدة المنهول + ارتفاع السبيس.</p>
   </div></article>
  </div>
 </section>
@@ -673,7 +673,7 @@ select::-ms-expand{display:none}
 <script src="xlsx.full.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-const val=id=>{const raw=$(id).value;if(raw===null||String(raw).trim()==='')return null;const n=Number(raw);return Number.isFinite(n)?n:null;};
+const val=id=>{const el=$(id);if(!el)return null;const raw=el.value;if(raw===null||String(raw).trim()==='')return null;const n=Number(raw);return Number.isFinite(n)?n:null;};
 const fmt=v=>Number.isFinite(v)?v.toFixed(3)+' m':'—';
 const fmtN=v=>Number.isFinite(v)?v.toFixed(3):'—';
 const set=(id,v)=>{const el=$(id);if(el)el.textContent=fmt(v);};
@@ -706,37 +706,41 @@ function syncAsphaltMode(){const mode=document.querySelector('input[name="asphal
 function update(){
  const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
  const asphaltReading=val('asphaltReading'),asphaltLevelInput=val('asphaltLevel');
- if(H!==null){if(asphaltEntryMode==='reading'&&asphaltReading!==null)setInput('asphaltLevel',H-asphaltReading);else if(asphaltEntryMode==='level'&&asphaltLevelInput!==null)setInput('asphaltReading',H-asphaltLevelInput);}
+ if(H!==null){
+  if(asphaltEntryMode==='reading'&&asphaltReading!==null)setInput('asphaltLevel',H-asphaltReading);
+  else if(asphaltEntryMode==='level'&&asphaltLevelInput!==null)setInput('asphaltReading',H-asphaltLevelInput);
+ }
  syncAsphaltMode();
  const finalAsphaltLevel=val('asphaltLevel'),finalAsphaltReading=val('asphaltReading');
  const mode=selectedMode(),v=val('pipeValue');
- $('pipeValueLabel').textContent=mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب (م)':'منسوب ظهر الأنبوب RL (م)';
+ const label=$('pipeValueLabel');if(label)label.textContent=mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب (م)':'منسوب ظهر الأنبوب RL (م)';
  const pipeCrown=(v===null?null:(mode==='reading'?(H!==null?H-v:null):v));
  const dia=val('pipeDia');
- // Pipe invert level (IL) is calculated from the single crown reading and selected diameter.
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
- set('pipeCrownOut',pipeCrown);
- set('pipeInvertOut',pipeInvert);
- $('pipeStatus').textContent=pipeInvert===null?'أدخل بيانات المساحة وقطر الأنبوب لاحتساب IL.':`تم حساب منسوب أسفل الأنبوب IL = ${fmtN(pipeInvert)} م`;
+ set('pipeCrownOut',pipeCrown);set('pipeInvertOut',pipeInvert);
+ const pipeStatus=$('pipeStatus');
+ if(pipeStatus)pipeStatus.textContent=pipeInvert===null?'أدخل بيانات المساحة وقطر الأنبوب لاحتساب IL.':`تم حساب منسوب أسفل الأنبوب IL = ${fmtN(pipeInvert)} م`;
  const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
  const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
  const GL=val('glInput'),depth=(GL!==null&&gilmoodBottom!==null)?GL-gilmoodBottom:null;
  set('excDepthOut',depth);
- // Calculate each staff reading from the same HI and derived level, regardless of the initial pipe input mode.
- const baseReading=(H!==null&&pipeInvert!==null)?H-pipeInvert:null;
- const spaceReading=(baseReading!==null&&baseT!==null)?baseReading+baseT/100:null;
- const gilmoodReading=(spaceReading!==null&&spaceT!==null)?spaceReading+spaceT/100:null;
+ // Staff readings: pipe-back staff reading + pipe diameter + successive layer thicknesses.
+ const pipeBackStaff=(H!==null&&pipeCrown!==null)?H-pipeCrown:null;
+ const baseReading=(pipeBackStaff!==null&&dia!==null&&dia>=0)?pipeBackStaff+dia/1000:null;
+ const spaceReading=(baseReading!==null&&baseT!==null&&baseT>=0)?baseReading+baseT/100:null;
+ const gilmoodReading=(spaceReading!==null&&spaceT!==null&&spaceT>=0)?spaceReading+spaceT/100:null;
  set('baseBottomReadingOut',baseReading);
  set('spaceBottomReadingOut',spaceReading);
  set('gilmoodBottomReadingOut',gilmoodReading);
  set('excDepthInStation',depth);
  set('mBase',baseReading);set('mSpace',spaceReading);set('mGilmood',gilmoodReading);set('mDepth',depth);
- $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
- $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
- $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
- $('excStatus').textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';
- renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading: H!==null&&pipeInvert!==null?H-pipeInvert:null,spaceT,spaceBottom,spaceBottomReading:H!==null&&spaceBottom!==null?H-spaceBottom:null,gilmoodT,gilmoodBottom,gilmoodBottomReading:H!==null&&gilmoodBottom!==null?H-gilmoodBottom:null,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
+ const mainStatus=$('mainStatus');
+ if(mainStatus)mainStatus.textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
+ if(pipeStatus)pipeStatus.textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
+ const excStatus=$('excStatus');
+ if(excStatus){excStatus.className='status'+(depth===null?' warn':depth<0?' error':'');excStatus.textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';}
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading:baseReading,spaceT,spaceBottom,spaceBottomReading:spaceReading,gilmoodT,gilmoodBottom,gilmoodBottomReading:gilmoodReading,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
 }
 
 // ARKAN pipe-by-pipe interpolation between manholes; socket overlap is automatic by diameter.
