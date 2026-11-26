@@ -641,7 +641,7 @@ select::-ms-expand{display:none}
   <article class="card"><div class="card-head"><h3>طبقة الجلمود</h3><span class="tag">تحديث تلقائي</span></div><div class="card-body">
    <div class="field"><label>سمك الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30"></div>
    <div class="result"><span>قراءة الجلمود (المسطرة)</span><strong id="gilmoodBottomReadingOut">—</strong></div>
-   <p class="help">قراءة الجلمود = قراءة ظهر البوري + قطر البوري + ارتفاع قاعدة المنهول + ارتفاع السبيس.</p>
+   <p class="help">قراءة الجلمود = قراءة ظهر البوري + قطر البوري + ارتفاع قاعدة المنهول + ارتفاع السبيس + ارتفاع الجلمود.</p>
   </div></article>
  </div>
 </section>
@@ -729,8 +729,8 @@ function update(){
  const pipeBackStaff=(H!==null&&pipeCrown!==null)?H-pipeCrown:null;
  const baseReading=(pipeBackStaff!==null&&dia!==null&&dia>=0)?pipeBackStaff+dia/1000:null;
  const spaceReading=(baseReading!==null&&baseT!==null&&baseT>=0&&spaceT!==null&&spaceT>=0)?baseReading+baseT/100+spaceT/100:null;
- // Per the agreed field rule, gilmood staff reading is the same cumulative reading through the SPACE layer; do not add gilmood thickness.
- const gilmoodReading=spaceReading;
+ // Gilmood staff reading includes the gilmood layer height as requested.
+ const gilmoodReading=(spaceReading!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceReading+gilmoodT/100:null;
  set('baseBottomReadingOut',baseReading);
  set('spaceBottomReadingOut',spaceReading);
  set('gilmoodBottomReadingOut',gilmoodReading);
