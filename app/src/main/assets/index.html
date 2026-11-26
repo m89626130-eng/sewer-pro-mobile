@@ -724,16 +724,16 @@ function update(){
  const GL=val('glInput'),depth=(GL!==null&&gilmoodBottom!==null)?GL-gilmoodBottom:null;
  set('baseBottomOut',baseBottom);set('spaceBottomOut',spaceBottom);set('gilmoodBottomOut',gilmoodBottom);set('excDepthOut',depth);
  // Calculate each staff reading from the same HI and derived level, regardless of the initial pipe input mode.
- set('baseBottomReadingOut',(H!==null&&baseBottom!==null)?H-baseBottom:null);
+ set('baseBottomReadingOut',(H!==null&&pipeInvert!==null)?H-pipeInvert:null);
  set('spaceBottomReadingOut',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);
  set('gilmoodBottomReadingOut',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);
  set('excDepthInStation',depth);
- set('mBase',(H!==null&&baseBottom!==null)?H-baseBottom:null);set('mSpace',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);set('mGilmood',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);set('mDepth',depth);
+ set('mBase',(H!==null&&pipeInvert!==null)?H-pipeInvert:null);set('mSpace',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);set('mGilmood',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);set('mDepth',depth);
  $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
  $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
  $('excStatus').textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق الحفر الكلي تلقائياً من GL إلى أسفل الجلمود.';
- renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading: H!==null&&baseBottom!==null?H-baseBottom:null,spaceT,spaceBottom,spaceBottomReading:H!==null&&spaceBottom!==null?H-spaceBottom:null,gilmoodT,gilmoodBottom,gilmoodBottomReading:H!==null&&gilmoodBottom!==null?H-gilmoodBottom:null,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading: H!==null&&pipeInvert!==null?H-pipeInvert:null,spaceT,spaceBottom,spaceBottomReading:H!==null&&spaceBottom!==null?H-spaceBottom:null,gilmoodT,gilmoodBottom,gilmoodBottomReading:H!==null&&gilmoodBottom!==null?H-gilmoodBottom:null,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
 }
 
 // ARKAN pipe-by-pipe interpolation between manholes; socket overlap is automatic by diameter.
