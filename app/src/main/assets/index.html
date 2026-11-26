@@ -578,7 +578,7 @@ select::-ms-expand{display:none}
    <div class="inline" style="justify-content:space-between;margin:7px 0"><b>بيانات المناهيل</b><div class="inline"><button type="button" class="btn btn-ghost" id="pipeManholeAdd">+ إضافة منهول</button><button type="button" class="btn btn-primary" id="pipeRunCalc">حساب البواري</button></div></div>
    <div class="table-wrap"><table id="pipeManholeTable"><thead><tr><th>اسم المنهول</th><th>المسافة من السابق (م)</th><th>منسوب IL (م)</th><th>حذف</th></tr></thead><tbody id="pipeManholeRows"></tbody></table></div>
    <div class="summary" style="margin-top:10px"><div class="metric"><span>الكبسة المحسوبة حسب القطر</span><strong id="pipeSocketOut">—</strong><small>سم</small></div><div class="metric"><span>إجمالي المسافة</span><strong id="pipeRunDistanceOut">—</strong><small>م</small></div><div class="metric"><span>عدد البواري</span><strong id="pipeRunCountOut">—</strong><small>بوري</small></div><div class="metric"><span>فرق المنسوب الكلي</span><strong id="pipeRunDropOut">—</strong><small>م</small></div></div>
-   <div class="table-wrap" style="margin-top:10px"><table id="pipeRunResultTable"><thead><tr><th>رقم المنهول</th><th>قراءة بداية البوري</th><th>قراءة نهاية البوري</th></tr></thead><tbody id="pipeRunResultRows"><tr><td colspan="3">أدخل بيانات منهولين على الأقل ثم اضغط حساب البواري.</td></tr></tbody></table></div>
+   <div class="table-wrap" style="margin-top:10px"><table id="pipeRunResultTable"><thead><tr><th>رقم المنهول</th><th>قراءة نهاية البوري</th></tr></thead><tbody id="pipeRunResultRows"><tr><td colspan="3">أدخل بيانات منهولين على الأقل ثم اضغط حساب البواري.</td></tr></tbody></table></div>
    <div class="status" id="pipeRunStatus">تُحسب القراءات من HI الحالي في الإدخال المساحي، وتُستوفى المناسيب خطياً بين منسوبَي المنهولين.</div>
   </div>
  </article>
@@ -759,7 +759,7 @@ function update(){
    globalStart+=L;
   }
   out('pipeRunDistanceOut',total);out('pipeRunCountOut',count,0);out('pipeRunDropOut',firstIL!==null&&lastIL!==null?firstIL-lastIL:NaN);
-  $p('pipeRunResultRows').innerHTML=result.length?result.map(x=>'<tr><td class="'+(x.atManholeStart?'inside-manhole':'')+'">'+esc(x.from.split(' – ')[0])+'</td><td class="num '+(x.atManholeStart?'inside-manhole':'')+'">'+(x.r1===null?'—':x.r1.toFixed(3))+'</td><td class="num '+(x.atManholeEnd?'inside-manhole':'')+'">'+(x.r2===null?'—':x.r2.toFixed(3))+'</td></tr>').join(''):'<tr><td colspan="3">أدخل مسافة ومنسوب IL صحيحين لكل منهولين متتاليين.</td></tr>';
+  $p('pipeRunResultRows').innerHTML=result.length?result.map(x=>{const names=x.from.split(' – '),name=x.atManholeEnd?(names[1]||names[0]):names[0];return '<tr><td class="'+(x.atManholeEnd?'inside-manhole':'')+'">'+esc(name)+'</td><td class="num '+(x.atManholeEnd?'inside-manhole':'')+'">'+(x.r2===null?'—':x.r2.toFixed(3))+'</td></tr>';}).join(''):'<tr><td colspan="2">أدخل مسافة ومنسوب IL صحيحين لكل منهولين متتاليين.</td></tr>';
   $p('pipeRunStatus').textContent=result.length?'تم الحساب: الكبسة '+cm+' سم، والتداخل محسوب بين البواري. قراءة البداية والنهاية لكل بوري محسوبة من HI.':'أدخل منهولين على الأقل، والمسافة ومنسوب IL لكل منهول.';
  }
  $p('pipeManholeAdd').addEventListener('click',()=>{rows.push({name:'MH-'+String(rows.length+1).padStart(2,'0'),dist:'',il:''});draw();});
