@@ -576,7 +576,7 @@ select::-ms-expand{display:none}
   <div class="metric"><span>قراءة الجلمود</span><strong id="mGilmood">—</strong><small>قراءة المسطرة</small></div>
  </div>
  <div class="grid">
-  <article class="card"><div class="card-head"><h3>عمق المنهول الكلي</h3><span class="tag">نتيجة نهائية</span></div><div class="card-body"><div class="result amber"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="mDepth">—</strong></div><p class="help">يعتمد العمق على منسوب الأرض الطبيعية GL المدخل يدوياً، وعلى منسوب أسفل الجلمود المحسوب من مرجع الأنبوب.</p></div></article>
+  <article class="card"><div class="card-head"><h3>عمق المنهول الكلي</h3><span class="tag">نتيجة نهائية</span></div><div class="card-body"><div class="result amber"><span>عمق المنهول من GL إلى قاع القاعدة</span><strong id="mDepth">—</strong></div><p class="help">عمق المنهول الكلي = منسوب الأرض الطبيعية GL − منسوب قاع قاعدة المنهول.</p></div></article>
   <article class="card"><div class="card-head"><h3>مرجع الحساب الوحيد</h3><span class="tag">ظهر الأنبوب</span></div><div class="card-body"><div class="result blue"><span>منسوب الجهاز HI</span><strong id="hiSummary">—</strong></div><div class="status" id="mainStatus">أدخل BM وBS، ثم قراءة واحدة فوق ظهر الأنبوب أو منسوبه.</div></div></article>
  </div>
  <div id="sewerAllSections" class="sewer-all-sections"></div>
@@ -648,11 +648,11 @@ select::-ms-expand{display:none}
 
 <section class="page" id="excavation">
  <div class="page-head"><div><h2>الحفر النهائي</h2><p>أدخل منسوب الأرض الطبيعية GL فقط؛ قاع الحفر يُستنتج من تسلسل السماكات.</p></div></div>
- <div class="grid"><article class="card"><div class="card-head"><h3>عمق الحفر الكلي</h3><span class="tag">حساب تلقائي</span></div><div class="card-body">
+ <div class="grid"><article class="card"><div class="card-head"><h3>حساب عمق المنهول</h3><span class="tag">حساب تلقائي</span></div><div class="card-body">
   <div class="field"><label>منسوب الأرض الطبيعية GL (م)</label><input id="glInput" type="number" step="0.001" value="100.500"></div>
   <div class="radio-row" style="margin-top:12px"><label><input type="radio" name="asphaltMode" value="reading" checked> إدخال قراءة المسطرة</label><label><input type="radio" name="asphaltMode" value="level"> إدخال منسوب الأسفلت</label></div><div class="fields"><div class="field"><label>قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div><div class="field"><label>منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت" readonly></div></div><p class="help">اختر طريقة الإدخال من الخيارين أعلاه. الحقل الآخر يُحسب تلقائياً من HI: منسوب الأسفلت = HI − قراءة المسطرة، وقراءة المسطرة = HI − منسوب الأسفلت.</p>
   <div class="result amber"><span>عمق المنهول الكلي</span><strong id="excDepthOut">—</strong></div>
-  <p class="help">عمق المنهول الكلي = منسوب أعلى المنهول (غطاء المنهول/الأسفلت) − منسوب قاع المنهول (منسوب أسفل الأنبوب IL).</p>
+  <p class="help">عمق المنهول الكلي = منسوب الأرض الطبيعية GL − منسوب قاع قاعدة المنهول.</p>
   <div class="status" id="excStatus">أدخل GL، وسيُحسب عمق الحفر تلقائياً عند اكتمال البيانات.</div>
  </div></article></div>
 </section>
@@ -742,7 +742,7 @@ function update(){
  if(mainStatus)mainStatus.textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
  if(pipeStatus)pipeStatus.textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
  const excStatus=$('excStatus');
- if(excStatus){excStatus.className='status'+(depth===null?' warn':depth<0?' error':'');excStatus.textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق المنهول الكلي تلقائياً بطرح منسوب قاع المنهول من منسوب الغطاء.';}
+ if(excStatus){excStatus.className='status'+(depth===null?' warn':depth<0?' error':'');excStatus.textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق المنهول الكلي تلقائياً: GL ناقص منسوب قاع قاعدة المنهول.';}
  renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading:baseReading,spaceT,spaceBottom,spaceBottomReading:spaceReading,gilmoodT,gilmoodBottom,gilmoodBottomReading:gilmoodReading,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
 }
 
