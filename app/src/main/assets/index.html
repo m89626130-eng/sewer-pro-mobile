@@ -731,7 +731,7 @@ function update(){
  // Gilmood staff reading includes the gilmood layer height as requested.
  const gilmoodReading=(spaceReading!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceReading+gilmoodT/100:null;
  // Total manhole depth = top manhole/cover level (asphalt level) minus manhole bottom level (pipe invert level).
- const depth=(finalAsphaltLevel!==null&&pipeInvert!==null)?finalAsphaltLevel-pipeInvert:null;
+ const depth=(GL!==null&&baseBottom!==null)?GL-baseBottom:null;
  set('excDepthOut',depth);
  set('baseBottomReadingOut',baseReading);
  set('spaceBottomReadingOut',spaceReading);
