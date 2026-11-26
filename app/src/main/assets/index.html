@@ -722,13 +722,16 @@ function update(){
  const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
  const GL=val('glInput'),depth=(GL!==null&&gilmoodBottom!==null)?GL-gilmoodBottom:null;
- set('baseBottomOut',baseBottom);set('spaceBottomOut',spaceBottom);set('gilmoodBottomOut',gilmoodBottom);set('excDepthOut',depth);
+ set('excDepthOut',depth);
  // Calculate each staff reading from the same HI and derived level, regardless of the initial pipe input mode.
- set('baseBottomReadingOut',(H!==null&&pipeInvert!==null)?H-pipeInvert:null);
- set('spaceBottomReadingOut',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);
- set('gilmoodBottomReadingOut',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);
+ const baseReading=(H!==null&&pipeInvert!==null)?H-pipeInvert:null;
+ const spaceReading=(baseReading!==null&&baseT!==null)?baseReading+baseT/100:null;
+ const gilmoodReading=(spaceReading!==null&&spaceT!==null)?spaceReading+spaceT/100:null;
+ set('baseBottomReadingOut',baseReading);
+ set('spaceBottomReadingOut',spaceReading);
+ set('gilmoodBottomReadingOut',gilmoodReading);
  set('excDepthInStation',depth);
- set('mBase',(H!==null&&pipeInvert!==null)?H-pipeInvert:null);set('mSpace',(H!==null&&spaceBottom!==null)?H-spaceBottom:null);set('mGilmood',(H!==null&&gilmoodBottom!==null)?H-gilmoodBottom:null);set('mDepth',depth);
+ set('mBase',baseReading);set('mSpace',spaceReading);set('mGilmood',gilmoodReading);set('mDepth',depth);
  $('mainStatus').textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
  $('pipeStatus').textContent=pipeCrown===null?'أكمل مرجع ظهر الأنبوب في صفحة الإدخال المساحي.':'تم أخذ مرجع ظهر الأنبوب تلقائياً، والقطر يحدّث الحسابات المرتبطة.';
  $('excStatus').className='status'+(depth===null?' warn':depth<0?' error':'');
