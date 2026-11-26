@@ -356,6 +356,45 @@ select::-ms-expand{display:none}
 <style id="arkan-pipe-run-calculator">
 #pipeRunCard .card-body{gap:7px}#pipeManholeTable input{width:100%;min-width:74px;max-width:150px;height:34px;padding:4px 6px;background:#252930;border:1px solid #5a606b;border-radius:6px;color:#fff;font-size:12px}#pipeManholeTable td{padding:5px 4px}#pipeManholeTable button{padding:5px 8px;background:#713044;color:#fff;font-size:11px}#pipeRunResultTable{min-width:900px;font-size:11px}#pipeRunResultTable th,#pipeRunResultTable td{padding:7px 5px;white-space:nowrap}#pipeRunResultTable td.num{text-align:center}#pipeRunCard .summary{gap:6px;margin-bottom:0}#pipeRunCard .metric{padding:8px}#pipeRunCard .metric strong{font-size:17px}@media(max-width:600px){#pipeManholeTable{font-size:11px}#pipeManholeTable input{min-width:65px;width:100%}#pipeRunCard .card-body{padding:7px!important}#pipeRunCard .summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 \n#pipeRunResultTable{min-width:0!important;width:100%}#pipeRunResultTable .pipe-reading-row td{color:#ff3030!important;border-top:2px solid #ff3030!important;border-bottom:2px solid #ff3030!important;font-weight:700}#pipeRunResultTable .pipe-reading-row td:first-child{border-left:2px solid #ff3030!important}#pipeRunResultTable .pipe-reading-row td:last-child{border-right:2px solid #ff3030!important}\n</style>
+
+<style id="arkan-compact-fields-final-v2">
+/* Compact all sewer entry fields, calculated readings and report controls */
+#sewerAllSections .field{gap:2px!important;margin-bottom:2px!important}
+#sewerAllSections .field label{font-size:10px!important;line-height:1.15!important;margin-bottom:1px!important}
+#sewerAllSections .field input,
+#sewerAllSections .field select,
+#survey .field input,#survey .field select,
+#pipe .field input,#pipe .field select,
+#base .field input,#base .field select,
+#layers .field input,#layers .field select,
+#excavation .field input,#excavation .field select,
+#report .field input,#report .field select{
+ min-height:31px!important;height:31px!important;padding:3px 6px!important;font-size:11px!important;border-radius:6px!important
+}
+#sewerAllSections .fields,#survey .fields,#pipe .fields,#base .fields,#layers .fields,#excavation .fields,#report .fields{gap:5px!important}
+#sewerAllSections .card-body,#survey .card-body,#pipe .card-body,#base .card-body,#layers .card-body,#excavation .card-body,#report .card-body{padding:7px!important}
+#pipeRunCard .card-body{padding:7px!important;gap:5px!important}
+#pipeRunCard .help{font-size:10px!important;line-height:1.35!important;margin:3px 0!important}
+#pipeRunCard .inline{gap:5px!important;margin:4px 0!important}
+#pipeRunCard button,#pipeRunCard .btn{min-height:29px!important;height:29px!important;padding:4px 8px!important;font-size:10px!important;border-radius:6px!important}
+#pipeManholeTable{font-size:10px!important}
+#pipeManholeTable th,#pipeManholeTable td{padding:3px 3px!important}
+#pipeManholeTable input{height:29px!important;min-height:29px!important;padding:3px 4px!important;font-size:10px!important;min-width:54px!important}
+#pipeManholeTable button{height:26px!important;min-height:26px!important;padding:3px 6px!important;font-size:9px!important}
+#pipeRunCard .summary{gap:5px!important;margin-top:6px!important}
+#pipeRunCard .metric{padding:6px!important}
+#pipeRunCard .metric span,#pipeRunCard .metric small{font-size:9px!important}
+#pipeRunCard .metric strong{font-size:14px!important}
+#pipeRunResultTable{font-size:10px!important}
+#pipeRunResultTable th,#pipeRunResultTable td{padding:4px 3px!important}
+#pipeRunCard .status{font-size:10px!important;padding:6px!important;margin-top:5px!important}
+@media(max-width:600px){
+ #sewerAllSections .fields,#survey .fields,#pipe .fields,#base .fields,#layers .fields,#excavation .fields,#report .fields{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important}
+ #pipeManholeTable input{min-width:48px!important;width:100%!important}
+ #pipeRunCard .summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+</style>
+
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
