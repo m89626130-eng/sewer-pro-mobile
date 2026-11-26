@@ -676,7 +676,7 @@ const $=id=>document.getElementById(id);
 const val=id=>{const raw=$(id).value;if(raw===null||String(raw).trim()==='')return null;const n=Number(raw);return Number.isFinite(n)?n:null;};
 const fmt=v=>Number.isFinite(v)?v.toFixed(3)+' m':'—';
 const fmtN=v=>Number.isFinite(v)?v.toFixed(3):'—';
-const set=(id,v)=>{$(id).textContent=fmt(v);};
+const set=(id,v)=>{const el=$(id);if(el)el.textContent=fmt(v);};
 const hi=()=>{const bm=val('bm'),bs=val('bs');return bm!==null&&bs!==null?bm+bs:null;};
 const selectedMode=()=>$('pipeMode')?.value||'reading';
 
