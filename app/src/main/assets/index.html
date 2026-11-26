@@ -332,7 +332,13 @@ select::-ms-expand{display:none}
 .layer-height-row{display:flex;flex-direction:row;direction:rtl;align-items:center;justify-content:space-between;gap:14px;min-height:58px;padding:9px 12px;border:1px solid #505967;border-radius:10px;background:#202a36}
 .layer-height-row label{flex:1;text-align:right;font-size:14px;font-weight:800;color:#edf1f7}
 .layer-height-row input{flex:0 0 125px;width:125px;min-height:42px;text-align:center;direction:ltr;background:#252930;border:1px solid #697586;border-radius:8px;color:#fff;padding:8px;font:inherit}
-@media(max-width:420px){.layer-height-row{gap:8px;padding:8px 9px}.layer-height-row label{font-size:13px}.layer-height-row input{flex-basis:105px;width:105px}}
+.layer-readings{margin-top:14px;border:1px solid #596575;border-radius:10px;overflow:hidden;background:#202a36}
+.layer-readings h3{margin:0;padding:10px 12px;font-size:14px;color:#fff;background:#303b49}
+.layer-readings table{width:100%;border-collapse:collapse;color:#f3f5f8;font-size:13px}
+.layer-readings th,.layer-readings td{padding:9px 12px;text-align:right;border-bottom:1px solid #465261}
+.layer-readings th:last-child,.layer-readings td:last-child{text-align:center;direction:ltr;font-variant-numeric:tabular-nums}
+.layer-readings tbody tr:last-child td{border-bottom:0}
+@media(max-width:420px){.layer-height-row{gap:8px;padding:8px 9px}.layer-height-row label{font-size:13px}.layer-height-row input{flex-basis:105px;width:105px}.layer-readings table{font-size:12px}.layer-readings th,.layer-readings td{padding:8px}}
 
 </style>
 
@@ -631,7 +637,13 @@ select::-ms-expand{display:none}
   <div class="layer-height-row"><label for="baseThk">ارتفاع المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30" aria-label="ارتفاع المنهول بالسنتيمتر"></div>
   <div class="layer-height-row"><label for="spaceThk">ارتفاع السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20" aria-label="ارتفاع السبيس بالسنتيمتر"></div>
   <div class="layer-height-row"><label for="gilmoodThk">ارتفاع الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30" aria-label="ارتفاع الجلمود بالسنتيمتر"></div>
-  <p class="help">تُدخل القيم الثلاث يدوياً من جهة اليسار، وتظهر أسماء الارتفاعات من جهة اليمين. تبقى الحسابات وقراءات المسطرة مرتبطة تلقائياً بمرجع ظهر الأنبوب.</p>
+  <div class="layer-readings"><h3>جدول قراءات المسطرة</h3><table><thead><tr><th>البيان</th><th>القراءة (م)</th></tr></thead><tbody>
+   <tr><td>قراءة البايب</td><td id="layerPipeReading">—</td></tr>
+   <tr><td>قراءة قاعدة المنهولة</td><td id="layerBaseReading">—</td></tr>
+   <tr><td>قراءة السبيس</td><td id="layerSpaceReading">—</td></tr>
+   <tr><td>قراءة الجلمود</td><td id="layerGilmoodReading">—</td></tr>
+  </tbody></table></div>
+  <p class="help">تُحدّث القراءات تلقائياً عند تغيير أي قيمة أو قراءة في الحسابات.</p>
  </div></article></div>
 </section>
 
@@ -716,6 +728,11 @@ function update(){
  const spaceReading=(baseReading!==null&&spaceT!==null&&spaceT>=0)?baseReading+spaceT/100:null;
  // Gilmood staff reading includes the gilmood layer height as requested.
  const gilmoodReading=(spaceReading!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceReading+gilmoodT/100:null;
+ const showLayerReading=(id,value)=>{const el=$(id);if(el)el.textContent=Number.isFinite(value)?value.toFixed(3):'—';};
+ showLayerReading('layerPipeReading',pipeBackStaff);
+ showLayerReading('layerBaseReading',baseReading);
+ showLayerReading('layerSpaceReading',spaceReading);
+ showLayerReading('layerGilmoodReading',gilmoodReading);
  // Total manhole depth = top manhole/cover level (asphalt level) minus manhole bottom level (pipe invert level).
  const manholeLevel=baseBottom;
  const depth=(finalAsphaltLevel!==null&&manholeLevel!==null)?finalAsphaltLevel-manholeLevel:null;
