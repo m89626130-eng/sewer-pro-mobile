@@ -397,23 +397,22 @@ select::-ms-expand{display:none}
 
 
 <style id="arkan-final-layout-colors">
-/* Remove the former sewer overview/dashboard; retain its final excavation depth in the instrument HI field. */
-#sewerOverview,#sewerDashboard,#dashboard,.sewer-overview{display:none!important}
+/* Keep the sewer workspace visible while removing only the old dashboard panels. */
+#dashboard>.page-head,#dashboard>.summary,#dashboard>.grid{display:none!important}
+#sewerNav [data-page="dashboard"]{font-size:0!important}
+#sewerNav [data-page="dashboard"]:after{content:"شبكة الصرف الصحي";font-size:13px!important}
 #stationHiResult{display:block!important}
 #stationHiResult>div{color:inherit}
-/* Maroon backgrounds on the six complete sewer sections, not only their title bars. */
-#sewerAllSections>#sewer-section-survey,
-#sewerAllSections>#sewer-section-pipe,
-#sewerAllSections>#sewer-section-base,
-#sewerAllSections>#sewer-section-layers,
-#sewerAllSections>#sewer-section-excavation,
-#sewerAllSections>#sewer-section-report{
- background:#6f1837!important;color:#fff!important;
+/* Full maroon background for each of the six complete sewer modules. */
+#sewerAllSections>.arkan-sewer-module{
+ display:block!important;background:#6f1837!important;color:#fff!important;
  border:1px solid #8e3554!important;border-radius:10px!important;
  padding:10px 12px!important;margin:0 0 8px!important;
 }
-#sewerAllSections>.page-head h2,
-#sewerAllSections>.page-head p{color:#fff!important}
+#sewerAllSections>.arkan-sewer-module>.page-head{background:transparent!important;margin:0 0 8px!important;padding:6px 8px!important;border:0!important}
+#sewerAllSections>.arkan-sewer-module>.page-head h2,
+#sewerAllSections>.arkan-sewer-module>.page-head p{color:#fff!important}
+#sewerAllSections>.arkan-sewer-module>.grid{background:transparent!important;margin:0!important;padding:0!important}
 </style>
 
 </head><body>
@@ -685,8 +684,12 @@ function buildUnifiedSewerScreen(){
   const page=$(id);if(!page)return;
   const head=page.querySelector('.page-head');
   const grid=page.querySelector('.grid');
-  if(head){head.dataset.icon=id;head.id='sewer-section-'+id;host.appendChild(head);}
-  if(grid)host.appendChild(grid);
+  const module=document.createElement('section');
+  module.className='arkan-sewer-module';
+  module.id='sewer-section-'+id;
+  if(head){head.dataset.icon=id;module.appendChild(head);}
+  if(grid)module.appendChild(grid);
+  host.appendChild(module);
  });
  host.dataset.built='1';
 }
