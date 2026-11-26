@@ -327,6 +327,31 @@ select::-ms-expand{display:none}
  background-size:22px 16px!important;padding-inline-start:42px!important;
 }
 </style>
+
+<style id="arkan-compact-all-fields-v1">
+/* Compact form controls consistently across every ARKAN module */
+.field{gap:3px!important}
+.field label{font-size:11px!important;line-height:1.25!important}
+.field input,.field select{min-height:36px!important;height:36px!important;padding:5px 8px!important;font-size:12px!important;border-radius:7px!important}
+.fields{gap:7px!important}
+.card-body{padding:9px!important}
+.reading-grid{gap:8px!important}
+.reading-item{padding:8px!important}
+.reading-item .fields{gap:6px!important}
+.roads-field{gap:3px!important}
+.roads-field label{font-size:11px!important}
+.roads-field input{min-height:36px!important;height:36px!important;padding:5px 8px!important;font-size:12px!important;border-radius:7px!important}
+.road-report-fields{gap:7px!important}
+.road-report-fields input{min-height:36px!important;height:36px!important;padding:5px 8px!important;font-size:12px!important}
+.sewer-all-sections{gap:9px!important}
+.sewer-all-sections .grid{gap:8px!important}
+@media(max-width:600px){
+ .fields,.sewer-all-sections .fields{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+ .field input,.field select{min-height:35px!important;height:35px!important;padding:4px 7px!important;font-size:12px!important}
+ .roads-field input{min-height:35px!important;height:35px!important}
+ .card-body{padding:8px!important}
+}
+</style>
 </head><body>
 <header class="topbar"><div class="brand"><div class="logo">AS</div><div><h1>ARKAN SURVEY</h1><p>برنامج المساحة وأعمال البنية التحتية</p></div></div><div class="top-actions no-print"><button class="language-switch" id="languageSwitch" type="button" aria-label="Switch language" title="Switch language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg><span id="languageSwitchText">EN</span></button><button class="btn btn-light" id="saveBtn">حفظ المشروع</button><button class="btn btn-light" id="loadBtn">فتح مشروع</button><button class="btn btn-green" id="csvBtn">تصدير CSV</button><button class="btn btn-light" onclick="printDocument()">طباعة / PDF</button><input type="file" id="fileInput" accept=".json,application/json" hidden></div></header>
 <nav class="nav no-print main-nav" id="mainNav">
