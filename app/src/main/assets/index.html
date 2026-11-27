@@ -810,7 +810,7 @@ function renderReport(d){
  $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
 }
 function saveData(){
- const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','rProject','rLocation','rDate','rEngineer','rContractor'];
+ const ids=['bm','bs','pipeValue','pipeDia','asphaltReading','asphaltLevel','baseThk','spaceThk','gilmoodThk','rProject','rLocation','rDate','rEngineer','rContractor'];
  const values={};ids.forEach(id=>values[id]=$(id).value);
  return {app:'SEWER PRO',version:'1.0.13',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
 }
