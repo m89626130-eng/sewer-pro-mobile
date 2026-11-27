@@ -626,21 +626,14 @@ select::-ms-expand{display:none}
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
   </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="excDepthInStation">—</strong></div></div></div></article>
   <article class="card"><div class="card-head"><h3>معلومات البوري</h3><span class="tag">قراءة ومنسوب</span></div><div class="card-body">
-   <div class="field"><label for="pipeMode">طريقة إدخال مرجع ظهر الأنبوب</label><select id="pipeMode"><option value="reading" selected>إدخال قراءة المسطرة فوق ظهر الأنبوب</option><option value="rl">إدخال منسوب ظهر الأنبوب</option></select></div>
+   <div class="field"><label for="pipeMode">طريقة الإدخال</label><select id="pipeMode"><option value="reading" selected>قراءة المسطرة فوق ظهر البايب</option><option value="rl">إدخال منسوب ظهر البايب</option></select></div>
    <div class="field" style="margin-top:10px"><label for="pipeDia">قطر البوري (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
    <div class="fields">
-    <div class="field"><label id="pipeValueLabel" for="pipeValue">قراءة المسطرة فوق ظهر الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
+    <div class="field"><label id="pipeValueLabel" for="pipeValue">قراءة المسطرة فوق ظهر البايب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
     <div class="field"><label for="pipeInvertLevel">منسوب أسفل البايب (م)</label><input id="pipeInvertLevel" type="number" step="0.001" readonly placeholder="يُحسب تلقائياً"></div>
    </div>
-   <p class="help">منسوب أسفل البايب = منسوب ظهر الأنبوب − قطر الأنبوب. يتحدث تلقائياً عند تغيير القراءة أو المنسوب أو القطر.</p>
-  </div></article>
-  <article class="card"><div class="card-head"><h3>مرجع الأسفلت</h3><span class="tag">قراءة أو منسوب</span></div><div class="card-body">
-   <div class="field asphalt-mode-field"><label for="asphaltMode">طريقة إدخال مرجع الأسفلت</label><select id="asphaltMode"><option value="reading" selected>إدخال قراءة المسطرة</option><option value="level">إدخال منسوب الأسفلت</option></select></div>
-   <div class="fields"><div class="field"><label for="asphaltReading">قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div><div class="field"><label for="asphaltLevel">منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت" readonly></div></div>
-   <p class="help">منسوب الأسفلت = HI − قراءة المسطرة على الأسفلت، ويُحسب تلقائياً.</p>
-   <div class="result amber"><span>عمق المنهول الكلي</span><strong id="excDepthOut">—</strong></div>
-   <p class="help">عمق المنهول الكلي = منسوب الأسفلت − منسوب قاع قاعدة المنهول.</p>
-   <div class="status" id="excStatus">أدخل قراءة المسطرة على الأسفلت أو منسوب الأسفلت لإكمال الحساب.</div>
+   <div class="result blue" style="margin-top:10px"><span id="pipeOtherLabel">منسوب ظهر البايب المحسوب (م)</span><strong id="pipeOtherValue">—</strong></div>
+   <p class="help">تُدخل قيمة واحدة فقط حسب طريقة الإدخال، وتُحسب القيمة المقابلة تلقائياً. منسوب أسفل البايب = منسوب ظهر البايب − القطر.</p>
   </div></article>
  </div>
 </section>
@@ -739,6 +732,9 @@ function update(){
  const dia=val('pipeDia');
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
  set('pipeCrownOut',pipeCrown);setInput('pipeInvertLevel',pipeInvert);
+ const otherLabel=$('pipeOtherLabel'),otherValue=$('pipeOtherValue');
+ if(otherLabel)otherLabel.textContent=mode==='reading'?'منسوب ظهر البايب المحسوب (م)':'قراءة المسطرة فوق ظهر البايب المحسوبة (م)';
+ if(otherValue){const other=mode==='reading'?pipeCrown:(H!==null&&pipeCrown!==null?H-pipeCrown:null);otherValue.textContent=other===null||!Number.isFinite(other)?'—':other.toFixed(3);}
  const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
  const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
