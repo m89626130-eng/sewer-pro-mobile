@@ -714,7 +714,6 @@ function buildUnifiedSewerScreen(){
  host.dataset.built='1';
 }
 
-let asphaltEntryMode='reading';
 const setInput=(id,v)=>{const el=$(id);if(el)el.value=Number.isFinite(v)?v.toFixed(3):'';};
 function update(){
  const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
@@ -799,9 +798,6 @@ function renderReport(d){
  ['السبيس','قراءة المسطرة للسبيس',d.spaceBottomReading,'m reading'],
  ['الجلمود','سمك الجلمود',d.gilmoodT,'cm'],
  ['الجلمود','قراءة المسطرة للجلمود',d.gilmoodBottomReading,'m reading'],
- ['المناسيب','قراءة المسطرة على الأسفلت',d.asphaltReading,'m reading'],
- ['المناسيب','منسوب الأسفلت',d.asphaltLevel,'m'],
- ['المناسيب','منسوب الإسفلت',d.asphaltLevel,'m'],
  ['الحفر','عمق الحفر الكلي',d.depth,'m']
  ];
  $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
@@ -815,8 +811,6 @@ function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
  Object.entries(d.values).forEach(([id,v])=>{if($(id))$(id).value=v;});
  if(d.modes?.pipe && $('pipeMode'))$('pipeMode').value=d.modes.pipe;
- if(d.modes?.asphalt){asphaltEntryMode=d.modes.asphalt;if($('asphaltMode'))$('asphaltMode').value=asphaltEntryMode;}
- syncAsphaltMode();update();
 }
 function csv(){
  const rows=[['القسم','البيان','القيمة','الوحدة']];
@@ -825,9 +819,6 @@ function csv(){
  saveTextFile('SEWER_PRO_Report.csv','text/csv',content);
 }
 ['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk'].forEach(id=>{$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
-$('asphaltMode').addEventListener('change',()=>{asphaltEntryMode=$('asphaltMode').value;$('asphaltReading').value='';$('asphaltLevel').value='';syncAsphaltMode();update();});
-$('asphaltReading').addEventListener('input',()=>{if(asphaltEntryMode==='reading')update();});
-$('asphaltLevel').addEventListener('input',()=>{if(asphaltEntryMode==='level')update();});
 $('pipeMode').addEventListener('change',update);
 const sewerPages=['dashboard','survey','pipe','base','layers','report'];
 function showPage(page){
