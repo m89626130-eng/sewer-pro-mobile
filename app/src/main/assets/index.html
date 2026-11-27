@@ -647,7 +647,7 @@ select::-ms-expand{display:none}
   <article class="card"><div class="card-head"><h3>محطة الجهاز BM / BS / HI</h3><span class="tag">إدخال يدوي</span></div><div class="card-body"><div class="fields">
    <div class="field"><label>BM · منسوب البيج مارك (م)</label><input id="bm" type="number" step="0.001" value="100.000"></div>
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
-  </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="excDepthInStation">—</strong></div></div></div></article>
+  </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر (فرق منسوب أسفل البايب والإسفلت)</span><strong id="excDepthInStation">—</strong></div></div></div></article>
   <article class="card pipe-asphalt-card"><div class="card-head"><h3>معلومات البايب والأسفلت</h3><span class="tag">قراءة ومنسوب</span></div><div class="card-body">
    <div class="field"><label for="pipeMode">طريقة الإدخال</label><select id="pipeMode"><option value="reading" selected>قراءة المسطرة فوق ظهر البايب</option><option value="rl">إدخال منسوب ظهر البايب</option></select></div>
    <div class="field" style="margin-top:10px"><label for="pipeDia">قطر البوري (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
@@ -783,6 +783,8 @@ function update(){
  showLayerReading('layerPipeReading',pipeBackStaff);showLayerReading('layerBaseReading',baseReading);showLayerReading('layerSpaceReading',spaceReading);showLayerReading('layerGilmoodReading',gilmoodReading);showLayerReading('layerExcavationReading',excavationReading);
  set('baseBottomReadingOut',baseReading);set('spaceBottomReadingOut',spaceReading);set('gilmoodBottomReadingOut',gilmoodReading);
  set('mBase',baseReading);set('mSpace',spaceReading);set('mGilmood',gilmoodReading);
+ const excavationDepth=(pipeInvert!==null&&val('asphaltLevel')!==null)?Math.abs(pipeInvert-val('asphaltLevel')):null;
+ set('excDepthInStation',excavationDepth);
  const mainStatus=$('mainStatus');
  if(mainStatus)mainStatus.textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر البايب أو منسوبه.':'تم تحديد مرجع ظهر البايب؛ تُحسب القراءات والمناسيب التابعة تلقائياً.';
  renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading:baseReading,spaceT,spaceBottom,spaceBottomReading:spaceReading,gilmoodT,gilmoodBottom,gilmoodBottomReading:gilmoodReading});
