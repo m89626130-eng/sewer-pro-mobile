@@ -1191,6 +1191,26 @@ hr,.divider{border-color:#596574!important}
 #arkanAiPanel header,#arkanAiPanel button{background:var(--ark-red)!important;color:#fff!important}
 </style>
 
+<style id="arkan-unified-theme-and-photo-final">
+:root{color-scheme:dark!important}
+html,body{min-height:100%!important;background:#20252d!important;color:#f5f6f8!important}
+body{background:#20252d url("./arkan-survey-background.jpg") center center/cover fixed no-repeat!important}
+body>div,body>main,body>section{background:transparent!important}
+html body .page,html body .page-content,html body .container,html body .app,html body .app-container,html body main,html body #app,html body #main{background:rgba(32,37,45,.78)!important;color:#f5f6f8!important}
+html body .card,html body .metric,html body .section-card,html body .panel,html body .modal-content,html body .form-card,html body .input-card,html body .quantity-card,html body .road-card,html body .report-card,html body .layer-heights-entry-card,html body .layer-heights-entry-card>.card-head,html body .layer-heights-entry-card>.card-body,html body .layer-heights-entry-card .layer-readings,html body .pipe-asphalt-card,html body .pipe-asphalt-card>.card-head,html body .pipe-asphalt-card>.card-body,html body .pipe-reading-card,html body .pipe-reading-card>.card-head,html body .pipe-reading-card>.card-body{background:#2b313b!important;color:#f5f6f8!important;border-color:#596574!important}
+html body .layer-heights-entry-card h3,html body .layer-heights-entry-card label,html body .layer-heights-entry-card .help,html body .pipe-asphalt-card h3,html body .pipe-asphalt-card label,html body .pipe-asphalt-card b,html body .pipe-reading-card label{color:#f5f6f8!important}
+html body .layer-heights-entry-card input,html body .pipe-asphalt-card input,html body .pipe-asphalt-card select,html body input:not([type=checkbox]):not([type=radio]),html body select,html body textarea{background:#252c35!important;color:#fff!important;border:1px solid #697584!important}
+html body table,html body thead,html body tbody,html body tr,html body th,html body td,html body .page table:not(.report-table) th,html body .page table:not(.report-table) td,html body .layer-heights-entry-card .layer-readings table th,html body .layer-heights-entry-card .layer-readings table td{background:#2b313b!important;color:#f5f6f8!important;border-color:#596574!important}
+html body table th,html body .page table:not(.report-table) th{background:#343c47!important;color:#fff!important}
+html body button,html body .btn,html body input[type=button],html body input[type=submit],html body .tab-button,html body .nav-button,html body .action-button,html body .tool-button,html body .primary-button{background:#c6283d!important;color:#fff!important;border-color:#941b30!important}
+html body label,html body h1,html body h2,html body h3,html body h4,html body p,html body small,html body strong,html body b,html body legend{color:#f5f6f8!important}
+html body .tag,html body .badge,html body .chip,html body .layer-tag{background:#c6283d!important;color:#fff!important;border-color:#941b30!important}
+html body .value,html body .result-value,html body .highlight,html body .total-value,html body .key-value{color:#ff5369!important}
+html body .topbar,html body .nav,html body .main-nav,html body .secondary-nav{background:#252b34!important;color:#fff!important;border-color:#596574!important}
+html body .nav button.active{background:#c6283d!important;color:#fff!important}
+#arkanAiPanel,#arkanAiPanel section,#arkanAiPanel header,#arkanAiMessages>div{background:#2b313b!important;color:#fff!important}
+#arkanAiPanel header,#arkanAiPanel button{background:#c6283d!important;color:#fff!important}
+</style>
 </body></html>`;
  const w=window.open('', '_blank');
  if(w){w.document.open();w.document.write(body);w.document.close();setTimeout(()=>w.print(),500);}
