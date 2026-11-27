@@ -352,6 +352,16 @@ select::-ms-expand{display:none}
 .layer-readings tbody tr:last-child td{border-bottom:0}
 @media(max-width:420px){.layer-height-row{gap:8px;padding:8px 9px}.layer-height-row label{font-size:13px}.layer-height-row input{flex-basis:105px;width:105px}.layer-readings table{font-size:12px}.layer-readings th,.layer-readings td{padding:8px}}
 
+
+/* Maroon theme for pipe reading and pipe/asphalt information cards */
+.pipe-reading-card,.pipe-asphalt-card{background:#70283f!important;border:1px solid #8d4960!important;color:#fff!important}
+.pipe-reading-card>.card-head,.pipe-asphalt-card>.card-head{background:#70283f!important;color:#fff!important;border-bottom:1px solid #a7657c!important}
+.pipe-reading-card>.card-body,.pipe-asphalt-card>.card-body{background:#70283f!important;color:#fff!important}
+.pipe-reading-card .help,.pipe-asphalt-card .help,.pipe-reading-card b,.pipe-asphalt-card b,.pipe-reading-card label,.pipe-asphalt-card label{color:#fff!important}
+.pipe-reading-card .tag,.pipe-asphalt-card .tag{background:#8b4059!important;color:#fff!important;border-color:#b8798e!important}
+.pipe-reading-card input,.pipe-reading-card select,.pipe-asphalt-card input,.pipe-asphalt-card select{background:#4b1b2c!important;color:#fff!important;border-color:#b8798e!important}
+.pipe-reading-card table,.pipe-asphalt-card table{color:#fff!important}
+.pipe-reading-card th,.pipe-asphalt-card th{background:#572033!important;color:#fff!important}
 </style>
 
 <style id="arkan-compact-all-fields-v1">
@@ -604,8 +614,8 @@ select::-ms-expand{display:none}
   <article class="card"><div class="card-head"><h3>مرجع الحساب الوحيد</h3><span class="tag">ظهر الأنبوب</span></div><div class="card-body"><div class="result blue"><span>منسوب الجهاز HI</span><strong id="hiSummary">—</strong></div><div class="status" id="mainStatus">أدخل BM وBS، ثم قراءة واحدة فوق ظهر الأنبوب أو منسوبه.</div></div></article>
  </div>
  <div id="sewerAllSections" class="sewer-all-sections"></div>
- <article class="card full" id="pipeRunCard">
-  <div class="card-head"><h3>حساب قراءة البوري ونوع وعمق ورقم المنهول</h3><span class="tag">طول البوري الاسمي 6 م</span></div>
+ <article class="card full pipe-reading-card" id="pipeRunCard">
+  <div class="card-head"><h3>حساب قراءة البايب ونوع وعمق ورقم المنهول</h3><span class="tag">طول البوري الاسمي 6 م</span></div>
   <div class="card-body">
    <p class="help">أدخل كل منهول بالتسلسل. المسافة هي من المنهول السابق، ومنسوب IL هو منسوب أسفل الأنبوب عند المنهول. أول منهول تكون مسافته صفر. يحسب البرنامج الكبسة تلقائياً حسب القطر، ثم يوزع البواري والقراءات عند بداية ونهاية كل بوري.</p>
    <div class="inline" style="justify-content:space-between;margin:7px 0"><b>بيانات المناهيل</b><div class="inline"><button type="button" class="btn btn-ghost" id="pipeManholeAdd">+ إضافة منهول</button><button type="button" class="btn btn-primary" id="pipeRunCalc">حساب البواري</button></div></div>
@@ -626,7 +636,7 @@ select::-ms-expand{display:none}
    <div class="field"><label>BM · منسوب البيج مارك (م)</label><input id="bm" type="number" step="0.001" value="100.000"></div>
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
   </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="excDepthInStation">—</strong></div></div></div></article>
-  <article class="card"><div class="card-head"><h3>معلومات البايب والأسفلت</h3><span class="tag">قراءة ومنسوب</span></div><div class="card-body">
+  <article class="card pipe-asphalt-card"><div class="card-head"><h3>معلومات البايب والأسفلت</h3><span class="tag">قراءة ومنسوب</span></div><div class="card-body">
    <div class="field"><label for="pipeMode">طريقة الإدخال</label><select id="pipeMode"><option value="reading" selected>قراءة المسطرة فوق ظهر البايب</option><option value="rl">إدخال منسوب ظهر البايب</option></select></div>
    <div class="field" style="margin-top:10px"><label for="pipeDia">قطر البوري (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
    <div class="fields">
