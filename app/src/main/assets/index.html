@@ -710,6 +710,8 @@ function buildUnifiedSewerScreen(){
   actionBar.id='sewerReportActions';
   actionBar.className='sewer-report-actions no-print';
   actionBar.appendChild(actionButtons.querySelector('button[onclick*="printDocument"]'));
+  const aiFab=document.getElementById('arkanAiFab');
+  if(aiFab)actionBar.appendChild(aiFab);
   actionBar.appendChild(actionButtons.querySelector('#csvBtn2'));
   dashboard.appendChild(actionBar);
   reportHead.remove();
@@ -1176,7 +1178,7 @@ apply();
 })();
 </script>
 <style>
-#arkanAiFab{position:fixed;z-index:10001;bottom:22px;left:50%;transform:translateX(-50%);inset-inline-end:auto;border:0;border-radius:9px;padding:9px 13px;min-height:38px;font-size:14px;line-height:20px;background:#7b1838;color:#fff;font-weight:800;box-shadow:0 3px 12px #0004;white-space:nowrap}
+.sewer-report-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:nowrap;width:100%;margin:16px auto 24px;padding:0 10px;box-sizing:border-box}.sewer-report-actions>button{height:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap}#arkanAiFab{position:static;z-index:1;left:auto;bottom:auto;transform:none;inset-inline-end:auto;border:0;border-radius:9px;padding:10px 14px;height:40px;min-height:40px;font:inherit;font-weight:700;font-size:inherit;line-height:normal;background:#7b1838;color:#fff;box-shadow:none;white-space:nowrap;flex:0 0 auto}
 #arkanAiPanel{position:fixed;z-index:10002;inset:0;background:#07182dcc;display:none;align-items:flex-end;justify-content:center;padding:12px}
 #arkanAiPanel.open{display:flex}
 #arkanAiBox{width:min(100%,620px);height:min(78vh,720px);background:#182433;border:1px solid #596778;border-radius:18px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 60px #0009}
