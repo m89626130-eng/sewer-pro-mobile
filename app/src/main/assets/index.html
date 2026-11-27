@@ -1108,6 +1108,62 @@ $('roadExportPdf').addEventListener('click',()=>{
  const rows=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(id=>'<td>'+(d[id]===null||d[id]===undefined?'—':roadFmt(d[id]))+'</td>').join('')+'</tr>';}).join('');
  const title='بروفايل أعمال الطرق';
  const body=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2{text-align:center}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #555;padding:7px;text-align:center}th{background:#eee}@page{size:A4 landscape;margin:12mm}</style></head><body><h2>${title}</h2><p>BM: ${roadVal('roadBM')??'—'} | BS: ${roadVal('roadBS')??'—'} | HI: ${roadHI()??'—'}</p><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody>${rows}</tbody></table>
+
+<style id="arkan-final-unified-charcoal-red-theme">
+/* ARKAN SURVEY — one unified charcoal / red / white interface palette */
+:root{
+ --arkan-bg:#20252d;--arkan-panel:#292f38;--arkan-panel-2:#323a45;
+ --arkan-red:#c6283d;--arkan-red-dark:#941b30;--arkan-white:#f5f6f8;
+ --arkan-muted:#c5cbd3;--arkan-border:#555f6c;
+}
+html,body{background:var(--arkan-bg)!important;color:var(--arkan-white)!important}
+body,body *{scrollbar-color:#68717d var(--arkan-bg)}
+.page,.page>*,.card,.card-body,.card-head,.section-card,.panel,.modal-content,
+.layer-heights-entry-card,.layer-heights-entry-card .layer-readings,
+.pipe-asphalt-card,.pipe-asphalt-card>.card-head,.pipe-asphalt-card>.card-body,
+.road-card,.quantity-card,.report-card,.form-card,.input-card{
+ background-color:var(--arkan-panel)!important;color:var(--arkan-white)!important;
+ border-color:var(--arkan-border)!important;
+}
+header,.app-header,.topbar,.page-title,.section-title,.card-title,
+.layer-heights-entry-card h2,.layer-heights-entry-card h3,
+.pipe-asphalt-card h2,.pipe-asphalt-card h3,
+label,.help,.hint,.description,p,small,strong,b,th,td,legend{
+ color:var(--arkan-white)!important;
+}
+button,.btn,input[type=button],input[type=submit],.tab-button,.nav-button,
+.action-button,.tool-button,.primary-button{
+ background:var(--arkan-red)!important;color:#fff!important;
+ border:1px solid var(--arkan-red-dark)!important;
+}
+button:active,.btn:active{background:var(--arkan-red-dark)!important}
+input,select,textarea,
+input:not([type=checkbox]):not([type=radio]):not([type=button]):not([type=submit]),
+select option{
+ background:#252c35!important;color:var(--arkan-white)!important;
+ border:1px solid #65707d!important;
+}
+input::placeholder,textarea::placeholder{color:#aeb6c0!important;opacity:1!important}
+table,thead,tbody,tr{background:var(--arkan-panel)!important;color:var(--arkan-white)!important}
+.page table:not(.report-table) th,
+.page table:not(.report-table) td,
+table:not(.report-table) th,table:not(.report-table) td{
+ background:var(--arkan-panel-2)!important;color:var(--arkan-white)!important;
+ border-color:var(--arkan-border)!important;
+}
+.tag,.badge,.chip,.layer-tag{
+ background:var(--arkan-red)!important;color:#fff!important;border-color:var(--arkan-red-dark)!important;
+}
+.value,.result,.result-value,.highlight,.total-value,.key-value{color:#ff5369!important}
+hr,.divider{border-color:var(--arkan-border)!important}
+#arkanAiPanel,#arkanAiPanel section,#arkanAiPanel header,
+#arkanAiMessages>div{background:var(--arkan-panel)!important;color:var(--arkan-white)!important}
+#arkanAiPanel header{background:var(--arkan-red)!important}
+#arkanAiPanel input{background:#252c35!important;color:#fff!important}
+#arkanAiPanel button{background:var(--arkan-red)!important;color:#fff!important}
+/* Keep engineering drawing layer colors and drawing canvas colors unchanged. */
+canvas,.drawing-canvas,.cad-canvas{color:inherit}
+</style>
 </body></html>`;
  const w=window.open('', '_blank');
  if(w){w.document.open();w.document.write(body);w.document.close();setTimeout(()=>w.print(),500);}
