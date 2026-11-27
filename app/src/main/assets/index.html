@@ -817,7 +817,7 @@ function update(){
   }
   out('pipeRunDistanceOut',total);out('pipeRunCountOut',count,0);out('pipeRunDropOut',firstIL!==null&&lastIL!==null?firstIL-lastIL:NaN);
   let lastShownManhole='';
-  $p('pipeRunResultRows').innerHTML=result.length?result.map(x=>{const names=x.from.split(' – '),name=x.atManholeEnd?(names[1]||names[0]):names[0],asphalt=(nval($p('asphaltLevel')?.value)??nval($p('glInput')?.value)),manholeIL=x.atManholeEnd?x.il2:x.il1,depth=(asphalt!==null&&manholeIL!==null)?asphalt-manholeIL:null,type=depth===null||depth<0?'—':depth<1.70?'AS':depth<3?'BS':depth<4?'CS':'CD',manholeClass=x.atManholeEnd?'inside-manhole':'',isNewManhole=name!==lastShownManhole;lastShownManhole=name;return '<tr><td class="'+manholeClass+'">'+(isNewManhole?esc(name):'')+'</td><td class="num pipe-top-reading">'+(x.r1===null?'—':x.r1.toFixed(3))+'</td><td class="num pipe-top-reading">'+(x.r2===null?'—':x.r2.toFixed(3))+'</td><td class="num">'+(isNewManhole?(depth===null?'—':depth.toFixed(3)):'')+'</td><td class="num">'+(isNewManhole?type:'')+'</td></tr>';}).join(''):'<tr><td colspan="5">أدخل مسافة ومنسوب IL صحيحين لكل منهولين متتاليين، وأدخل منسوب الأسفلت.</td></tr>';
+  $p('pipeRunResultRows').innerHTML=result.length?result.map(x=>{const names=x.from.split(' – '),name=x.atManholeEnd?(names[1]||names[0]):names[0],asphalt=(nval($p('asphaltLevel')?.value)??(HI!==null&&nval($p('asphaltReading')?.value)!==null?HI-nval($p('asphaltReading')?.value):null)??nval($p('glInput')?.value)),manholeIL=x.atManholeEnd?x.il2:x.il1,depth=(asphalt!==null&&manholeIL!==null)?asphalt-manholeIL:null,type=depth===null||depth<0?'—':depth<1.70?'AS':depth<3?'BS':depth<4?'CS':'CD',manholeClass=x.atManholeEnd?'inside-manhole':'',isNewManhole=name!==lastShownManhole;lastShownManhole=name;return '<tr><td class="'+manholeClass+'">'+(isNewManhole?esc(name):'')+'</td><td class="num pipe-top-reading">'+(x.r1===null?'—':x.r1.toFixed(3))+'</td><td class="num pipe-top-reading">'+(x.r2===null?'—':x.r2.toFixed(3))+'</td><td class="num">'+(isNewManhole?(depth===null?'—':depth.toFixed(3)):'')+'</td><td class="num">'+(isNewManhole?type:'')+'</td></tr>';}).join(''):'<tr><td colspan="5">أدخل مسافة ومنسوب IL صحيحين لكل منهولين متتاليين، وأدخل منسوب الأسفلت.</td></tr>';
   $p('pipeRunStatus').textContent=result.length?'تم الحساب: العمق = منسوب الأسفلت − IL عند نهاية البوري. التصنيف: أقل من 1.70 AS، من 1.70 إلى أقل من 3 BS، من 3 إلى أقل من 4 CS، و4 فأكثر CD.':'أدخل منهولين على الأقل، والمسافة ومنسوب IL لكل منهول، وأدخل قراءة أو منسوب الأسفلت.';
  }
  $p('pipeManholeAdd').addEventListener('click',()=>{rows.push({name:'MH-'+String(rows.length+1).padStart(2,'0'),dist:'',il:''});draw();});
@@ -1149,6 +1149,26 @@ function arkanAiAsk(q){
  background:#dff4fd!important;color:#183747!important;
  border-color:#70b8d5!important
 }
+</style>
+
+
+<style id="arkan-pipe-asphalt-light-blue">
+/* Light sky-blue theme for pipe and asphalt information only */
+.pipe-asphalt-card,
+.pipe-asphalt-card>.card-head,
+.pipe-asphalt-card>.card-body{
+ background:#b9e5f7!important;
+ color:#183747!important;
+}
+.pipe-asphalt-card{border:1px solid #75bddb!important}
+.pipe-asphalt-card>.card-head{border-bottom:1px solid #83c6df!important}
+.pipe-asphalt-card h3,
+.pipe-asphalt-card label,
+.pipe-asphalt-card b,
+.pipe-asphalt-card .help{color:#183747!important}
+.pipe-asphalt-card .tag{background:#dff4fd!important;color:#183747!important;border-color:#70b8d5!important}
+.pipe-asphalt-card input,
+.pipe-asphalt-card select{background:#eaf8ff!important;color:#183747!important;border:1px solid #70b8d5!important}
 </style>
 
 </body></html>
