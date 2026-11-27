@@ -506,14 +506,6 @@ select::-ms-expand{display:none}
    <div class="roads-stationbar"><button type="button" class="btn btn-ghost" id="roadPrev">السابق</button><strong id="roadStation">0+000</strong><button type="button" class="btn btn-ghost" id="roadNext">التالي</button></div>
    <div class="help" id="roadStationCount">لم يتم إنشاء المحطات بعد.</div>
   </div></article>
-  <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
-
-   <div class="road-layer"><h4><span class="road-swatch asphalt"></span><span>الإسفلت</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadAsphaltOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadAsphaltReading">—</strong></span></div></div>
-   <div class="road-layer"><h4><span class="road-swatch concrete"></span><span>الكونكريت</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadConcreteOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadConcreteReading">—</strong></span></div></div>
-   <div class="road-layer"><h4><span class="road-swatch subbase"></span><span>السبيس</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadSubbaseOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadSubbaseReading">—</strong></span></div></div>
-   <div class="road-layer"><h4><span class="road-swatch boulder"></span><span>الجلمود</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadBoulderOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadBoulderReading">—</strong></span></div></div>
-   <p class="help">تُحسب مناسيب الطبقات التالية بطرح سماكات الطبقات من منسوب الإسفلت المدخل.</p>
-  </div></article>
   <article class="card full"><div class="card-head"><h3>سماكات الطبقات والكميات</h3><span class="tag">قيم قابلة للتعديل</span></div><div class="card-body">
    <div class="roads-field"><label>سماكة الإسفلت (سم)</label><input id="roadAsphaltThk" type="number" min="0" step="0.1" value="5"></div>
    <div class="roads-field"><label>سماكة الكونكريت (سم)</label><input id="roadConcreteThk" type="number" min="0" step="0.1" value="20"></div>
@@ -530,6 +522,15 @@ select::-ms-expand{display:none}
     <div class="table-wrap" id="roadImportReviewWrap" hidden><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody id="roadImportReview"></tbody></table><button class="btn btn-primary" id="roadApplyImport">اعتماد البيانات المستوردة</button></div>
    </div>
   </div></article>
+    <article class="card full"><div class="card-head"><h3>مناسيب طبقات الطريق</h3><span class="tag">ترتيب عمودي</span></div><div class="card-body">
+
+   <div class="road-layer"><h4><span class="road-swatch asphalt"></span><span>الإسفلت</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadAsphaltOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadAsphaltReading">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch concrete"></span><span>الكونكريت</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadConcreteOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadConcreteReading">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch subbase"></span><span>السبيس</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadSubbaseOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadSubbaseReading">—</strong></span></div></div>
+   <div class="road-layer"><h4><span class="road-swatch boulder"></span><span>الجلمود</span></h4><div class="road-layer-level"><span class="road-level-result"><span>المنسوب</span><strong id="roadBoulderOther">—</strong></span><span class="road-level-result"><span>قراءة المسطرة</span><strong id="roadBoulderReading">—</strong></span></div></div>
+   <p class="help">تُحسب مناسيب الطبقات التالية بطرح سماكات الطبقات من منسوب الإسفلت المدخل.</p>
+  </div></article>
+
   <article class="card full"><div class="card-head"><h3>سجل المحطات</h3><span class="tag">القراءات المحفوظة</span></div><div class="card-body"><div class="table-wrap"><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody id="roadStationsBody"></tbody></table></div><p class="help">يُحفظ إدخال كل محطة أثناء التنقل بينها، وتُستعاد بياناتها عند الرجوع إليها.</p></div></article>
  </div>
 </section>
