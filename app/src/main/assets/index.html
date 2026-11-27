@@ -716,18 +716,11 @@ function buildUnifiedSewerScreen(){
 
 let asphaltEntryMode='reading';
 const setInput=(id,v)=>{const el=$(id);if(el)el.value=Number.isFinite(v)?v.toFixed(3):'';};
-function syncAsphaltMode(){const mode=$('asphaltMode')?.value||'reading';$('asphaltReading').readOnly=mode!=='reading';$('asphaltLevel').readOnly=mode!=='level';$('asphaltReading').placeholder=mode==='reading'?'أدخل قراءة المسطرة':'تُحسب تلقائياً';$('asphaltLevel').placeholder=mode==='level'?'أدخل منسوب الأسفلت':'يُحسب تلقائياً';}
 function update(){
  const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
- const asphaltReading=val('asphaltReading'),asphaltLevelInput=val('asphaltLevel');
- if(H!==null){
-  if(asphaltEntryMode==='reading'&&asphaltReading!==null)setInput('asphaltLevel',H-asphaltReading);
-  else if(asphaltEntryMode==='level'&&asphaltLevelInput!==null)setInput('asphaltReading',H-asphaltLevelInput);
- }
- syncAsphaltMode();
- const finalAsphaltLevel=val('asphaltLevel'),finalAsphaltReading=val('asphaltReading');
  const mode=selectedMode(),v=val('pipeValue');
- const label=$('pipeValueLabel');if(label)label.textContent=mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب (م)':'منسوب ظهر الأنبوب RL (م)';
+ const label=$('pipeValueLabel');
+ if(label)label.textContent=mode==='reading'?'قراءة المسطرة فوق ظهر البايب (م)':'منسوب ظهر البايب (م)';
  const pipeCrown=(v===null?null:(mode==='reading'?(H!==null?H-v:null):v));
  const dia=val('pipeDia');
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
@@ -738,36 +731,19 @@ function update(){
  const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
  const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
- const GL=finalAsphaltLevel;
- // Staff readings: pipe-back staff reading + pipe diameter + successive layer thicknesses.
  const pipeBackStaff=(H!==null&&pipeCrown!==null)?H-pipeCrown:null;
  const baseReading=(pipeBackStaff!==null&&dia!==null&&dia>=0)?pipeBackStaff+dia/1000:null;
- // Reading sequence: pipe -> manhole base -> subbase (space) -> gilmood -> excavation depth.
  const spaceReading=(baseReading!==null&&baseT!==null&&baseT>=0)?baseReading+baseT/100:null;
  const gilmoodReading=(spaceReading!==null&&spaceT!==null&&spaceT>=0)?spaceReading+spaceT/100:null;
  const excavationReading=(gilmoodReading!==null&&gilmoodT!==null&&gilmoodT>=0)?gilmoodReading+gilmoodT/100:null;
  const showLayerReading=(id,value)=>{const el=$(id);if(el)el.textContent=Number.isFinite(value)?value.toFixed(3):'—';};
- showLayerReading('layerPipeReading',pipeBackStaff);
- showLayerReading('layerBaseReading',baseReading);
- showLayerReading('layerSpaceReading',spaceReading);
- showLayerReading('layerGilmoodReading',gilmoodReading);
- showLayerReading('layerExcavationReading',excavationReading);
- // Total manhole depth = top manhole/cover level (asphalt level) minus manhole bottom level (pipe invert level).
- const manholeLevel=baseBottom;
- const depth=(finalAsphaltLevel!==null&&manholeLevel!==null)?finalAsphaltLevel-manholeLevel:null;
- set('excDepthOut',depth);
- set('baseBottomReadingOut',baseReading);set('manholeLevelOut',manholeLevel);
- set('spaceBottomReadingOut',spaceReading);
- set('gilmoodBottomReadingOut',gilmoodReading);
- set('excDepthInStation',depth);
- set('mBase',baseReading);set('mSpace',spaceReading);set('mGilmood',gilmoodReading);set('mDepth',depth);
+ showLayerReading('layerPipeReading',pipeBackStaff);showLayerReading('layerBaseReading',baseReading);showLayerReading('layerSpaceReading',spaceReading);showLayerReading('layerGilmoodReading',gilmoodReading);showLayerReading('layerExcavationReading',excavationReading);
+ set('baseBottomReadingOut',baseReading);set('spaceBottomReadingOut',spaceReading);set('gilmoodBottomReadingOut',gilmoodReading);
+ set('mBase',baseReading);set('mSpace',spaceReading);set('mGilmood',gilmoodReading);
  const mainStatus=$('mainStatus');
- if(mainStatus)mainStatus.textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر الأنبوب أو منسوبه.':'تم تحديد مرجع واحد لظهر الأنبوب؛ جميع النتائج مرتبطة به.';
- const excStatus=$('excStatus');
- if(excStatus){excStatus.className='status'+(depth===null?' warn':depth<0?' error':'');excStatus.textContent=depth===null?'أدخل منسوب GL وتأكد من إدخال المرجع والسماكات.':depth<0?'تنبيه: قاع الحفر المحسوب أعلى من GL؛ راجع البيانات والسماكات.':'تم حساب عمق المنهول الكلي تلقائياً: GL ناقص منسوب قاع قاعدة المنهول.';}
- renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading:baseReading,spaceT,spaceBottom,spaceBottomReading:spaceReading,gilmoodT,gilmoodBottom,gilmoodBottomReading:gilmoodReading,GL,asphaltLevel:finalAsphaltLevel,asphaltReading:finalAsphaltReading,depth});
+ if(mainStatus)mainStatus.textContent=pipeCrown===null?'أدخل BM وBS ثم قراءة ظهر البايب أو منسوبه.':'تم تحديد مرجع ظهر البايب؛ تُحسب القراءات والمناسيب التابعة تلقائياً.';
+ renderReport({H,mode,pipeValue:v,pipeCrown,dia,pipeInvert,baseT,baseBottom,baseBottomReading:baseReading,spaceT,spaceBottom,spaceBottomReading:spaceReading,gilmoodT,gilmoodBottom,gilmoodBottomReading:gilmoodReading});
 }
-
 // ARKAN pipe-by-pipe interpolation between manholes; socket overlap is automatic by diameter.
 (function(){
  const body=document.getElementById('pipeManholeRows');if(!body)return;
@@ -831,9 +807,9 @@ function renderReport(d){
  $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
 }
 function saveData(){
- const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','asphaltReading','asphaltLevel','rProject','rLocation','rDate','rEngineer','rContractor'];
+ const ids=['bm','bs','pipeValue','pipeDia','baseThk','spaceThk','gilmoodThk','rProject','rLocation','rDate','rEngineer','rContractor'];
  const values={};ids.forEach(id=>values[id]=$(id).value);
- return {app:'SEWER PRO',version:'1.0.12',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode(),asphalt:asphaltEntryMode}};
+ return {app:'SEWER PRO',version:'1.0.13',savedAt:new Date().toISOString(),values,modes:{pipe:selectedMode()}};
 }
 function loadData(d){
  if(!d||!d.values)throw new Error('ملف المشروع غير صالح');
