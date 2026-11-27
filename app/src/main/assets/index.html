@@ -362,6 +362,19 @@ select::-ms-expand{display:none}
 .pipe-reading-card input,.pipe-reading-card select,.pipe-asphalt-card input,.pipe-asphalt-card select{background:#4b1b2c!important;color:#fff!important;border-color:#b8798e!important}
 .pipe-reading-card table,.pipe-asphalt-card table{color:#fff!important}
 .pipe-reading-card th,.pipe-asphalt-card th{background:#572033!important;color:#fff!important}
+
+/* Light blue theme for layer heights and staff-reading table */
+.layer-heights-entry-card,.layer-heights-entry-card>.card-head,.layer-heights-entry-card>.card-body{background:#b9e5f7!important;color:#183747!important}
+.layer-heights-entry-card{border:1px solid #75bddb!important}
+.layer-heights-entry-card .card-head{border-bottom:1px solid #83c6df!important}
+.layer-heights-entry-card h3,.layer-heights-entry-card label,.layer-heights-entry-card .help{color:#183747!important}
+.layer-heights-entry-card input{background:#eaf8ff!important;color:#183747!important;border:1px solid #70b8d5!important}
+.layer-heights-entry-card .tag{background:#dff4fd!important;color:#183747!important;border-color:#70b8d5!important}
+.layer-heights-entry-card .layer-readings{background:#a8dcf1!important;border:1px solid #70b8d5!important;border-radius:10px;padding:10px!important;color:#183747!important}
+.layer-heights-entry-card .layer-readings h3{color:#183747!important}
+.layer-heights-entry-card .layer-readings table,.layer-heights-entry-card .layer-readings td{color:#183747!important}
+.layer-heights-entry-card .layer-readings th{background:#79c3e2!important;color:#123447!important}
+.layer-heights-entry-card .layer-readings td{background:#dff4fd!important}
 </style>
 
 <style id="arkan-compact-all-fields-v1">
@@ -656,7 +669,7 @@ select::-ms-expand{display:none}
 
 <section class="page" id="layerHeights">
  <div class="page-head"><div><h2>ارتفاعات الطبقات</h2><p>أدخل ارتفاع كل طبقة يدوياً بالسنتيمتر؛ وتُحدّث قراءات المسطرة والحسابات تلقائياً.</p></div></div>
- <div class="grid"><article class="card full"><div class="card-head"><h3>إدخال ارتفاعات الطبقات</h3><span class="tag">إدخال يدوي</span></div><div class="card-body layer-heights-card">
+ <div class="grid"><article class="card full layer-heights-entry-card"><div class="card-head"><h3>إدخال ارتفاعات الطبقات</h3><span class="tag">إدخال يدوي</span></div><div class="card-body layer-heights-card">
   <div class="layer-height-row"><label for="baseThk">ارتفاع المنهول (سم)</label><input id="baseThk" type="number" min="0" step="0.1" value="30" aria-label="ارتفاع المنهول بالسنتيمتر"></div>
   <div class="layer-height-row"><label for="spaceThk">ارتفاع السبيس (سم)</label><input id="spaceThk" type="number" min="0" step="0.1" value="20" aria-label="ارتفاع السبيس بالسنتيمتر"></div>
   <div class="layer-height-row"><label for="gilmoodThk">ارتفاع الجلمود (سم)</label><input id="gilmoodThk" type="number" min="0" step="0.1" value="30" aria-label="ارتفاع الجلمود بالسنتيمتر"></div>
