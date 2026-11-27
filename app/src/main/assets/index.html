@@ -698,7 +698,7 @@ function buildUnifiedSewerScreen(){
  const host=$('sewerAllSections');
  if(!host || host.dataset.built==='1')return;
  const order=[
-  ['survey','📐'],['pipe','🟦'],['layerHeights','🧱'],['report','📊']
+  ['survey','📐'],['pipe','🟦'],['layerHeights','🧱']
  ];
  order.forEach(([id])=>{
   const page=$(id);if(!page)return;
@@ -711,6 +711,20 @@ function buildUnifiedSewerScreen(){
   if(grid)module.appendChild(grid);
   host.appendChild(module);
  });
+ // Keep the report content available for printing/export, but show only its action buttons at the very bottom.
+ const reportPage=$('report');
+ const reportHead=reportPage?.querySelector('.page-head');
+ const actionButtons=reportHead?.querySelector('.inline');
+ const dashboard=$('dashboard');
+ if(actionButtons&&dashboard){
+  const actionBar=document.createElement('div');
+  actionBar.id='sewerReportActions';
+  actionBar.className='sewer-report-actions no-print';
+  actionBar.appendChild(actionButtons.querySelector('button[onclick*="printDocument"]'));
+  actionBar.appendChild(actionButtons.querySelector('#csvBtn2'));
+  dashboard.appendChild(actionBar);
+  reportHead.remove();
+ }
  host.dataset.built='1';
 }
 
@@ -1285,6 +1299,13 @@ select { font-size:12px; }
   button, .btn { gap:5px; }
   button .icon, button svg, .btn svg { width:13px !important; height:13px !important; }
 }
+
+/* Bottom-only report actions: no visible results/report list in the work screen. */
+#sewerReportActions{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;width:100%!important;margin:12px 0 8px!important;padding:8px 2px!important}
+#sewerReportActions button{min-width:112px!important;min-height:36px!important;padding:7px 13px!important;font-size:12px!important}
+#sewerReportActions button:first-child{order:1!important}
+#sewerReportActions button:last-child{order:2!important}
+@media(max-width:520px){#sewerReportActions button{min-width:105px!important;min-height:34px!important;padding:6px 10px!important;font-size:11px!important}}
 </style>
 
 </body></html>
