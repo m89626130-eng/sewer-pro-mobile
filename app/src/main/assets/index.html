@@ -626,10 +626,21 @@ select::-ms-expand{display:none}
    <div class="field"><label>BM · منسوب البيج مارك (م)</label><input id="bm" type="number" step="0.001" value="100.000"></div>
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
   </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر من GL إلى أسفل الجلمود</span><strong id="excDepthInStation">—</strong></div></div></div></article>
-  <article class="card"><div class="card-head"><h3>مرجع ظهر الأنبوب — إدخال واحد فقط</h3><span class="tag">قراءة أو منسوب</span></div><div class="card-body">
+  <article class="card"><div class="card-head"><h3>مرجع ظهر الأنبوب وأسفل البايب</h3><span class="tag">قراءة ومنسوب</span></div><div class="card-body">
    <div class="field"><label for="pipeMode">طريقة إدخال مرجع ظهر الأنبوب</label><select id="pipeMode"><option value="reading" selected>إدخال قراءة المسطرة فوق ظهر الأنبوب</option><option value="rl">إدخال منسوب ظهر الأنبوب</option></select></div>
-   <div class="field"><label id="pipeValueLabel">قراءة المسطرة فوق ظهر الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
-   <p class="help">عند اختيار قراءة المسطرة: منسوب ظهر الأنبوب = HI − القراءة. وعند اختيار إدخال المنسوب، يستخدم البرنامج المنسوب الذي أدخلته كما هو. لا تدخل أي قراءة أخرى للقاعدة أو الطبقات أو الحفر.</p>
+   <div class="fields" style="margin-top:10px">
+    <div class="field"><label id="pipeValueLabel" for="pipeValue">قراءة المسطرة فوق ظهر الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
+    <div class="field"><label for="pipeInvertLevel">منسوب أسفل البايب (م)</label><input id="pipeInvertLevel" type="number" step="0.001" readonly placeholder="يُحسب تلقائياً"></div>
+   </div>
+   <p class="help">منسوب أسفل البايب = منسوب ظهر الأنبوب − قطر الأنبوب. يتحدث تلقائياً عند تغيير القراءة أو المنسوب أو القطر.</p>
+  </div></article>
+  <article class="card"><div class="card-head"><h3>مرجع الأسفلت</h3><span class="tag">قراءة أو منسوب</span></div><div class="card-body">
+   <div class="field asphalt-mode-field"><label for="asphaltMode">طريقة إدخال مرجع الأسفلت</label><select id="asphaltMode"><option value="reading" selected>إدخال قراءة المسطرة</option><option value="level">إدخال منسوب الأسفلت</option></select></div>
+   <div class="fields"><div class="field"><label for="asphaltReading">قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div><div class="field"><label for="asphaltLevel">منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت" readonly></div></div>
+   <p class="help">منسوب الأسفلت = HI − قراءة المسطرة على الأسفلت، ويُحسب تلقائياً.</p>
+   <div class="result amber"><span>عمق المنهول الكلي</span><strong id="excDepthOut">—</strong></div>
+   <p class="help">عمق المنهول الكلي = منسوب الأسفلت − منسوب قاع قاعدة المنهول.</p>
+   <div class="status" id="excStatus">أدخل قراءة المسطرة على الأسفلت أو منسوب الأسفلت لإكمال الحساب.</div>
   </div></article>
  </div>
 </section>
@@ -660,16 +671,6 @@ select::-ms-expand{display:none}
  </div></article></div>
 </section>
 
-<section class="page" id="excavation">
- <div class="page-head"><div><h2>الحفر النهائي</h2><p>أدخل منسوب الأرض الطبيعية GL فقط؛ قاع الحفر يُستنتج من تسلسل السماكات.</p></div></div>
- <div class="grid"><article class="card"><div class="card-head"><h3>حساب عمق المنهول</h3><span class="tag">حساب تلقائي</span></div><div class="card-body">
-<div class="field asphalt-mode-field"><label for="asphaltMode">طريقة الإدخال</label><select id="asphaltMode"><option value="reading" selected>إدخال قراءة المسطرة</option><option value="level">إدخال منسوب الأسفلت</option></select></div><div class="fields"><div class="field"><label>قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="أدخل قراءة المسطرة"></div><div class="field"><label>منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="أدخل منسوب الأسفلت" readonly></div></div><p class="help">منسوب الإسفلت = HI − قراءة المسطرة على الإسفلت، ويُحسب تلقائياً.</p>
-  <div class="result amber"><span>عمق المنهول الكلي</span><strong id="excDepthOut">—</strong></div>
-  <p class="help">عمق المنهول الكلي = منسوب الأرض الطبيعية GL − منسوب قاع قاعدة المنهول.</p>
-  <div class="status" id="excStatus">أدخل GL، وسيُحسب عمق الحفر تلقائياً عند اكتمال البيانات.</div>
- </div></article></div>
-</section>
-
 <section class="page" id="report">
  <div class="page-head no-print"><div><h2>النتائج والتقرير</h2><p>تقرير الأقطار والمناسيب، ومنسوب الأسفلت فقط.</p></div><div class="inline"><button class="btn btn-primary" onclick="printDocument()">طباعة / PDF</button><button class="btn btn-green" id="csvBtn2">تصدير CSV</button></div></div>
  <article class="card full report-sheet"><div class="card-body">
@@ -697,7 +698,7 @@ function buildUnifiedSewerScreen(){
  const host=$('sewerAllSections');
  if(!host || host.dataset.built==='1')return;
  const order=[
-  ['survey','📐'],['pipe','🟦'],['layerHeights','🧱'],['excavation','🚜'],['report','📊']
+  ['survey','📐'],['pipe','🟦'],['layerHeights','🧱'],['report','📊']
  ];
  order.forEach(([id])=>{
   const page=$(id);if(!page)return;
@@ -730,7 +731,7 @@ function update(){
  const pipeCrown=(v===null?null:(mode==='reading'?(H!==null?H-v:null):v));
  const dia=val('pipeDia');
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
- set('pipeCrownOut',pipeCrown);
+ set('pipeCrownOut',pipeCrown);setInput('pipeInvertLevel',pipeInvert);
  const baseT=val('baseThk'),baseBottom=(pipeInvert!==null&&baseT!==null&&baseT>=0)?pipeInvert-baseT/100:null;
  const spaceT=val('spaceThk'),spaceBottom=(baseBottom!==null&&spaceT!==null&&spaceT>=0)?baseBottom-spaceT/100:null;
  const gilmoodT=val('gilmoodThk'),gilmoodBottom=(spaceBottom!==null&&gilmoodT!==null&&gilmoodT>=0)?spaceBottom-gilmoodT/100:null;
@@ -848,7 +849,7 @@ $('asphaltMode').addEventListener('change',()=>{asphaltEntryMode=$('asphaltMode'
 $('asphaltReading').addEventListener('input',()=>{if(asphaltEntryMode==='reading')update();});
 $('asphaltLevel').addEventListener('input',()=>{if(asphaltEntryMode==='level')update();});
 $('pipeMode').addEventListener('change',update);
-const sewerPages=['dashboard','survey','pipe','base','layers','excavation','report'];
+const sewerPages=['dashboard','survey','pipe','base','layers','report'];
 function showPage(page){
  const sewerTarget=sewerPages.includes(page)?page:null;
  const pageToShow=sewerTarget?'dashboard':page;
