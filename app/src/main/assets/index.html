@@ -629,7 +629,7 @@ select::-ms-expand{display:none}
  <article class="card full pipe-reading-card" id="pipeRunCard">
   <div class="card-head"><h3>حساب قراءة البايب ونوع وعمق ورقم المنهول</h3><span class="tag">طول البوري الاسمي 6 م</span></div>
   <div class="card-body">
-   <p class="help">أدخل كل منهول بالتسلسل. المسافة هي من المنهول السابق، ومنسوب IL هو منسوب أسفل الأنبوب عند المنهول. أول منهول تكون مسافته صفر. يحسب البرنامج الكبسة تلقائياً حسب القطر، ثم يوزع البواري والقراءات عند بداية ونهاية كل بوري.</p>
+   <p class="help">أدخل كل منهول بالتسلسل. المسافة هي من المنهول السابق، ومنسوب IL هو منسوب المنهول عند المنهول. أول منهول تكون مسافته صفر. يحسب البرنامج الكبسة تلقائياً حسب القطر، ثم يوزع البواري والقراءات عند بداية ونهاية كل بوري.</p>
    <div class="inline" style="justify-content:space-between;margin:7px 0"><b>بيانات المناهيل</b><div class="inline"><button type="button" class="btn btn-ghost" id="pipeManholeAdd">+ إضافة منهول</button><button type="button" class="btn btn-primary" id="pipeRunCalc">حساب البواري</button></div></div>
    <div class="table-wrap"><table id="pipeManholeTable"><thead><tr><th>اسم المنهول</th><th>المسافة من السابق (م)</th><th>منسوب IL (م)</th><th>حذف</th></tr></thead><tbody id="pipeManholeRows"></tbody></table></div>
    <div class="summary" style="margin-top:10px"><div class="metric"><span>الكبسة المحسوبة حسب القطر</span><strong id="pipeSocketOut">—</strong><small>سم</small></div><div class="metric"><span>إجمالي المسافة</span><strong id="pipeRunDistanceOut">—</strong><small>م</small></div><div class="metric"><span>عدد البواري</span><strong id="pipeRunCountOut">—</strong><small>بوري</small></div><div class="metric"><span>فرق المنسوب الكلي</span><strong id="pipeRunDropOut">—</strong><small>م</small></div></div>
@@ -642,24 +642,24 @@ select::-ms-expand{display:none}
 </section>
 
 <section class="page" id="survey">
- <div class="page-head"><div><h2>شبكات الصرف الصحي · الإدخال المساحي</h2><p>أدخل BM وBS، ثم اختر طريقة واحدة لتحديد منسوب ظهر الأنبوب.</p></div></div>
+ <div class="page-head"><div><h2>شبكات الصرف الصحي · الإدخال المساحي</h2><p>أدخل BM وBS، ثم اختر طريقة واحدة لتحديد منسوب الأنبوب.</p></div></div>
  <div class="grid">
   <article class="card"><div class="card-head"><h3>محطة الجهاز BM / BS / HI</h3><span class="tag">إدخال يدوي</span></div><div class="card-body"><div class="fields">
    <div class="field"><label>BM · منسوب البيج مارك (م)</label><input id="bm" type="number" step="0.001" value="100.000"></div>
    <div class="field"><label>BS · قراءة الباك سايت (م)</label><input id="bs" type="number" step="0.001" value="1.500"></div>
-  </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر (فرق منسوب أسفل البايب والإسفلت)</span><strong id="excDepthInStation">—</strong></div></div></div></article>
+  </div><div class="result" id="stationHiResult"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span>HI = BM + BS</span><strong id="hiOut">—</strong></div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;padding-top:7px;border-top:1px solid #ffffff35"><span>عمق الحفر</span><strong id="excDepthInStation">—</strong></div></div></div></article>
   <article class="card pipe-asphalt-card"><div class="card-head"><h3>معلومات البايب والأسفلت</h3><span class="tag">قراءة ومنسوب</span></div><div class="card-body">
-   <div class="field"><label for="pipeMode">طريقة الإدخال</label><select id="pipeMode"><option value="reading" selected>قراءة المسطرة فوق ظهر البايب</option><option value="rl">إدخال منسوب ظهر البايب</option></select></div>
+   <div class="field"><label for="pipeMode">طريقة الإدخال</label><select id="pipeMode"><option value="reading" selected>إدخال قراءة المسطرة فقط</option><option value="rl">إدخال المنسوب</option></select></div>
    <div class="field" style="margin-top:10px"><label for="pipeDia">قطر البوري (ملم)</label><select id="pipeDia"><option>160</option><option>200</option><option>250</option><option>315</option><option selected>400</option><option>500</option><option>600</option><option>700</option><option>800</option><option>900</option><option>1000</option></select></div>
    <div class="fields">
-    <div class="field"><label id="pipeValueLabel" for="pipeValue">قراءة المسطرة فوق ظهر البايب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
-    <div class="field"><label for="pipeInvertLevel">منسوب أسفل البايب (م)</label><input id="pipeInvertLevel" type="number" step="0.001" readonly placeholder="يُحسب تلقائياً"></div>
+    <div class="field"><label id="pipeValueLabel" for="pipeValue">قراءة المسطرة على الأنبوب (م)</label><input id="pipeValue" type="number" step="0.001" value="1.200"></div>
+    <div class="field"><label for="pipeInvertLevel">منسوب المنهول (م)</label><input id="pipeInvertLevel" type="number" step="0.001" readonly placeholder="يُحسب تلقائياً"></div>
    </div>
    <div class="fields" style="margin-top:12px;gap:8px">
     <div class="field"><label for="asphaltReading">قراءة المسطرة على الأسفلت (م)</label><input id="asphaltReading" type="number" step="0.001" placeholder="قراءة المسطرة"></div>
     <div class="field"><label for="asphaltLevel">منسوب الأسفلت (م)</label><input id="asphaltLevel" type="number" step="0.001" placeholder="منسوب الأسفلت"></div>
    </div>
-   <p class="help">تُدخل قيمة واحدة فقط حسب طريقة الإدخال، وتُحسب القيمة المقابلة تلقائياً. منسوب أسفل البايب = منسوب ظهر البايب − القطر.</p>
+   <p class="help">تُدخل قيمة واحدة فقط حسب طريقة الإدخال، وتُحسب القيمة المقابلة تلقائياً. منسوب المنهول = منسوب الأنبوب − القطر.</p>
   </div></article>
  </div>
 </section>
@@ -759,7 +759,7 @@ function update(){
  const H=hi();set('hiOut',H);set('mHI',H);set('hiSummary',H);
  const mode=selectedMode(),v=val('pipeValue');
  const label=$('pipeValueLabel');
- if(label)label.textContent=mode==='reading'?'قراءة المسطرة فوق ظهر البايب (م)':'منسوب ظهر البايب (م)';
+ if(label)label.textContent=mode==='reading'?'قراءة المسطرة على الأنبوب (م)':'منسوب الأنبوب (م)';
  const pipeCrown=(v===null?null:(mode==='reading'?(H!==null?H-v:null):v));
  const dia=val('pipeDia');
  const pipeInvert=(pipeCrown!==null&&dia!==null&&dia>=0)?pipeCrown-dia/1000:null;
@@ -835,7 +835,7 @@ function renderReport(d){
  ['المساحة','BM · منسوب البيج مارك',val('bm'),'m'],
  ['المساحة','BS · قراءة الباك سايد',val('bs'),'m'],
  ['المساحة','HI · منسوب الجهاز',d.H,'m'],
- ['مرجع الأنبوب',d.mode==='reading'?'قراءة المسطرة فوق ظهر الأنبوب':'منسوب ظهر الأنبوب',d.pipeValue,d.mode==='reading'?'m reading':'m RL'],
+ ['مرجع الأنبوب',d.mode==='reading'?'قراءة المسطرة على الأنبوب':'منسوب الأنبوب',d.pipeValue,d.mode==='reading'?'m reading':'m RL'],
  ['الأنبوب','قطر الأنبوب',d.dia,'mm'],
  
  ['قاعدة المنهول','سماكة القاعدة',d.baseT,'cm'],
@@ -844,7 +844,7 @@ function renderReport(d){
  ['السبيس','قراءة المسطرة للسبيس',d.spaceBottomReading,'m reading'],
  ['الجلمود','سمك الجلمود',d.gilmoodT,'cm'],
  ['الجلمود','قراءة المسطرة للجلمود',d.gilmoodBottomReading,'m reading'],
- ['الحفر','عمق الحفر الكلي',d.depth,'m']
+ ['الحفر','عمق الحفر',d.depth,'m']
  ];
  $('reportTable').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]===null||r[2]===undefined?'—':fmtN(r[2])}</td><td>${r[3]}</td></tr>`).join('');
 }
