@@ -1164,6 +1164,12 @@ hr,.divider{border-color:var(--arkan-border)!important}
 /* Keep engineering drawing layer colors and drawing canvas colors unchanged. */
 canvas,.drawing-canvas,.cad-canvas{color:inherit}
 </style>
+<style id="arkan-survey-photo-background">
+html,body{background-color:#20252d!important}
+body{background-image:linear-gradient(rgba(20,24,30,.72),rgba(20,24,30,.82)),url('arkan-survey-background.jpg')!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+.page{background:rgba(32,37,45,.86)!important}
+.card,.section-card,.panel,.form-card,.input-card,.quantity-card,.road-card{background-color:rgba(41,47,56,.91)!important}
+</style>
 </body></html>`;
  const w=window.open('', '_blank');
  if(w){w.document.open();w.document.write(body);w.document.close();setTimeout(()=>w.print(),500);}
