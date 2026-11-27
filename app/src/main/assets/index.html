@@ -1170,6 +1170,28 @@ body{background-image:linear-gradient(rgba(20,24,30,.72),rgba(20,24,30,.82)),url
 .page{background:rgba(32,37,45,.86)!important}
 .card,.section-card,.panel,.form-card,.input-card,.quantity-card,.road-card{background-color:rgba(41,47,56,.91)!important}
 </style>
+
+<style id="arkan-final-force-theme-v2">
+:root{color-scheme:dark!important;--ark-bg:#20252d;--ark-card:#2b313b;--ark-card2:#343c47;--ark-red:#c6283d;--ark-red2:#941b30;--ark-white:#f5f6f8;--ark-border:#596574}
+html,body{min-height:100%!important;background:transparent!important;color:var(--ark-white)!important}
+body{position:relative!important;background:transparent!important;color:var(--ark-white)!important}
+body::before{content:""!important;position:fixed!important;inset:0!important;z-index:-1!important;background:linear-gradient(rgba(24,29,36,.70),rgba(24,29,36,.82)),url("arkan-survey-background.jpg") center center/cover no-repeat!important;pointer-events:none!important}
+#app,.app,.app-container,main,main>*,#main,.main-content,.content,.container,.page{background-color:rgba(32,37,45,.76)!important;color:var(--ark-white)!important}
+.card,.card-body,.card-head,.section-card,.panel,.modal-content,.form-card,.input-card,.quantity-card,.road-card,.report-card,.layer-heights-entry-card,.layer-heights-entry-card *, .pipe-asphalt-card,.pipe-asphalt-card *,.road-section,.layer-card,.table-wrap,.table-container{background-color:rgba(43,49,59,.94)!important;color:var(--ark-white)!important;border-color:var(--ark-border)!important}
+body *:not(svg):not(path):not(canvas):not(.drawing-canvas){color:var(--ark-white)!important}
+button,button *, .btn,.btn *,input[type=button],input[type=submit],.tab-button,.nav-button,.action-button,.tool-button,.primary-button{background:var(--ark-red)!important;color:#fff!important;border-color:var(--ark-red2)!important}
+input:not([type=checkbox]):not([type=radio]),select,textarea{background:#252c35!important;color:#fff!important;border:1px solid #697584!important}
+input::placeholder,textarea::placeholder{color:#b9c1cb!important;opacity:1!important}
+table,thead,tbody,tr,th,td{background-color:rgba(43,49,59,.96)!important;color:#fff!important;border-color:#596574!important}
+table th{background-color:#343c47!important;color:#fff!important}
+table td{background-color:#2b313b!important;color:#fff!important}
+.tag,.badge,.chip,.layer-tag{background:var(--ark-red)!important;color:#fff!important;border-color:var(--ark-red2)!important}
+.value,.result,.result-value,.highlight,.total-value,.key-value{color:#ff5369!important}
+hr,.divider{border-color:#596574!important}
+#arkanAiPanel,#arkanAiPanel *{background-color:rgba(43,49,59,.96)!important;color:#fff!important}
+#arkanAiPanel header,#arkanAiPanel button{background:var(--ark-red)!important;color:#fff!important}
+</style>
+
 </body></html>`;
  const w=window.open('', '_blank');
  if(w){w.document.open();w.document.write(body);w.document.close();setTimeout(()=>w.print(),500);}
