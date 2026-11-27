@@ -721,7 +721,7 @@ function buildUnifiedSewerScreen(){
    aiFab.innerHTML='<span aria-hidden="true">🤖</span> مساعد ARKAN AI';
    aiFab.title='مساعد الذكاء الاصطناعي ARKAN';
    aiFab.setAttribute('aria-label','مساعد الذكاء الاصطناعي ARKAN');
-   aiFab.addEventListener('click',()=>alert('مساعد ARKAN AI غير مفعّل في هذه النسخة بعد.'));
+   aiFab.addEventListener('click',openArkanAssistant);
   }
   if(printBtn){printBtn.textContent='طباعة / PDF';actionBar.appendChild(printBtn);}
   actionBar.appendChild(aiFab);
@@ -1030,7 +1030,72 @@ $('roadExportPdf').addEventListener('click',()=>{
  roadSaveCurrent();
  const rows=roadStations.map(st=>{const d=roadValues[st.key]||{};return '<tr><td>'+st.label+'</td>'+roadIds.map(id=>'<td>'+(d[id]===null||d[id]===undefined?'—':roadFmt(d[id]))+'</td>').join('')+'</tr>';}).join('');
  const title='بروفايل أعمال الطرق';
- const body=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2{text-align:center}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #555;padding:7px;text-align:center}th{background:#eee}@page{size:A4 landscape;margin:12mm}</style></head><body><h2>${title}</h2><p>BM: ${roadVal('roadBM')??'—'} | BS: ${roadVal('roadBS')??'—'} | HI: ${roadHI()??'—'}</p><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
+ const body=`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,sans-serif;padding:18px;color:#111}h2{text-align:center}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #555;padding:7px;text-align:center}th{background:#eee}@page{size:A4 landscape;margin:12mm}</style></head><body><h2>${title}</h2><p>BM: ${roadVal('roadBM')??'—'} | BS: ${roadVal('roadBS')??'—'} | HI: ${roadHI()??'—'}</p><table><thead><tr><th>المحطة</th><th>الإسفلت</th><th>الكونكريت</th><th>السب بيس</th><th>الجلمود</th></tr></thead><tbody>${rows}</tbody></table><script>
+/* ARKAN Assistant — offline interactive helper */
+function openArkanAssistant(){
+ let panel=document.getElementById('arkanAiPanel');
+ if(!panel){
+  panel=document.createElement('div');panel.id='arkanAiPanel';
+  panel.dir='rtl';
+  panel.style.cssText='position:fixed;inset:0;z-index:1000000;background:#0009;display:flex;align-items:flex-end;justify-content:center;padding:12px';
+  panel.innerHTML=`<section style="width:min(560px,100%);max-height:82vh;background:#172638;color:#f5f7fa;border:1px solid #62758a;border-radius:18px;box-shadow:0 15px 50px #0008;display:flex;flex-direction:column;overflow:hidden">
+   <header style="padding:14px 16px;background:#0b477e;display:flex;align-items:center;justify-content:space-between"><b>🤖 مساعد ARKAN</b><button id="arkanAiClose" style="background:#ffffff22;color:white;padding:7px 12px">إغلاق ✕</button></header>
+   <div id="arkanAiMessages" style="padding:14px;overflow:auto;min-height:180px;max-height:48vh;display:flex;flex-direction:column;gap:10px">
+    <div style="background:#26394d;padding:11px;border-radius:12px;line-height:1.8">أهلاً بك. أستطيع مساعدتك في حسابات الصرف الصحي وأعمال الطرق والكميات وشرح أدوات البرنامج. اكتب سؤالك أو اختر أحد المواضيع أدناه.<br><small style="color:#c1d0df">يعمل هذا الإصدار محلياً دون اتصال؛ ليس مربوطاً بخدمة ذكاء اصطناعي سحابية.</small></div>
+   </div>
+   <div style="display:flex;gap:7px;flex-wrap:wrap;padding:0 12px 10px">
+    <button class="arkanAiQuick" data-q="اشرح لي حساب منسوب أسفل البوري">حساب البوري</button>
+    <button class="arkanAiQuick" data-q="اشرح لي حساب عمق المنهول">عمق المنهول</button>
+    <button class="arkanAiQuick" data-q="اشرح لي حساب كميات الطرق">كميات الطرق</button>
+    <button class="arkanAiQuick" data-q="ما هي طريقة حساب الحجوم؟">حساب الحجوم</button>
+   </div>
+   <form id="arkanAiForm" style="display:flex;gap:8px;padding:12px;border-top:1px solid #42556a">
+    <input id="arkanAiInput" autocomplete="off" placeholder="اكتب سؤالك هنا..." style="flex:1;min-width:0;padding:12px;border-radius:9px;border:1px solid #718096;background:#fff;color:#172638">
+    <button type="submit" style="background:#16834f;color:#fff;padding:10px 16px">إرسال</button>
+   </form></section>`;
+  document.body.appendChild(panel);
+  panel.querySelector('#arkanAiClose').onclick=()=>panel.remove();
+  panel.addEventListener('click',e=>{if(e.target===panel)panel.remove();});
+  panel.querySelectorAll('.arkanAiQuick').forEach(b=>b.onclick=()=>arkanAiAsk(b.dataset.q));
+  panel.querySelector('#arkanAiForm').onsubmit=e=>{e.preventDefault();const input=panel.querySelector('#arkanAiInput');const q=input.value.trim();if(q){input.value='';arkanAiAsk(q);}};
+ }
+ panel.style.display='flex';
+}
+function arkanAiAsk(q){
+ const box=document.getElementById('arkanAiMessages');if(!box)return;
+ const add=(txt,me)=>{const d=document.createElement('div');d.style.cssText='max-width:94%;align-self:'+(me?'flex-start':'flex-end')+';background:'+(me?'#164e79':'#26394d')+';padding:11px 13px;border-radius:12px;line-height:1.8;white-space:pre-wrap';d.textContent=txt;box.appendChild(d);box.scrollTop=box.scrollHeight;};
+ add(q,true);
+ const t=q.toLowerCase();let a='';
+ const n=id=>{const el=document.getElementById(id);return el&&el.value.trim()!==''?Number(el.value):null;};
+ if(/أسفل البوري|منسوب البوري|invert|il|قطر/.test(t)){
+  const bm=n('bm'),bs=n('bs'),v=n('pipeValue'),dia=n('pipeDia'),mode=document.getElementById('pipeMode')?.value;
+  const crown=bm!==null&&bs!==null&&v!==null?(mode==='reading'?bm+bs-v:v):null;
+  const inv=crown!==null&&dia!==null?crown-dia/1000:null;
+  a='منسوب أسفل البوري = منسوب ظهر البوري − القطر بالمتر.\n';
+  if(inv!==null)a+='حسب المدخلات الحالية: HI = '+(bm+bs).toFixed(3)+' م، وINV = '+inv.toFixed(3)+' م.';
+  else a+='أدخل BM وBS وقيمة قراءة/منسوب ظهر البوري والقطر في قسم الإدخال المساحي حتى تظهر النتيجة.';
+ }else if(/عمق المنهول|منهول|manhole/.test(t)){
+  a='عمق المنهول = منسوب سطح الطريق GL − منسوب القاع/الـ INV، مع التأكد أن المنسوبين على نفس المرجع. أدخل منسوب GL وINV الصحيحين ثم احسب الفرق. لا تخلط بين منسوب أعلى البوري ومنسوب أسفله.';
+ }else if(/طرق|طبقات|سماك|كميات/.test(t)){
+  const l=n('roadLength'),w=n('roadWidth'),area=l!==null&&w!==null?l*w:null;
+  a='كميات طبقات الطريق: المساحة = طول الطريق × العرض، والحجم = المساحة × السماكة بالمتر. حوّل السماكة من سم إلى متر بقسمتها على 100.';
+  if(area!==null)a+='\nالمساحة حسب المدخلات الحالية = '+area.toFixed(3)+' م².';
+  a+=' أدخل السماكات في بطاقة «سماكات الطبقات والكميات» وستظهر الحجوم في الجدول.';
+ }else if(/حجوم|حجم|volume/.test(t)){
+  a='حجم المنشور أو طبقة الطريق = الطول × العرض × السماكة. حجم الحفر = مساحة الحفر × العمق، مع استخدام المتر لجميع الأبعاد حتى تكون النتيجة بالمتر المكعب.';
+ }else if(/طول|مساف|قياس/.test(t)){
+  a='لإيجاد كمية الأطوال، أدخل طول كل مقطع ثم أضفه إلى جدول الكميات. مجموع الأطوال يظهر بالمتر ويمكن تصدير الجدول CSV.';
+ }else if(/إحداث|utm|زون|zone/.test(t)){
+  a='إعداد UTM الافتراضي في البرنامج هو Zone 38N. تأكد من اختيار المنطقة ونصف الكرة الصحيحة قبل التحويل، ثم أدخل Easting وNorthing أو Latitude وLongitude حسب اتجاه التحويل.';
+ }else if(/مرحبا|السلام|هلا/.test(t)){
+  a='أهلاً وسهلاً! اسألني عن حسابات الصرف الصحي أو الطرق أو الكميات أو تحويل الإحداثيات.';
+ }else{
+  a='أقدر أساعدك حالياً بالشرح والحسابات الأساسية داخل ARKAN: الصرف الصحي، مناسيب البوري، عمق المنهول، أعمال الطرق، الكميات، وUTM. جرّب صياغة السؤال بذكر اسم الأداة أو أرسل الأرقام المطلوبة.';
+ }
+ add(a,false);
+}
+</script>
+</body></html>`;
  const w=window.open('', '_blank');
  if(w){w.document.open();w.document.write(body);w.document.close();setTimeout(()=>w.print(),500);}
  else {roadStatus('تعذر فتح نافذة الطباعة. استخدم زر طباعة التقرير من التطبيق.','warn');}
