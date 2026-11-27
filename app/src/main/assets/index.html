@@ -1252,6 +1252,112 @@ html body .page{background:rgba(23,25,29,.70)!important}
 @media print{body{background:#fff!important}html body .page,html body .card,html body table,html body th,html body td{background:#fff!important;color:#111!important}}
 </style>
 
+
+<style id="arkan-roads-palette-v163">
+/* V163: definitive road-page palette override, intentionally last in cascade. */
+html body section#roads.page,
+html body section#roads.page *:not(svg):not(path):not(canvas):not(.road-swatch) {
+  box-sizing:border-box;
+}
+html body section#roads.page .card,
+html body section#roads.page .card-head,
+html body section#roads.page .card-body,
+html body section#roads.page .roads-stack,
+html body section#roads.page .roads-field,
+html body section#roads.page .road-staff-entry,
+html body section#roads.page .road-profile-tools,
+html body section#roads.page .road-layer,
+html body section#roads.page .roads-output,
+html body section#roads.page .roads-stationbar,
+html body section#roads.page .table-wrap,
+html body section#roads.page #roadImportReviewWrap {
+  background:#252b33!important;
+  background-color:#252b33!important;
+  color:#f5f6f8!important;
+  border-color:#59636f!important;
+}
+html body section#roads.page h2,
+html body section#roads.page h3,
+html body section#roads.page h4,
+html body section#roads.page label,
+html body section#roads.page p,
+html body section#roads.page .help,
+html body section#roads.page .card-head *,
+html body section#roads.page .road-layer h4 span:not(.road-swatch),
+html body section#roads.page .road-level-result span,
+html body section#roads.page .roads-output span,
+html body section#roads.page th,
+html body section#roads.page td {
+  color:#f5f6f8!important;
+}
+html body section#roads.page input:not([type=button]):not([type=submit]):not([type=checkbox]):not([type=radio]),
+html body section#roads.page select,
+html body section#roads.page textarea,
+html body section#roads.page input[type=file] {
+  background:#171b21!important;
+  background-color:#171b21!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  border:1px solid #697584!important;
+  box-shadow:none!important;
+}
+html body section#roads.page input::placeholder,
+html body section#roads.page textarea::placeholder {
+  color:#aeb6c0!important;opacity:1!important;
+}
+html body section#roads.page select option {
+  background:#171b21!important;color:#ffffff!important;
+}
+html body section#roads.page button,
+html body section#roads.page .btn,
+html body section#roads.page .btn-primary,
+html body section#roads.page .btn-green,
+html body section#roads.page .btn-ghost,
+html body section#roads.page input[type=button],
+html body section#roads.page input[type=submit] {
+  background:#c6283d!important;
+  background-color:#c6283d!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  border:1px solid #941b30!important;
+}
+html body section#roads.page .roads-output strong,
+html body section#roads.page .roads-stationbar strong,
+html body section#roads.page .road-level-result strong,
+html body section#roads.page #roadHI,
+html body section#roads.page #roadStation,
+html body section#roads.page #roadAsphaltOther,
+html body section#roads.page #roadAsphaltReading,
+html body section#roads.page #roadConcreteOther,
+html body section#roads.page #roadConcreteReading,
+html body section#roads.page #roadSubbaseOther,
+html body section#roads.page #roadSubbaseReading,
+html body section#roads.page #roadBoulderOther,
+html body section#roads.page #roadBoulderReading,
+html body section#roads.page #roadQtyBody td,
+html body section#roads.page #roadStationsBody td,
+html body section#roads.page #roadImportReview td {
+  color:#ff4055!important;
+  -webkit-text-fill-color:#ff4055!important;
+}
+html body section#roads.page table,
+html body section#roads.page thead,
+html body section#roads.page tbody,
+html body section#roads.page tr,
+html body section#roads.page th,
+html body section#roads.page td {
+  background:#252b33!important;
+  background-color:#252b33!important;
+  border-color:#59636f!important;
+}
+html body section#roads.page th {
+  background:#303842!important;background-color:#303842!important;color:#ffffff!important;
+}
+html body section#roads.page .road-swatch {
+  border-color:#8994a2!important;
+}
+</style>
+
 </body></html>`;
  const w=window.open('', '_blank');
  if(w){w.document.open();w.document.write(body);w.document.close();setTimeout(()=>w.print(),500);}
