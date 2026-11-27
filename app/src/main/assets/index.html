@@ -717,13 +717,14 @@ function buildUnifiedSewerScreen(){
    aiFab.type='button';
    aiFab.id='arkanAiFab';
    aiFab.className='btn btn-ghost';
-   aiFab.innerHTML='<span aria-hidden="true">🤖</span>';
+   aiFab.innerHTML='<span aria-hidden="true">🤖</span> مساعد ARKAN AI';
    aiFab.title='مساعد الذكاء الاصطناعي ARKAN';
    aiFab.setAttribute('aria-label','مساعد الذكاء الاصطناعي ARKAN');
+   aiFab.addEventListener('click',()=>alert('مساعد ARKAN AI غير مفعّل في هذه النسخة بعد.'));
   }
-  if(printBtn){printBtn.innerHTML='<span aria-hidden="true">🖨️</span>';printBtn.title='طباعة / PDF';printBtn.setAttribute('aria-label','طباعة / PDF');actionBar.appendChild(printBtn);}
+  if(printBtn){printBtn.textContent='طباعة / PDF';actionBar.appendChild(printBtn);}
   actionBar.appendChild(aiFab);
-  if(exportBtn){exportBtn.innerHTML='<span aria-hidden="true">📤</span>';exportBtn.title='تصدير CSV';exportBtn.setAttribute('aria-label','تصدير CSV');actionBar.appendChild(exportBtn);}
+  if(exportBtn){exportBtn.textContent='تصدير CSV';actionBar.appendChild(exportBtn);}
   dashboard.appendChild(actionBar);
   reportHead.remove();
  }
@@ -1036,11 +1037,12 @@ $('roadExportPdf').addEventListener('click',()=>{
 </script>
 
 <style id="sewer-report-actions-final">
-/* Small bottom action row: print right, AI center, export left (RTL) */
-#sewerReportActions{display:flex!important;flex-direction:row!important;direction:rtl!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;width:100%!important;max-width:100%!important;margin:10px 0 6px!important;padding:3px 5px!important;box-sizing:border-box!important}
-#sewerReportActions>button,#sewerReportActions>#arkanAiFab{position:static!important;transform:none!important;flex:0 1 64px!important;width:64px!important;min-width:42px!important;max-width:64px!important;height:30px!important;min-height:30px!important;max-height:30px!important;margin:0!important;padding:2px 5px!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;white-space:nowrap!important;font-size:16px!important;line-height:1!important;border-radius:8px!important}
+/* Restore the original labeled action buttons, with a more comfortable touch size. */
+#sewerReportActions{display:flex!important;flex-direction:row!important;direction:rtl!important;justify-content:center!important;align-items:center!important;gap:12px!important;width:100%!important;max-width:100%!important;margin:14px 0 10px!important;padding:5px 8px!important;box-sizing:border-box!important;flex-wrap:wrap!important}
+#sewerReportActions>button,#sewerReportActions>#arkanAiFab{position:static!important;transform:none!important;flex:0 1 auto!important;width:auto!important;min-width:112px!important;max-width:none!important;height:44px!important;min-height:44px!important;max-height:44px!important;margin:0!important;padding:9px 15px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;box-sizing:border-box!important;white-space:nowrap!important;font-size:13px!important;line-height:1.2!important;border-radius:9px!important;font-weight:800!important}
 #sewerReportActions>button:first-child{order:1!important}
 #sewerReportActions>#arkanAiFab{order:2!important}
 #sewerReportActions>#csvBtn2{order:3!important}
+@media(max-width:420px){#sewerReportActions{gap:7px!important}#sewerReportActions>button,#sewerReportActions>#arkanAiFab{min-width:0!important;padding:8px 10px!important;font-size:12px!important;flex:1 1 auto!important}}
 </style>
 </body></html>
